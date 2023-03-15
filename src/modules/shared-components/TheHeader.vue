@@ -4,10 +4,7 @@
     <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarNav" aria-controls="navbarNav" aria-expanded="false" aria-label="Toggle navigation">
       <span class="navbar-toggler-icon"></span>
     </button>
-
-    <a class="navbar-brand" Ïhref="index.html">
-      Bittle-Bittle
-    </a>
+    <router-link class="navbar-brand" to="/">Home</router-link>
 
     <div class="d-lg-none">
       <button type="button" class="custom-btn btn btn-danger" data-bs-toggle="modal" data-bs-target="#BookingModal">SignUp</button>
@@ -16,23 +13,23 @@
     <div class="collapse navbar-collapse" id="navbarNav">
       <ul class="navbar-nav mx-auto">
         <li class="nav-item">
-          <a class="nav-link active" href="index.html">Home</a>
+          <router-link class="nav-link active" to="/">Home</router-link>
         </li>
 
         <li class="nav-item">
-          <a class="nav-link" href="about.html">Story</a>
+          <router-link class="nav-link" to="/bottles">bottle</router-link>
         </li>
 
         <li class="nav-item">
-          <a class="nav-link" href="menu.html">Menu</a>
+          <router-link class="nav-link" to="/boards">자유게시판</router-link>
         </li>
 
         <li class="nav-item">
-          <a class="nav-link" href="news.html">Our Updates</a>
+          <router-link class="nav-link" to="/notices">공지사항</router-link>
         </li>
 
         <li class="nav-item">
-          <a class="nav-link" href="contact.html">Contact</a>
+          <router-link class="nav-link" to="/faqs">FAQ</router-link>
         </li>
       </ul>
     </div>
@@ -52,5 +49,4 @@ export default {
 </script>
 
 <style>
-@import '../../assets/css/tooplate-crispy-kitchen.css';
 </style>

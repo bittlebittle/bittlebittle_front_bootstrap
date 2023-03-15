@@ -427,6 +427,5 @@ export default {
 </script>
 
 <style>
-@import '../assets/css/tooplate-crispy-kitchen.css'
 
 </style>

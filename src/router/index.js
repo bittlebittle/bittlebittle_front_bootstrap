@@ -1,21 +1,51 @@
 import { createRouter, createWebHistory } from 'vue-router'
-import DefaulfLayout from '@/layouts/default/Index'
+import DefaultLayout from '@/layouts/default/Index'
+import AdminLayout from '@/layouts/admin/Index'
 import MainView from '@/modules/MainView'
+import BoardView from '@/modules/boards/views/BoardView'
+import BottleView from '@/modules/bottles/views/BottleView'
+import NoticeView from '@/modules/notices/views/NoticeView'
+import FaqView from '@/modules/faqs/views/FaqView'
 
 const routes = [
   {
     path: '/',
     name: 'DefaultLayout',
-    component: DefaulfLayout,
+    component: DefaultLayout,
     children: [
       {
         path: '/',
         name: 'MainView',
         component: MainView
+      },
+      {
+        path: '/bottles',
+        name: 'BottleView',
+        component: BottleView
+      },
+      {
+        path: '/boards',
+        name: 'BoardView',
+        component: BoardView
+      },
+      {
+        path: '/notices',
+        name: 'NoticeView',
+        component: NoticeView
+      },
+      {
+        path: '/faqs',
+        name: 'FaqView',
+        component: FaqView
       }
     ]
   }, {
+    path: '/',
+    name: 'AdminLayout',
+    component: AdminLayout,
+    children: [
 
+    ]
   }
   // {
   //   path: '/about',

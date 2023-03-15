@@ -8,7 +8,7 @@
 
 <script>
 export default {
-    name : "AuthenticaitonLayout"
+  name: 'AuthenticaitonLayout'
 }
 </script>
 
