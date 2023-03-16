@@ -4,7 +4,7 @@
     <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarNav" aria-controls="navbarNav" aria-expanded="false" aria-label="Toggle navigation">
       <span class="navbar-toggler-icon"></span>
     </button>
-    <router-link class="navbar-brand" to="/">Home</router-link>
+    <router-link class="navbar-brand" to="/">BITTLE-BITTLE</router-link>
 
     <div class="d-lg-none">
       <button type="button" class="custom-btn btn btn-danger" data-bs-toggle="modal" data-bs-target="#BookingModal">SignUp</button>
@@ -48,5 +48,5 @@ export default {
 }
 </script>
 
-<style>
+<style scope >
 </style>
