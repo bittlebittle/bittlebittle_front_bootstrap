@@ -8,20 +8,18 @@ function createAxiosInstance () {
   })
 }
 
-// function restApiPost (url, data) {
-//   return createAxiosInstance().post(url, data)
-// }
+function getJsonAxiosInstance () {
+  const instance = createAxiosInstance()
+  instance.defaults.headers.common.Authorization = 'AUTH_TOKEN'
+  instance.defaults.headers.post['Content-Type'] = 'application/json; charset-8'
+  return instance
+}
 
-// function restApiGets (url) {
-//   return createAxiosInstance().get(url)
-// }
+function getFormAxiosInstance () {
+  const instance = createAxiosInstance()
+  instance.defaults.headers.common.Authorization = 'AUTH_TOKEN'
+  instance.defaults.headers.post['Content-Type'] = 'multipart/form-data'
+  return instance
+}
 
-// function restApiPut (url, data) {
-//   return createAxiosInstance().post(url, data)
-// }
-
-// function restApiDelete(url) {
-//   return createAxiosInstance().get(url);
-// }
-
-export { createAxiosInstance }
+export { getJsonAxiosInstance, getFormAxiosInstance }

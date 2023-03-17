@@ -35,7 +35,19 @@ const routes = [
       {
         path: '/boards',
         name: 'BoardView',
-        component: BoardView
+        component: BoardView,
+        children: [
+          {
+            path: '/boards',
+            name: 'BoardListComp',
+            component: () => import('@/modules/boards/components/BoardListComp')
+          },
+          {
+            path: '/boards/:boardNo',
+            name: 'BoardDetailComp',
+            component: () => import('@/modules/boards/components/BoardDetailComp')
+          }
+        ]
       },
       {
         path: '/notices',
