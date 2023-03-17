@@ -4,4 +4,5 @@ module.exports = defineConfig({
     port: 4000
   },
   transpileDependencies: true
+  , lintOnSave: false
 })

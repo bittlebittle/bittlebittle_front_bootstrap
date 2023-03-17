@@ -8,6 +8,14 @@ function createAxiosInstance () {
   })
 }
 
+// const loginFrom = {
+//   userId : 'admin1234'
+//   , userPwd : 'admin1234'
+// }
+
+// axios.post('api/users/login', loginFrom)
+// .withCredentials
+
 function restApiPost (url, data) {
   return createAxiosInstance().post(url, data)
 }

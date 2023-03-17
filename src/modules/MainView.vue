@@ -55,7 +55,7 @@
               <div class="carousel-caption">
                 <div class="d-flex align-items-center">
                   <h4 class="hero-text">Steak</h4>
-ß
+
                   <span class="price-tag ms-4"><small>$</small>26.50</span>
                 </div>
 
