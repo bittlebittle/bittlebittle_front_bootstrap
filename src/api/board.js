@@ -6,6 +6,10 @@ function getBoardList (url) {
   return axios.get(url)
 }
 
+function getReplyList (url) {
+  return axios.get(url)
+}
+
 function getBoardDetail (url) {
   return axios.get(url)
 }
@@ -18,8 +22,12 @@ function addBoard (url, boardData) {
   return axios.post(url, boardData)
 }
 
+function addReply (url,replyData) {
+  return axios.post(url, replyData)
+}
+
 function deleteBoard (url) {
   return axios.get(url)
 }
 
-export { getBoardList, getBoardDetail, editBoard, addBoard, deleteBoard }
+export { getBoardList, getReplyList, getBoardDetail, editBoard, addBoard, addReply, deleteBoard }
