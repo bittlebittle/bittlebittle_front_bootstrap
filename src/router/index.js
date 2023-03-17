@@ -4,6 +4,7 @@ import AdminLayout from '@/layouts/admin/Index'
 import MainView from '@/modules/MainView'
 import BoardView from '@/modules/boards/views/BoardView'
 import BottleView from '@/modules/bottles/views/BottleView'
+import BottleDetailView from '@/modules/bottles/views/BottleDetailView'
 import NoticeView from '@/modules/notices/views/NoticeView'
 import FaqView from '@/modules/faqs/views/FaqView'
 
@@ -21,7 +22,15 @@ const routes = [
       {
         path: '/bottles',
         name: 'BottleView',
-        component: BottleView
+        component: BottleView,
+        children : [
+          {
+            path:'/bottles/:bottleNo',
+            name: 'BottleDetailView',
+            component: BottleDetailView,
+            props:true
+          }
+        ]
       },
       {
         path: '/boards',
@@ -52,21 +61,14 @@ const routes = [
       }
     ]
   }, {
-    path: '/',
+    path: '/admin',
     name: 'AdminLayout',
     component: AdminLayout,
     children: [
 
     ]
   }
-  // {
-  //   path: '/about',
-  //   name: 'about',
-  //   // route level code-splitting
-  //   // this generates a separate chunk (about.[hash].js) for this route
-  //   // which is lazy-loaded when the route is visited.
-  //   component: () => import(/* webpackChunkName: "about" */ '../views/AboutView.vue')
-  // }
+ 
 ]
 
 const router = createRouter({
