@@ -27,7 +27,7 @@
 </template>
 
 <script>
-import { createAxiosInstance } from '@/api/index'
+import { getFormAxiosInstance } from '@/api/index'
 import { onMounted } from '@vue/runtime-core'
 import { ref } from '@vue/reactivity'
 
@@ -36,7 +36,7 @@ export default {
 
   setup () {
 
-    const axios = createAxiosInstance();
+    const axios = getFormAxiosInstance();
 
     const bottles = ref([]);
     const favorites = ref([]);

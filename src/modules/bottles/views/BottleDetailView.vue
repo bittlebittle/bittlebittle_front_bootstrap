@@ -10,7 +10,7 @@
     <div class="related-list">
       <div class="section-title">관련 보틀 리스트:</div>
       <ul>
-        <li v-for="relatedBottle in relatedBottleList" :key="relatedBottle.bottleNo" @click=getBottle(relatedBottle.bottleNo)>
+        <li v-for="relatedBottle in relatedBottleList" :key="relatedBottle.bottleNo" @click=pageUpdate(relatedBottle.bottleNo)>
     
               {{ relatedBottle.bottleName }}
         </li>
@@ -33,20 +33,127 @@
           <div class="tag-box" v-for="tag in tagListByBottle" :key="tag.tagNo">{{ tag.tagName }}</div>
     </div>
 
+    <!-- 리뷰 리스트 -->
     <div class="related-list">
       <div class="section-title">리뷰 리스트:</div>
       <ul>
-        <li v-for="review in reviewList" :key="review.reviewNo">
+        <li v-for="review in reviewList" :key="review.reviewNo" @click="showModal(review)">
           {{ review.reviewTitle }}
         </li>
       </ul>
     </div>
+    <!-- modal -->
+    <b-modal v-model="reviewModal" title="리뷰 상세 내용" v-if="reviewModal">
+      <div class="modal-content">
+        <div class="modal-header">
+          <h5 class="modal-title">{{ selectedReview.reviewTitle }}</h5>
+          <button type="button" class="close" aria-label="Close" @click="closeModal()">
+            <span aria-hidden="true">&times;</span>
+          </button>
+        </div>
+        <div class="modal-body">
+          <p class="text-muted">{{ selectedReview.createDate }}</p>
+          <p>{{ selectedReview.reviewContent }}</p>
+          <p>평점: {{ selectedReview.grade }}</p>
+        </div>
+      </div>
+      <div class="d-flex justify-content-end">
+        <b-button class="btn btn-edit" @click="showEditModal(selectedReview)">수정</b-button>
+        <b-button class="btn btn-delete" @click="deleteReview()">삭제</b-button>
+      </div>
+
+    <!-- replyList 출력 -->
+    <ul class="list-unstyled">
+      <li v-for="reply in replyList">
+        {{ reply.userNo }}&nbsp;&nbsp;&nbsp;&nbsp;{{ reply.createTime }}&nbsp;&nbsp;&nbsp;&nbsp;{{ reply.replyContent }}
+      </li>
+    </ul>
+
+    <!-- reply 작성 폼 -->
+  <form @submit.prevent="addReply">
+    <div class="form-group">
+      <label for="replyContent">댓글 작성</label>
+      <textarea class="form-control" id="replyContent" v-model="newReplyContent"></textarea>
+    </div>
+    <button type="submit" class="btn btn-primary custom-button">작성</button>
+  </form>
+
+    </b-modal>
+
+  <!-- 리뷰 수정 모달 -->
+  <b-modal v-model="editModalVisible" title="리뷰 수정" v-if="editModalVisible">
+      <div class="modal-content">
+        <form @submit.prevent="saveReview">
+        <div>
+          <label for="reviewTitle">제목:</label>
+          <input type="text" id="reviewTitle" v-model="editReviewTitle" />
+        </div>
+        <div>
+          <label for="reviewContent">내용:</label>
+          <textarea id="reviewContent" v-model="editReviewContent"></textarea>
+        </div>
+         <div>
+        <label for="grade">점수:</label>
+        <fieldset id="grade">
+          <input type="radio" id="score5" name="score" value="5" v-model="editGrade">
+          <label for="score5">5점</label>
+          <input type="radio" id="score4" name="score" value="4" v-model="editGrade">
+          <label for="score4">4점</label>
+          <input type="radio" id="score3" name="score" value="3" v-model="editGrade">
+          <label for="score3">3점</label>
+          <input type="radio" id="score2" name="score" value="2" v-model="editGrade">
+          <label for="score2">2점</label>
+          <input type="radio" id="score1" name="score" value="1" v-model="editGrade">
+          <label for="score1">1점</label>
+        </fieldset>
+      </div>
+        <button type="submit">작성 완료</button>
+        <button @click="closeEditModal()">취소</button>
+      </form>
+      </div>
+    </b-modal>
+
+
+    <!-- 리뷰 작성 폼 -->
+     <div class="related-list">
+      <div class="section-title">리뷰 작성:</div>
+      <form @submit.prevent="addReview">
+        <div>
+          <label for="reviewTitle">제목:</label>
+          <input type="text" id="reviewTitle" v-model="reviewTitle" />
+        </div>
+        <div>
+          <label for="reviewContent">내용:</label>
+          <textarea id="reviewContent" v-model="reviewContent"></textarea>
+        </div>
+         <div>
+        <label for="grade">점수:</label>
+        <fieldset id="grade">
+          <input type="radio" id="score5" name="score" value="5" v-model="grade">
+          <label for="score5">5점</label>
+          <input type="radio" id="score4" name="score" value="4" v-model="grade">
+          <label for="score4">4점</label>
+          <input type="radio" id="score3" name="score" value="3" v-model="grade">
+          <label for="score3">3점</label>
+          <input type="radio" id="score2" name="score" value="2" v-model="grade">
+          <label for="score2">2점</label>
+          <input type="radio" id="score1" name="score" value="1" v-model="grade">
+          <label for="score1">1점</label>
+        </fieldset>
+      </div>
+        <button type="submit">작성 완료</button>
+      </form>
+    </div>
   </div>
+
+
 </template>
 
 <script>
-import { createAxiosInstance } from '@/api/index'
-import { onMounted, ref } from '@vue/runtime-core'
+import { getFormAxiosInstance } from '@/api/index'
+import { onMounted, ref, computed } from '@vue/runtime-core'
+import { useRouter } from 'vue-router'
+
 
 export default {
   name: 'BottleDetailView',
@@ -59,13 +166,18 @@ export default {
   },
   
   setup (props) {
-    const axios = createAxiosInstance()
+    const axios = getFormAxiosInstance()
    
     const bottle = ref(null)
     const relatedBottleList = ref([])
     const foodList = ref([])
     const tagListByBottle = ref([])
     const reviewList = ref([])
+    const reviewTitle = ref('')
+    const reviewContent = ref('')
+    const grade = ref(0)
+
+ 
     const getBottle = function(hhh){
       let url = '';
       if(!hhh) {
@@ -88,10 +200,140 @@ export default {
       })
     }
 
+    const addReview = function() {
+      const url = `/api/bottles/${bottle.value.bottleNo}/reviews`
+      
+    const data = new FormData();
+        data.append('reviewTitle', reviewTitle.value);
+        data.append('reviewContent', reviewContent.value);
+        data.append('grade', grade.value);
+
+      axios.post(url, data)
+      .then(res => {
+        // 리뷰 등록 후 새로고침 없이 해당 보틀의 리뷰 리스트 갱신
+        reviewList.value= res.data
+        reviewTitle.value = ''
+        reviewContent.value = ''
+        grade.value=''
+      })
+      .catch(err => {
+        console.log(err)
+      })
+    }
+
+  const router = useRouter()
+
+  const pageUpdate = (bottleNo) => {
+      reviewModal.value = false    
+      editModalVisible.value = false
+      router.push('/bottles/'+bottleNo)
+      getBottle(bottleNo)
+    }
+
 
     onMounted(() => {
       getBottle()
     })
+
+
+    // Function to show the modal with review details
+    const selectedReview = ref(null)
+    const reviewModal = ref(false)
+    const replyList = ref([])
+
+    const showModal = (review) => {
+
+      axios.get(`/api/bottles/${bottle.value.bottleNo}/reviews/${review.reviewNo}`)
+      .then(res => {
+        replyList.value = res.data.replyList
+        console.log(replyList.value)
+      })
+      .catch(err => {
+        console.log(err)
+      })
+
+      selectedReview.value = review
+      reviewModal.value = true
+      editModalVisible.value = false
+    };
+
+    const closeModal = () => {
+      selectedReview.value = null
+      reviewModal.value = false
+      editModalVisible.value = false
+    };
+
+    const editModalVisible = ref(false)
+
+    const showEditModal = (selectedReview) => {
+      editReviewNo.value=selectedReview.reviewNo
+      editModalVisible.value=true
+      editReviewTitle.value=selectedReview.reviewTitle
+      editReviewContent.value=selectedReview.reviewContent
+      editGrade.value=selectedReview.grade
+    }
+
+    const editReviewNo = ref(0)
+    const editReviewTitle = ref('')
+    const editReviewContent = ref('')
+    const editGrade = ref(0)
+
+    const saveReview = function() {
+      const url = `/api/bottles/${bottle.value.bottleNo}/reviews/set-data`
+      
+    const data = new FormData();
+        data.append('reviewNo', editReviewNo.value);
+        data.append('reviewTitle', editReviewTitle.value);
+        data.append('reviewContent', editReviewContent.value);
+        data.append('grade', editGrade.value);
+        
+      axios.post(url, data)
+      .then(res => {
+        // 리뷰 등록 후 새로고침 없이 해당 보틀의 리뷰 리스트 갱신
+
+        reviewList.value= res.data
+
+        reviewModal.value=false
+        editModalVisible.value=false
+
+      })
+      .catch(err => {
+        console.log(err)
+      })
+    }
+
+    // 삭제
+    const deleteReview = function(){
+
+      axios.get(`/api/bottles/${bottle.value.bottleNo}/reviews/${selectedReview.value.reviewNo}/deletion`)
+      .then(res => {
+          reviewList.value=res.data
+          reviewModal.value = false
+          editModalVisible.value = false
+      })
+      
+    }
+
+
+    const closeEditModal = () => {
+      editModalVisible.value=false
+    }
+
+    const newReplyContent = ref('')
+
+    const addReply = function(){
+
+      const data = new FormData();
+        data.append('replyContent', newReplyContent.value);
+
+      axios.post(`/api/bottles/${bottle.value.bottleNo}/reviews/${selectedReview.value.reviewNo}/replies`, data)
+      .then(res=>{
+        replyList.value=res.data
+        newReplyContent.value=''
+      }
+      )
+    }
+    
 
   return {
     bottle,
@@ -99,7 +341,28 @@ export default {
     foodList,
     tagListByBottle,
     reviewList,
-    getBottle
+    reviewTitle,
+    reviewContent,
+    grade,
+    getBottle,
+    addReview,
+    pageUpdate,
+    selectedReview,
+    reviewModal,
+    showModal,
+    replyList,
+    closeModal,
+    editModalVisible,
+    showEditModal,
+    editReviewNo,
+    editReviewTitle,
+    editReviewContent,
+    editGrade,
+    saveReview,
+    closeEditModal,
+    newReplyContent,
+    addReply,
+    deleteReview
   }
 
   }
@@ -149,4 +412,50 @@ export default {
   margin-right: 10px;
 }
 
+  .modal-dialog {
+    max-width: 80%;
+    margin: 1.75rem auto;
+  }
+
+  .modal-content {
+    background-color: #000;
+    color: #ff9933;
+    border: 3px solid #ff9933;
+  }
+
+  .modal-header {
+    border-bottom: none;
+  }
+
+  .modal-title {
+    color: #fff;
+  }
+
+  .modal-body {
+    color: #fff;
+  }
+
+  .modal-body p {
+    color: white;
+  }
+
+  .close {
+    color: #ff9933;
+  }
+
+  .btn-edit, .btn-delete {
+    color: #fff;
+    border: 1px solid #ff9933;
+  }
+
+  .btn-primary.custom-button {
+  background-color: orange;
+  border-color: orange;
+  color: white;
+}
+.btn-primary.custom-button:hover {
+  background-color: white;
+  border-color: orange;
+  color: orange;
+}
 </style>
