@@ -28,20 +28,39 @@
         </div>
       </div>
     </div>
+    <button @click="getUser">테스트</button>
+    <div class="text-white">{{posts[0].title}}</div>
   </div>
   </div>
 </template>
 
 <script>
+import { createAxiosInstance } from '@/api/index'
+
 export default {
   name: 'BoardView',
   setup () {
     const posts = [
-      { title: '첫 번째 게시물' },
-      { title: '두 번째 게시물' },
-      { title: '세 번째 게시물' }
+      { title: '첫 번째 게시물' }
     ]
-    return { posts }
+    const axios = createAxiosInstance()
+
+    const loginForm = {
+      userId: 'admin1234',
+      userPw: 'admin1234'
+    }
+
+    const getUser = function () {
+      axios.post('/api/users/login', loginForm)
+        .then(res => {
+          console.log(111)
+        })
+        .catch(err => {
+          console.log(err)
+        })
+    }
+
+    return { getUser, posts }
   }
 }
 </script>
