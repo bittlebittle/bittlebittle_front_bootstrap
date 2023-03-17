@@ -8,28 +8,19 @@ function createAxiosInstance () {
   })
 }
 
-// const loginFrom = {
-//   userId : 'admin1234'
-//   , userPwd : 'admin1234'
-// }
 
-// axios.post('api/users/login', loginFrom)
-// .withCredentials
-
-function restApiPost (url, data) {
-  return createAxiosInstance().post(url, data)
+function getJsonAxiosInstance () {
+  const instance = createAxiosInstance()
+  instance.defaults.headers.common.Authorization = 'AUTH_TOKEN'
+  instance.defaults.headers.post['Content-Type'] = 'application/json; charset-8'
+  return instance
 }
 
-function restApiGets (url) {
-  return createAxiosInstance().get(url)
+function getFormAxiosInstance () {
+  const instance = createAxiosInstance()
+  instance.defaults.headers.common.Authorization = 'AUTH_TOKEN'
+  instance.defaults.headers.post['Content-Type'] = 'multipart/form-data'
+  return instance
 }
 
-function restApiPut (url, data) {
-  return createAxiosInstance().post(url, data)
-}
-
-function restApiDelete(url) {
-  return createAxiosInstance().get(url);
-}
-
-export { restApiPost, restApiGets, restApiPut, restApiDelete };
+export { getJsonAxiosInstance, getFormAxiosInstance }
