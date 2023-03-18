@@ -1,6 +1,5 @@
 <template>
-  <div class="container">
-   <div class="content"> <!-- 수정 -->
+
      <p class="title">커뮤니티</p>
      <div class="search-container">
        <select v-model="searchOption" style="margin-right: 10px;">
@@ -42,11 +41,79 @@
        </tbody>
      </table>
      <div class="write-button-container">
-       <button id="write-button" onclick="location.href='enrollForm.bo'">작성하기</button>
+       <button id="write-button" @click="moveCreateBoard">작성하기</button>
      </div>
-   </div> <!-- 수정 -->
- </div>
+
 </template>
+
+<script>
+import { ref, onMounted } from 'vue'
+import { getBoardList } from '@/api/board'
+import { useRouter } from 'vue-router'
+
+
+export default {
+  name: 'BoardListComp',
+  setup () {
+    const theadList = [
+      '글번호', '글제목', '작성일', '작성자'
+    ]
+
+    const state = ref({ boardList: [] })
+
+    const setBoardList = () => {
+      getBoardList()
+        .then(res => {
+          console.log(res.data)
+          state.value.boardList = res.data
+        })
+        .catch(err => {
+          console.log(err)
+        })
+    }
+
+    const boardDetail = (boardNo) => {
+      router.push(`/boards/${boardNo}`)
+    }
+
+    const searchOption = ref('boardTitle')
+    const searchText = ref('')
+
+    const filterBoardList = () => {
+      if (searchText.value.trim() === '') {
+        setBoardList()
+      } else {
+        const filteredList = state.value.boardList.filter((item) =>
+          item[searchOption.value].toLowerCase().includes(searchText.value.toLowerCase())
+        )
+        state.value.boardList = filteredList
+      }
+    }
+
+    const router = useRouter()
+
+    function moveCreateBoard () {
+      router.push('/boards/addition')
+    }
+
+    onMounted(() => {
+      setBoardList()
+    })
+
+    return {
+      theadList,
+      state,
+      boardDetail,
+      searchOption,
+      searchText,
+      filterBoardList,
+      moveCreateBoard
+    }
+  }
+}
+</script>
+
+
 
 <style scoped>
   .container {
@@ -151,62 +218,3 @@
     cursor: pointer;
   }
 </style>
-
-<script>
-import { ref, onMounted } from 'vue'
-import { getBoardList } from '@/api/board'
-import router from '@/router'
-
-export default {
-  name: 'BoardListComp',
-  setup () {
-    const theadList = [
-      '글번호', '글제목', '작성일', '작성자'
-    ]
-
-    const state = ref({ boardList: [] })
-
-    const setBoardList = () => {
-      getBoardList('/api/boards')
-        .then(res => {
-          console.log(res.data)
-          state.value.boardList = res.data
-        })
-        .catch(err => {
-          console.log(err)
-        })
-    }
-
-    const boardDetail = (boardNo) => {
-      router.push(`/boards/${boardNo}`)
-    }
-
-    const searchOption = ref('boardTitle')
-    const searchText = ref('')
-
-    const filterBoardList = () => {
-      if (searchText.value.trim() === '') {
-        setBoardList()
-      } else {
-        const filteredList = state.value.boardList.filter((item) =>
-          item[searchOption.value].toLowerCase().includes(searchText.value.toLowerCase())
-        )
-        state.value.boardList = filteredList
-      }
-    }
-
-    onMounted(() => {
-      setBoardList()
-    })
-
-    return {
-      theadList,
-      state,
-      boardDetail,
-      searchOption,
-      searchText,
-      filterBoardList
-    }
-  }
-}
-</script>

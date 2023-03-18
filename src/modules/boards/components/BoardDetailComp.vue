@@ -82,7 +82,7 @@ export default {
     const route = useRoute()
     const setBoardDetail = () => {
       const boardNo = route.params.boardNo
-      getBoardDetail(`/api/boards/${boardNo}`)
+      getBoardDetail(boardNo)
         .then((res) => {
           console.log(res.data)
           board.value = res.data

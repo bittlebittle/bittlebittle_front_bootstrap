@@ -8,6 +8,16 @@ import { useUserStore } from '@/stores/users'
 // const user = useUserStore()
 // const axios = getJsonAxiosInstance(user.getLoginUserInfo)
 
+/*
+
+예시코드
+
+자유게시판 리스트를
+
+
+*/
+
+
 function loginUser (url, userData) {
   const user = useUserStore()
   const axios = getJsonAxiosInstance(user.getLoginUserInfo)

@@ -60,6 +60,11 @@ const routes = [
             path: '/boards/:boardNo',
             name: 'BoardDetailComp',
             component: () => import('@/modules/boards/components/BoardDetailComp')
+          },
+          {
+            path: '/boards/addition',
+            name: 'BoardCreateComp',
+            component: () => import('@/modules/boards/components/BoardCreateComp')
           }
         ]
       },
