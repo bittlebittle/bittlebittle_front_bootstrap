@@ -1,5 +1,4 @@
 <template>
-  <div class="container">
     <div class="bright-section detail-view">
       <table>
         <thead>
@@ -62,7 +61,6 @@
       <textarea v-model="newComment" class="comment-input" placeholder="댓글을 입력하세요..."></textarea>
       <button @click="addComment" class="comment-submit">댓글 작성</button>
     </div>
-  </div>
 </template>
 
 <script>
