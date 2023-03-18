@@ -1,81 +1,56 @@
 <template>
-<!-- <div class="container">
-    <h4>자유게시판</h4>
-    <table class="table table-striped table-hover text-white ">
+
+     <p class="title">커뮤니티</p>
+     <div class="search-container">
+       <select v-model="searchOption" style="margin-right: 10px;">
+         <option value="boardTitle">제목</option>
+         <option value="nickname">작성자</option>
+         <option value="boardContent">내용</option>
+       </select>
+       <input v-model="searchText" placeholder="검색어를 입력하세요" />
+       <button @click="filterBoardList">검색</button>
+     </div>
+     <table id="boardList">
       <thead>
-        <tr>
-          <th class="text-white" scope="col" v-for="item in theadList" :key="item">{{ item }}</th>
-        </tr>
-      </thead>
-      <tbody>
-        <tr>
-          <th class="text-white" scope="row">1</th>
-          <td class="text-white">Mark</td>
-          <td class="text-white">Otto</td>
-          <td class="text-white">@mdo</td>
-        </tr>
-        <tr>
-          <th class="text-white" scope="row">1</th>
-          <td class="text-white">Mark</td>
-          <td class="text-white">Otto</td>
-          <td>@mdo</td>
-        </tr>
-      </tbody>
-    </table>
-  </div> -->
+         <tr>
+           <th>No</th>
+           <th style="width: 380px;">제목</th>
+           <th>작성자</th>
+           <th>작성일</th>
+         </tr>
+       </thead>
+       <tbody>
+         <template v-if="state.boardList.length">
+           <tr
+             v-for="item in state.boardList"
+             :key="item"
+             @click="boardDetail(item.boardNo)"
+             id="table-hover"
+           >
+             <td class="bno">{{ item.boardNo }}</td>
+             <td>{{ item.boardTitle }}</td>
+             <td>{{ item.nickname }}</td>
+             <td>{{ item.createDate }}</td>
+           </tr>
+         </template>
+         <template v-else>
+           <tr>
+             <td colspan="4">게시글이 존재하지 않습니다.</td>
+           </tr>
+         </template>
+       </tbody>
+     </table>
+     <div class="write-button-container">
+       <button id="write-button" @click="moveCreateBoard">작성하기</button>
+     </div>
 
-  <!-- 여기부터 컨텐츠 영역 ---------------------------->
-<div class="container">
-
-  <!-- <div class="content" id="aside" style=" background: white">
-
-    <div class="side-menu" style="margin-left: 10px;">
-      <div class="side-menubar">
-        <img src="resources/images/jeju-sea.gif" style="width: 350px; border-radius: 270px; border: 15px solid rgb(235, 235, 235);">
-      </div>
-    </div>
-
-  </div> -->
-
-  <div class="content-2" id="content" style=" height:650px;">
-    <p style="margin-top: 10px; margin-bottom: 20px; font-size: 25px; display:block;">커뮤니티</p>
-    <div>
-      <button id="write-button" onclick="location.href='enrollForm.bo'" >작성하기</button>
-    </div>
-    <table id="boardList">
-      <thead>
-        <tr>
-          <th>No</th>
-          <th style="width: 380px;">제목</th>
-          <th>작성자</th>
-          <th>작성일</th>
-        </tr>
-      </thead>
-      <tbody>
-        <template v-if="state.boardList.length">
-          <tr v-for="item in state.boardList" :key="item"  @click="boardDetail(item.boardNo)"
-              id="table-hover">
-                  <td class="bno">{{ item.boardNo }}</td>
-                  <td>{{ item.boardTitle }}</td>
-                  <td>{{ item.nickname }}</td>
-                  <td>{{ item.createDate }}</td>
-          </tr>
-      </template>
-      <template v-else>
-          <tr v-slse>
-            <td colspan="4">게시글이 존재하지 않습니다.</td>
-          </tr>
-      </template>
-      </tbody>
-    </table>
-  </div>
-</div>
 </template>
 
 <script>
-import { getBoardList } from '@/api/board'
 import { ref, onMounted } from 'vue'
-import router from '@/router'
+import { getBoardList } from '@/api/board'
+import { useRouter } from 'vue-router'
+
 
 export default {
   name: 'BoardListComp',
@@ -84,10 +59,10 @@ export default {
       '글번호', '글제목', '작성일', '작성자'
     ]
 
-    const state = ref({ boardList: {} })
+    const state = ref({ boardList: [] })
 
     const setBoardList = () => {
-      getBoardList('/api/boards')
+      getBoardList()
         .then(res => {
           console.log(res.data)
           state.value.boardList = res.data
@@ -101,88 +76,145 @@ export default {
       router.push(`/boards/${boardNo}`)
     }
 
-    onMounted(() => (
+    const searchOption = ref('boardTitle')
+    const searchText = ref('')
+
+    const filterBoardList = () => {
+      if (searchText.value.trim() === '') {
+        setBoardList()
+      } else {
+        const filteredList = state.value.boardList.filter((item) =>
+          item[searchOption.value].toLowerCase().includes(searchText.value.toLowerCase())
+        )
+        state.value.boardList = filteredList
+      }
+    }
+
+    const router = useRouter()
+
+    function moveCreateBoard () {
+      router.push('/boards/addition')
+    }
+
+    onMounted(() => {
       setBoardList()
-    ))
+    })
 
     return {
-      theadList, state, boardDetail
+      theadList,
+      state,
+      boardDetail,
+      searchOption,
+      searchText,
+      filterBoardList,
+      moveCreateBoard
     }
   }
 }
 </script>
 
-<style scope>
-/*----------------------------------------------------------------------*/
-  /*리스트뷰 관련*/
+
+
+<style scoped>
   .container {
-    margin-left: 100px;
-  }
-  #aside {
-    width: 200px;
-    height: 800px;
-    float: left;
-  }
-  #content {
+    margin: 0 auto;
     width: 900px;
-    height: 800px;
+    min-height: 70vh; /* 추가 */
+    display: flex;
+    flex-direction: column; /* 추가 */
+    background-color: #FFFAF6; /* 추가 */
   }
 
-  #content {
+  .title {
+    font-size: 35px;
+    text-align: center;
+    margin-bottom: 30px;
+  }
+
+  .content {
+    flex-grow: 1; /* 추가 */
+    background-color: #FFFAF6; /* 추가 */
+    padding: 20px; /* 추가 */
+    border-radius: 5px; /* 추가 */
+  }
+
+  .search-container {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    margin-bottom: 20px;
+  }
+
+  .search-container button {
+    margin-left: 10px;
+    padding: 5px 10px;
+    background-color: #39a652;
+    border: 1px solid #39a652;
+    border-radius: 5px;
+    color: white;
+    cursor: pointer;
+  }
+
+  .search-container button:hover {
+    background-color: #2c803c;
+  }
+
+  #boardList {
     background-color: white;
+    margin-bottom: 20px;
   }
 
-  .side-menubar {
-    width: 220px;
-    margin-left: 40%;
-    border-radius: 50px;
+  table {
+    width: 98%;
+    border-collapse: collapse;
+    line-height: 15px;
+    color: solid rgb(255, 255, 255);
   }
 
-  select:focus {outline: 1px solid #39A652; box-shadow: 0 0 2px 2px rgba(166, 208, 169, 0.7);}
-        input:focus {outline: 1px solid #39A652; box-shadow: 0 0 2px 2px rgba(166, 208, 169, 0.7);}
-        textarea:focus {outline: 1px solid #39A652; box-shadow: 0 0 2px 2px rgba(166, 208, 169, 0.7);}
-
-/*------ 자유게시판 관련 --------*/
-table {
-  width: 880px;
-  border-collapse: collapse;
-  line-height: 15px;
-  color: solid rgb(255,255,255);
-}
-table td,th {
-    border-top:1px solid rgb(217, 233, 207);
-    border-bottom:1px solid rgb(217, 233, 207);
+  table td,
+  th {
+    border-top: 1px solid rgb(217, 233, 207);
+    border-bottom: 1px solid rgb(217, 233, 207);
     border-collapse: collapse;
     text-align: center;
     padding: 10px;
-}
-th {
-  background: rgb(217, 233, 207);
-}
-a{
+  }
+
+  th {
+    background: rgb(217, 233, 207);
+  }
+
+  a {
     text-decoration: none;
     color: black;
-}
-a:hover {
-  font-weight: bold;
-}
-#write-button {
-  margin-bottom: 20px;
-  margin-left: 812px;
-  padding: 10px;
-  font-size: 13px;
-  background-color: #FAAA74;
-  border: 1px solid rgb(245, 228, 224);
-  border-radius: 5px;
-}
-#write-button:hover {
-  background-color: #FD6500;
-  color: white;
-  cursor: pointer;
-}
-#table-hover:hover {
-  background-color: #FFFAF6;
-  cursor: pointer;
-}
+  }
 
+  a:hover {
+    font-weight: bold;
+  }
+
+  .write-button-container {
+    display: flex;
+    justify-content: flex-end;
+    margin-top: 20px;
+  }
+
+  #write-button {
+    padding: 10px;
+    font-size: 13px;
+    background-color: #FAAA74;
+    border: 1px solid rgb(245, 228, 224);
+    border-radius: 5px;
+  }
+
+  #write-button:hover {
+    background-color: #FD6500;
+    color: white;
+    cursor: pointer;
+  }
+
+  #table-hover:hover {
+    background-color: #FFFAF6;
+    cursor: pointer;
+  }
 </style>

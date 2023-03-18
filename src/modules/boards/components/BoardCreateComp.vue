@@ -1,69 +1,85 @@
 <template>
-<div class="content-board" id="content">
-		<div style="padding-top: 70px; padding-bottom: 200px; margin: 0 auto;">
-			<form action="insert.bo" method="post" style="margin: 0 auto; width: 730px;" enctype="multipart/form-data">
-
-            	<input type="hidden" name="boardWriter" value="${loginUser.memberNo}">
-
-            	<fieldset>
-                	<table style=" padding-left: 35px; padding-top: 20px;">
-                    	<tr>
-                        	<td><b>제목</b></td>
-                        	<td>
-                        		<input type="text" name="boardTitle" id="title" placeholder="제목을 입력하세요" required>
-                        	</td>
-                    	</tr>
-                    	<tr>
-                        	<td><b>내용</b></td>
-                        	<td>
-                        		<textarea name="boardContent" id="content-text" cols="52" rows="12" placeholder="내용을 입력하세요" required></textarea>
-                        	</td>
-                    	</tr>
-                    	<tr>
-                        	<td><b>첨부파일</b></td>
-                        	<td>
-                            	<div class="file-upload preview-image">
-                                	<input type="text" class="upload-name" value="파일선택" disabled="disabled">
-                                	<label for="input-file">업로드</label>
-                                	<input type="file" id="input-file" class="upload-hidden" name="upfile">
-                            	</div>
-                        	</td>
-                    	</tr>
-                    	<tr>
-                        	<td><input type="submit" value="작성하기" id="submit"></td>
-                    	</tr>
-                	</table>
-                	<br>
-            	</fieldset>
-        	</form>
-    	</div>
-	</div>
+<div class="content-board">
+  <div style="padding-top: 70px; padding-bottom: 200px; margin: 0 auto;">
+    <form @submit.prevent="registerBoard" style="margin: 0 auto; width: 730px;">
+          <fieldset>
+              <table style=" padding-left: 35px; padding-top: 20px;">
+                  <tr>
+                      <td><b>제목</b></td>
+                      <td>
+                        <input type="text" v-model="boardData.boardTitle" id="title" placeholder="제목을 입력하세요" required>
+                      </td>
+                  </tr>
+                  <tr>
+                      <td><b>내용</b></td>
+                      <td>
+                        <textarea v-model="boardData.boardContent" id="content-text" cols="52" rows="12" placeholder="내용을 입력하세요" required></textarea>
+                      </td>
+                  </tr>
+                  <!-- <tr>
+                      <td><b>첨부파일</b></td>
+                      <td>
+                          <div class="file-upload preview-image">
+                              <input type="text" class="upload-name" value="파일선택" disabled="disabled">
+                              <label for="input-file">업로드</label>
+                              <input type="file" id="input-file" class="upload-hidden" name="upfile">
+                          </div>
+                      </td>
+                  </tr> -->
+                  <tr>
+                      <td><input type="submit" value="작성하기" id="submit"></td>
+                  </tr>
+              </table>
+              <br>
+          </fieldset>
+      </form>
+  </div>
+</div>
 </template>
 
 <script>
+import { useUserStore } from '@/stores/users'
+import { addBoard } from '@/api/board'
+// import { getJsonAxiosInstance } from '@/api'
+
 export default {
   name: 'BoardCreateComp',
   setup () {
-    const boardDate = {
-      'boardTitle' : '',
-      'boardContent' : '',
-      'userNo' : ''
+
+    const user = useUserStore()
+
+    const boardData = {
+      boardTitle: '',
+      boardContent: '',
+      userNo: user.getLoginUserInfo.userNo
     }
 
+    function registerBoard () {
+      // 1)api 에 board 에 관련된 axios 함수를 빼놨을 경우
+      addBoard(boardData).then(
+        (res) => {
+          console.log(res.data)
+        }
+      ).catch(err => console.log(err))
 
+      // 2) 컴포넌트 내부에서 axios 를 생성할 경우
+      // import { getJsonAxiosInstance } from '@/api'
+      // const axios = getJsonAxiosInstance(user.getLoginUserInfo)
+      //   axios.post(url, boardData).
+      //   then((res) => console.log(res.data)).
+      //   catch(err => console.log(err))
+    }
 
+    return {
+      registerBoard,
+      boardData
+    }
   }
 }
 </script>
 
 <style scroped >
 /*글쓰기 관련 ----------*/
-#content {
-	padding-top: 150px;
-	margin: 0 auto;
-	width: 1100px;
-	height: 100%;
-}
 a{
     text-decoration: none;
     color: #3B3B3B;

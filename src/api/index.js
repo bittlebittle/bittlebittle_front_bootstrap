@@ -1,6 +1,5 @@
 import axios from 'axios'
 
-// 기본 axios 초기화 함수
 function createAxiosInstance () {
   return axios.create({
     withCredentials: true,
@@ -8,17 +7,23 @@ function createAxiosInstance () {
   })
 }
 
-function getJsonAxiosInstance () {
+function getJsonAxiosInstance (userInfo) {
   const instance = createAxiosInstance()
-  instance.defaults.headers.common.Authorization = 'AUTH_TOKEN'
   instance.defaults.headers.post['Content-Type'] = 'application/json; charset-8'
+  if (userInfo != null) {
+    instance.defaults.headers.common['Authorization'] = userInfo.Authorization
+    instance.defaults.headers.common['RefreshTokenIdx'] = userInfo.RefreshTokenIdx
+  }
   return instance
 }
 
-function getFormAxiosInstance () {
+function getFormAxiosInstance (userInfo) {
   const instance = createAxiosInstance()
-  instance.defaults.headers.common.Authorization = 'AUTH_TOKEN'
   instance.defaults.headers.post['Content-Type'] = 'multipart/form-data'
+  if (userInfo != null) {
+    instance.defaults.headers.common['Authorization'] = userInfo.Authorization
+    instance.defaults.headers.common['RefreshTokenIdx'] = userInfo.RefreshTokenIdx
+  }
   return instance
 }
 

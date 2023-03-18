@@ -1,7 +1,9 @@
 import { createRouter, createWebHistory } from 'vue-router'
 import DefaultLayout from '@/layouts/default/Index'
 import AdminLayout from '@/layouts/admin/Index'
+import AuthenticationLayout from '@/layouts/authentication/Index'
 import MainView from '@/modules/MainView'
+import UserView from '@/modules/users/views/UserView'
 import BoardView from '@/modules/boards/views/BoardView'
 import BottleView from '@/modules/bottles/views/BottleView'
 import BottleDetailView from '@/modules/bottles/views/BottleDetailView'
@@ -22,15 +24,27 @@ const routes = [
         component: MainView
       },
       {
+        path: '/users',
+        name: 'UserView',
+        component: UserView,
+        children: [
+          {
+            path: '/users/:userNo',
+            name: 'UserMyPageComp',
+            component: () => import('@/modules/users/components/UserMyPageComp')
+          }
+        ]
+      },
+      {
         path: '/bottles',
         name: 'BottleView',
         component: BottleView,
-        children : [
+        children: [
           {
-            path:'/bottles/:bottleNo',
+            path: '/bottles/:bottleNo',
             name: 'BottleDetailView',
             component: BottleDetailView,
-            props:true
+            props: true
           }
         ]
       },
@@ -48,6 +62,11 @@ const routes = [
             path: '/boards/:boardNo',
             name: 'BoardDetailComp',
             component: () => import('@/modules/boards/components/BoardDetailComp')
+          },
+          {
+            path: '/boards/addition',
+            name: 'BoardCreateComp',
+            component: () => import('@/modules/boards/components/BoardCreateComp')
           }
         ]
       },
@@ -82,8 +101,19 @@ const routes = [
       }
 
     ]
+  },
+  {
+    path: '/auth',
+    name: 'AuthenticationLayout',
+    component: AuthenticationLayout,
+    children: [
+      {
+        path: '/login',
+        name: 'UserLoginComp',
+        component: () => import('@/modules/users/components/UserLoginComp')
+      }
+    ]
   }
- 
 ]
 
 const router = createRouter({
