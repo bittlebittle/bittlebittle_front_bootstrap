@@ -1,11 +1,13 @@
 <template>
   <div class="login-page">
     <div class="form">
-      <div style="height: 200px;" onclick="location.href='/tamnaji';">
-        <img src="resources/images/login-logo.png" style="width: 150px;">
+      <div style="height: 200px;">
+        <router-link to="/">
+          <img src="../../../assets/images/logo/logo-1.jpeg" style="height: 200px;">
+        </router-link>
       </div>
       <input type="text" id="email" v-model="loginData.userId" placeholder="아이디"/>
-      <input type="password" id="password_" v-model="loginData.userPwd"  placeholder="비밀번호" />
+      <input type="password" id="password_" v-model="loginData.userPwd"  @keyup.enter="getLoginUser" placeholder="비밀번호" />
       <button type="button" @click="getLoginUser">로그인</button>
       <br>
       <p class="message">아직 회원이 아니신가요? <a href="#" class="back">회원가입</a></p>
@@ -15,7 +17,7 @@
 </template>
 
 <script>
-import { loginUser } from '@/api/user'
+import { $loginUser } from '@/api/user'
 import { useUserStore } from '@/stores/users'
 import { useRouter } from 'vue-router'
 
@@ -32,7 +34,7 @@ export default {
     const router = useRouter()
 
     const getLoginUser = () => {
-      loginUser('/api/users/login', loginData)
+      $loginUser(loginData)
         .then(res => {
           if (res.data.success === true) {
             const userInfo = {
@@ -125,7 +127,7 @@ export default {
 .form button {
   text-transform: uppercase;
   outline: 0;
-  background: #80ca6a;
+  background: #ffa704;
   width: 100%;
   border: 0;
   border-radius: 20px;
@@ -137,7 +139,7 @@ export default {
   cursor: pointer;
 }
 .form button:hover,.form button:active,.form button:focus {
-  background: green;
+  background: rgba(229, 112, 2, 0.967);
 }
 .form .message {
   margin: 15px 0 0;
@@ -145,7 +147,7 @@ export default {
   font-size: 13px;
 }
 .form .message a {
-  color: GREEN;
+  color: rgba(229, 112, 2, 0.967);
   font-weight: bold;
   text-decoration: none;
 }
@@ -216,6 +218,6 @@ body {
   border-bottom-left-radius:1px;
 }
 #confirm:hover {
-  background-color: green;
+  background-color: rgb(219, 113, 0);
 }
 </style>

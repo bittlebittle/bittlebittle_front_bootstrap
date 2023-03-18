@@ -40,7 +40,7 @@
         <li class="nav-item">
           <router-link class="nav-link" to="/faqs">FAQ</router-link>
         </li>
-        
+
         <li class="nav-item">
           <router-link class="nav-link" to="/all">전체 검색</router-link>
         </li>
@@ -71,7 +71,7 @@
 
 <script>
 import { useUserStore } from '@/stores/users'
-import { getUser } from '@/api/user'
+import { $getUser } from '@/api/user'
 import { ref, onMounted } from 'vue'
 
 export default {
@@ -84,7 +84,7 @@ export default {
 
     const getLoginUser = () => {
       if (userInfo != null) {
-        getUser(`/api/users/${userInfo.userNo}`
+        $getUser(userInfo.userNo
         ).then(res => {
           console.log(res.data)
           loginUser.value = res.data

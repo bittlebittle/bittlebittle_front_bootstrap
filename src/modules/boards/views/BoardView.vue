@@ -1,6 +1,8 @@
 <template>
   <div class="container">
    <div class="content"> <!-- 수정 -->
+
+    <p class="title">커뮤니티</p>
       <router-view />
     </div>
   </div>
@@ -28,4 +30,11 @@ export default {
     padding: 20px; /* 추가 */
     border-radius: 5px; /* 추가 */
   }
+
+  .title {
+    font-size: 35px;
+    text-align: center;
+    margin-bottom: 30px;
+  }
+
 </style>

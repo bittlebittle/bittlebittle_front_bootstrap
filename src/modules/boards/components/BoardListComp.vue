@@ -1,6 +1,4 @@
 <template>
-
-     <p class="title">커뮤니티</p>
      <div class="search-container">
        <select v-model="searchOption" style="margin-right: 10px;">
          <option value="boardTitle">제목</option>
@@ -49,7 +47,7 @@
 
 <script>
 import { ref, onMounted } from 'vue'
-import { getBoardList } from '@/api/board'
+import { $getBoardList } from '@/api/board'
 import { useRouter } from 'vue-router'
 import { useUserStore } from '@/stores/users'
 
@@ -64,7 +62,7 @@ export default {
     const state = ref({ boardList: [] })
 
     const setBoardList = () => {
-      getBoardList()
+      $getBoardList()
         .then(res => {
           console.log(res.data)
           state.value.boardList = res.data
@@ -129,12 +127,6 @@ export default {
     display: flex;
     flex-direction: column; /* 추가 */
     background-color: #FFFAF6; /* 추가 */
-  }
-
-  .title {
-    font-size: 35px;
-    text-align: center;
-    margin-bottom: 30px;
   }
 
   .content {

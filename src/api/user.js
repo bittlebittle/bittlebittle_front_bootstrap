@@ -13,39 +13,36 @@ import { useUserStore } from '@/stores/users'
 예시코드
 
 자유게시판 리스트를
-
-
 */
 
-
-function loginUser (url, userData) {
+function $loginUser (userData) {
   const user = useUserStore()
   const axios = getJsonAxiosInstance(user.getLoginUserInfo)
-  return axios.post(url, userData)
+  return axios.post('/api/users/login', userData)
 }
 
-function getUser (url) {
+function $getUser (userNo) {
   const user = useUserStore()
   const axios = getJsonAxiosInstance(user.getLoginUserInfo)
-  return axios.get(url)
+  return axios.get(`/api/users/${userNo}`)
 }
 
-function editUser (url, boardData) {
+function $editUser (userNo, boardData) {
   const user = useUserStore()
   const axios = getJsonAxiosInstance(user.getLoginUserInfo)
-  return axios.post(url, boardData)
+  return axios.post(`/api/users/${userNo}/set-data`, boardData)
 }
 
-function addUser (url, boardData) {
+function $addUser (url, boardData) {
   const user = useUserStore()
   const axios = getJsonAxiosInstance(user.getLoginUserInfo)
-  return axios.post(url, boardData)
+  return axios.post('api/users/addition', boardData)
 }
 
-function removeUser (url) {
+function $removeUser (userNo) {
   const user = useUserStore()
   const axios = getJsonAxiosInstance(user.getLoginUserInfo)
-  return axios.get(url)
+  return axios.get(`api/users/${userNo}/deletion`)
 }
 
-export { loginUser, getUser, editUser, addUser, removeUser }
+export { $loginUser, $getUser, $editUser, $addUser, $removeUser }

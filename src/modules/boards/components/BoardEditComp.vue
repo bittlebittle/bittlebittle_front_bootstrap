@@ -1,13 +1,163 @@
 <template>
-
+<div class="content-board">
+  <div>
+    <form @submit.prevent="editBoard" style="margin: 0 auto; width: 730px;">
+          <fieldset>
+              <table style=" padding-left: 35px; padding-top: 20px;">
+                  <tr>
+                      <td style="width: 5rem;"><b>제목</b></td>
+                      <td>
+                        <input type="text" v-model="board.boardTitle" id="title"  required>
+                      </td>
+                  </tr>
+                  <tr>
+                      <td><b>내용</b></td>
+                      <td>
+                        <textarea v-model="board.boardContent" id="content-text" cols="52" rows="12" required></textarea>
+                      </td>
+                  </tr>
+                  <tr class="buttons">
+                      <td colspan="2">
+                        <input type="submit" value="수정하기" id="submit">
+                        <input type="button" value="뒤로가기" id="cancel">
+                      </td>
+                  </tr>
+              </table>
+              <br>
+          </fieldset>
+      </form>
+  </div>
+</div>
 </template>
 
 <script>
-export default {
+// import { useBoardStore } from '@/stores/boards'
+import { useUserStore } from '@/stores/users'
+import { useBoardStore } from '@/stores/boards'
+import { $editBoard } from '@/api/board'
+import { useRouter } from 'vue-router'
+import { onMounted } from 'vue'
 
+export default {
+  name: 'BoardEditComp',
+  setup () {
+    const board = useBoardStore().getBoardInfo
+
+    const loginUser = useUserStore().getLoginUserInfo
+
+    function editBoard () {
+      $editBoard(loginUser.userNo, board)
+        .then(res => {
+          console.log(res.data)
+          useRouter().push(`/boards/${board.value.boardNo}`)
+        }).catch(err => console.log(err))
+    }
+
+    onMounted(() => {
+      console.log(board)
+    })
+
+    return {
+      board,
+      editBoard
+    }
+  }
 }
 </script>
 
-<style>
+
+<style scroped >
+/*글쓰기 관련 ----------*/
+a{
+    text-decoration: none;
+    color: #3B3B3B;
+}
+select:focus {outline: 1px solid #39A652; box-shadow: 0 0 2px 2px rgba(166, 208, 169, 0.7);}
+input:focus {outline: 1px solid #39A652; box-shadow: 0 0 2px 2px rgba(166, 208, 169, 0.7);}
+textarea:focus {outline: 1px solid #39A652; box-shadow: 0 0 2px 2px rgba(166, 208, 169, 0.7);}
+
+/*게시판 작성하기-----------------------------------------------*/
+fieldset {
+    background-color: rgb(233, 247, 223);
+    border-radius: 50px;
+    padding: 20px;
+    padding-right: 50px;
+    color:rgb(94, 87, 90);
+    border: none;
+}
+legend {
+    color: rgb(70, 70, 70);
+}
+#title {
+    background-color: rgb(253, 253, 253);
+    border-radius: 5px;
+    border: none;
+    box-shadow: #BFE9A5 0px 1px 10px;
+    padding: 10px;
+    width: 550px;
+    margin-top:10px;
+    margin-bottom: 10px;
+}
+#content-text {
+    background-color: rgb(253, 253, 253);
+    border-radius: 5px;
+    border: none;
+    box-shadow: #BFE9A5 0px 1px 10px;
+    padding: 10px;
+    resize:none;
+    width: 550px;
+    margin-bottom: 10px;
+}
+/* #submit {
+    width: 100px;
+    height: 40px;
+    background-color: white;
+    border-radius: 20px;
+    border: none;
+    box-shadow: #BFE9A5 0px 1px 10px;
+} */
+
+.buttons {
+  text-align: center;
+}
+
+.buttons input {
+  width: 100px;
+  height: 40px;
+  background-color: white;
+  border-radius: 20px;
+  border: none;
+  margin-left: 1rem;
+}
+#submit {
+
+  box-shadow: #f4b967 0px 1px 10px;
+}
+#submit:hover {
+    background-color: #ffae00;
+    color: white;
+    cursor: pointer;
+}
+#cancel {
+
+  box-shadow: #f47a67 0px 1px 10px;
+}
+
+#cancel:hover {
+  background-color: #ff1e00;
+    color: white;
+    cursor: pointer;
+}
+
+input #fileselect {
+    background-color: white;
+    border: none;
+}
+td>b {
+    font-size: 15px;
+}
+/*클릭 시 테두리*/
+input:focus {outline: 2px solid rgb(151, 197, 145);}
+textarea:focus {outline: 2px solid rgb(151, 197, 145);}
 
 </style>

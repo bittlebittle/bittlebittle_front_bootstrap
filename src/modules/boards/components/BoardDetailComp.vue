@@ -10,21 +10,28 @@
         <tbody>
           <tr>
             <td colspan="2">작성자</td>
-            <td colspan="2">작성날짜</td>
+            <td colspan="2">{{ board.nickname}}</td>
           </tr>
           <tr>
-            <td colspan="2">{{ board.nickname }}</td>
+            <td colspan="2">작성일</td>
             <td colspan="2">{{ board.createDate }}</td>
           </tr>
           <tr>
-            <td colspan="4" class="board-content">{{ board.content }}</td>
+            <td colspan="4" class="board-content" style="min-height: 300px;">{{ board.boardContent }}</td>
           </tr>
         </tbody>
       </table>
     </div>
+    <template v-if="loginUser.userNo == board.userNo">
+      <div class="button-container">
+        <button class="button-edit" @click="editBoard">수정</button>
+        <button class="button-remove">삭제</button>
+      </div>
+    </template>
+    <br><br><br><br><br>
 
+    <h6>댓글</h6>
     <div class="bright-section comments">
-      <h2>댓글</h2>
       <table>
         <thead>
           <tr>
@@ -50,14 +57,16 @@
     <!-- Add this code right after the comments table and before the closing </div> tag -->
     <div class="comment-form">
       <textarea v-model="newComment" class="comment-input" placeholder="댓글을 입력하세요..."></textarea>
-      <button @click="addComment" class="comment-submit">댓글 작성</button>
+      <button @click="addComment" class="comment-submit button-edit">댓글 작성</button>
     </div>
 </template>
 
 <script>
-import { getBoardDetail, getReplyList, addReply } from '@/api/board'
+import { $getBoardDetail, getReplyList, addReply } from '@/api/board'
 import { ref, onMounted } from 'vue'
-import { useRoute } from 'vue-router'
+import { useRoute, useRouter } from 'vue-router'
+import { useUserStore } from '@/stores/users'
+import { useBoardStore } from '@/stores/boards'
 
 export default {
   name: 'BoardDetailComp',
@@ -72,23 +81,24 @@ export default {
           comments.value = res.data
         })
         .catch((err) => {
-          console.error(err)
+          console.log(err)
         })
     }
 
+    const loginUser = useUserStore().getLoginUserInfo
+
     const board = ref({})
+
     const route = useRoute()
     const setBoardDetail = () => {
       const boardNo = route.params.boardNo
-      getBoardDetail(boardNo)
+      $getBoardDetail(boardNo)
         .then((res) => {
-          console.log(res.data)
           board.value = res.data
         })
         .catch((err) => {
           console.log(err)
         })
-
       // 임시 댓글 데이터 추가
       board.value.comments = [
         {
@@ -102,6 +112,13 @@ export default {
           content: '댓글 내용2'
         }
       ]
+    }
+
+    const router = useRouter()
+    // 수정창 이동 + 현재 데이터를 router 를 통해 전송
+    function editBoard () {
+      useBoardStore().setBoardInfo(board.value)
+      router.push({ name: 'BoardEditComp' })
     }
 
     onMounted(() => {
@@ -137,13 +154,20 @@ export default {
           }
         })
         .catch((err) => {
-          console.error(err)
+          console.log(err)
           alert('댓글 작성 중 오류가 발생했습니다.')
         })
     }
 
     // Add 'newComment' and 'addComment' to the returned object
-    return { board, comments, newComment, addComment }
+    return {
+      board,
+      comments,
+      newComment,
+      addComment,
+      loginUser,
+      editBoard
+    }
   }
 }
 
@@ -174,25 +198,22 @@ export default {
 
 .board-content {
   white-space: pre-wrap;
+  min-height: 300px;
 }
 
 .bright-section {
   background-color: #ffffff;
 }
 
-.detail-view {
+/* .detail-view {
   padding-bottom: 20px;
   border-bottom: 1px solid #cccccc;
-}
+} */
 
 .author-info {
   display: flex;
   justify-content: space-between;
   margin-bottom: 10px;
-}
-
-.board-content {
-  white-space: pre-wrap;
 }
 
 .comments {
@@ -216,6 +237,29 @@ export default {
 
 .comments h2 {
   font-size: 1.2em;
+}
+
+.button-edit {
+  background-color: orange;
+  color: white;
+  margin-top : 10px;
+  margin-left: 10px;
+  border: none;
+  border-radius: 20px;
+}
+
+.button-remove {
+  background-color: red;
+  color: white;
+  margin-top : 10px;
+  margin-left: 10px;
+  border: none;
+  border-radius: 20px;
+}
+
+
+.button-container {
+  text-align: right;
 }
 
 /* 수정된 footer 스타일 추가 */
