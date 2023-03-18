@@ -7,6 +7,7 @@ function createAxiosInstance () {
   })
 }
 
+
 function getJsonAxiosInstance (userInfo) {
   const instance = createAxiosInstance()
   instance.defaults.headers.post['Content-Type'] = 'application/json; charset-8'

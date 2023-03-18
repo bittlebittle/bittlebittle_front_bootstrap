@@ -40,16 +40,18 @@
          </template>
        </tbody>
      </table>
-     <div class="write-button-container">
-       <button id="write-button" @click="moveCreateBoard">작성하기</button>
-     </div>
-
+     <template v-if="loginUser != null">
+      <div class="write-button-container">
+        <button id="write-button" @click="moveCreateBoard">작성하기</button>
+      </div>
+    </template>
 </template>
 
 <script>
 import { ref, onMounted } from 'vue'
 import { getBoardList } from '@/api/board'
 import { useRouter } from 'vue-router'
+import { useUserStore } from '@/stores/users'
 
 
 export default {
@@ -90,11 +92,14 @@ export default {
       }
     }
 
+    // 라우터 전환
     const router = useRouter()
-
     function moveCreateBoard () {
       router.push('/boards/addition')
     }
+
+    // 로그인 유저가 존재하는지 유무 확인
+    const loginUser = useUserStore().getLoginUserInfo
 
     onMounted(() => {
       setBoardList()
@@ -107,7 +112,8 @@ export default {
       searchOption,
       searchText,
       filterBoardList,
-      moveCreateBoard
+      moveCreateBoard,
+      loginUser
     }
   }
 }
