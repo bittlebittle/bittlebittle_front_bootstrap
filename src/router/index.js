@@ -1,7 +1,7 @@
 import { createRouter, createWebHistory } from 'vue-router'
 import DefaultLayout from '@/layouts/default/Index'
 import AdminLayout from '@/layouts/admin/Index'
-import AuthenticationLayout from '@/layouts/authentication/Index'
+import AuthenticationLayout from '@/layouts/authentication/index'
 import MainView from '@/modules/MainView'
 import UserView from '@/modules/users/views/UserView'
 import BoardView from '@/modules/boards/views/BoardView'

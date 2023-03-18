@@ -37,7 +37,7 @@
     <div class="related-list">
       <div class="section-title">리뷰 리스트:</div>
       <ul>
-        <li v-for="review in reviewList" :key="review.reviewNo" @click="showModal(review)">
+        <li v-for="review in reviewList" :key="review.reviewNo" @click="showReviewModal(review)">
           {{ review.reviewTitle }}
         </li>
       </ul>
@@ -156,7 +156,7 @@
 import { getFormAxiosInstance } from '@/api/index'
 import { onMounted, ref, computed } from '@vue/runtime-core'
 import { useRouter } from 'vue-router'
-
+import { useUserStore } from '@/stores/users.js'
 
 export default {
   name: 'BottleDetailView',
@@ -170,7 +170,9 @@ export default {
   
   setup (props) {
     const axios = getFormAxiosInstance()
-   
+    const user = useUserStore()
+    
+
     const bottle = ref(null)
     const relatedBottleList = ref([])
     const foodList = ref([])
@@ -244,7 +246,7 @@ export default {
     const reviewModal = ref(false)
     const replyList = ref([])
 
-    const showModal = (review) => {
+    const showReviewModal = (review) => {
 
       axios.get(`/api/bottles/${bottle.value.bottleNo}/reviews/${review.reviewNo}`)
       .then(res => {
@@ -346,6 +348,9 @@ export default {
     }
 
 
+
+
+
   return {
     bottle,
     relatedBottleList,
@@ -360,7 +365,7 @@ export default {
     pageUpdate,
     selectedReview,
     reviewModal,
-    showModal,
+    showReviewModal,
     replyList,
     closeModal,
     editModalVisible,
@@ -374,7 +379,8 @@ export default {
     newReplyContent,
     addReply,
     deleteReview,
-    deleteReply
+    deleteReply,
+    user
   }
 
   }

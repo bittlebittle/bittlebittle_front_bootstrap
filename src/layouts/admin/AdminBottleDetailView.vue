@@ -15,10 +15,10 @@
 
 <!-- bottle 수정 modal -->
 <b-modal v-model="editBottleModal" title="보틀 정보 수정" v-if="editBottleModal">
-  <div class="modal-content">
+  <div class="modal-content" style="padding: 20px;">
     <div class="modal-header">
       <h5 class="modal-title">보틀 정보 수정</h5>
-      <button type="button" class="close" aria-label="Close" @click="closeModal()">
+      <button type="button" class="close" aria-label="Close" @click="closeEditBottleModal()">
         <span aria-hidden="true">&times;</span>
       </button>
     </div>
@@ -42,12 +42,24 @@
         </div>
       </form>
     </div>
+    <div>
+      <div v-for="tagType in tagTypeList" :key="tagType.tagTypeNo">
+        <div>{{ tagType.tagTypeName }}</div>
+        <div>
+          <label v-for="tag in tagList.filter(tag => tag.keyTypeNo === tagType.tagTypeNo)" :key="tag.tagNo" class="tag-box">
+            <input type="radio" :name="`tag-${tagType.tagTypeNo}`" :value="tag.tagNo" v-model="selectedTags[tagType.tagTypeNo-1]">
+            {{ tag.tagName }}
+          </label>
+        </div>
+      </div>
+    </div>
   </div>
   <div class="d-flex justify-content-end">
     <b-button class="btn btn-primary" @click="editBottle()">저장</b-button>
     <b-button class="btn btn-secondary" @click="closeEditBottleModal()">취소</b-button>
   </div>
 </b-modal>
+
 
 
     <!-- 리뷰 리스트 -->
@@ -155,6 +167,10 @@ export default {
   const editBottleBrand = ref('')
   const editBottleAbv = ref(0)
   const editBottleModal = ref(false)
+  const tagTypeList = ref([])
+  const tagList = ref([])
+  const selectedTags = ref([])
+
 
   const showEditBottleModal = function(){
     editBottleModal.value = true
@@ -163,10 +179,28 @@ export default {
     editBottleContent.value =bottle.value.bottleContent 
     editBottleBrand.value=bottle.value.bottleBrand 
     editBottleAbv.value=bottle.value.bottleAbv
+    selectedTags.value = tagListByBottle.value.map(tag => tag.tagNo);
 
+
+    axios.get(`/api/admin/tagtypes`)
+    .then(res => {
+      tagTypeList.value = res.data
+    })
+    .catch(err => {
+      console.log(err)
+    })
+
+    axios.get(`/api/admin/tags`)
+    .then(res => {
+      tagList.value = res.data
+    })
+    .catch(err => {
+      console.log(err)
+    })
   }
 
   const editBottle = function(){
+
     const url = `/api/admin/bottles/set-data`
     
     const data = new FormData();
@@ -175,14 +209,19 @@ export default {
         data.append('bottleContent', editBottleContent.value);
         data.append('bottleBrand', editBottleBrand.value);
         data.append('bottleAbv', editBottleAbv.value);
+        data.append('tagNoList', selectedTags.value);
 
     axios.post(url, data)
     .then(res => {
-      console.log(res.data)
+      console.log('성공')
     })
 
   }
     
+    const closeEditBottleModal = function(){
+        editBottleModal.value = false
+    }
+
 
     // Function to show the modal with review details
     const selectedReview = ref(null)
@@ -191,7 +230,7 @@ export default {
 
     const showReviewModal = (review) => {
 
-      axios.get(`/api/bottles/${bottle.value.bottleNo}/reviews/${review.reviewNo}`)
+      axios.get(`/api/admin/bottles/${bottle.value.bottleNo}/reviews/${review.reviewNo}`)
       .then(res => {
         replyList.value = res.data.replyList
       })
@@ -203,15 +242,16 @@ export default {
       reviewModal.value = true
     };
 
-    const closeModal = () => {
+    const closeReviewModal = () => {
       selectedReview.value = null
       reviewModal.value = false
     };
 
+
     // 리뷰 삭제
     const deleteReview = function(){
 
-      axios.get(`/api/bottles/${bottle.value.bottleNo}/reviews/${selectedReview.value.reviewNo}/deletion`)
+      axios.get(`/api/admin/bottles/${bottle.value.bottleNo}/reviews/${selectedReview.value.reviewNo}/deletion`)
       .then(res => {
           reviewList.value=res.data
           reviewModal.value = false
@@ -219,10 +259,9 @@ export default {
       
     }
 
-    
     // 리플 삭제
     const deleteReply = function(replyNo){
-      axios.get(`/api/bottles/${bottle.value.bottleNo}/reviews/${selectedReview.value.reviewNo}/replies/${replyNo}/deletion`)
+      axios.get(`/api/admin/bottles/${bottle.value.bottleNo}/reviews/${selectedReview.value.reviewNo}/replies/${replyNo}/deletion`)
       .then(res => {
           replyList.value=res.data
       })
@@ -241,7 +280,7 @@ export default {
     reviewModal,
     showReviewModal,
     replyList,
-    closeModal,
+    closeEditBottleModal,
     deleteReview,
     deleteReply,
     editBottleName,
@@ -250,7 +289,11 @@ export default {
     editBottleAbv,
     editBottleModal,
     showEditBottleModal,
-    editBottle
+    editBottle,
+    tagTypeList,
+    tagList,
+    selectedTags,
+    closeReviewModal
   }
 
   }
@@ -322,6 +365,7 @@ export default {
   padding: 5px;
   border-radius: 5px;
   margin-right: 10px;
+  margin-bottom: 4px;
 }
 
   .modal-dialog {
@@ -375,4 +419,7 @@ export default {
   height: 70px;
   width: 300px;
 }
+
+/* modal 테두리 여백 */
+
 </style>
