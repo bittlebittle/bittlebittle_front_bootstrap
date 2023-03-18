@@ -7,6 +7,8 @@ import BottleView from '@/modules/bottles/views/BottleView'
 import BottleDetailView from '@/modules/bottles/views/BottleDetailView'
 import NoticeView from '@/modules/notices/views/NoticeView'
 import FaqView from '@/modules/faqs/views/FaqView'
+import AdminBottleView from '@/layouts/admin/AdminBottleView'
+import AdminBottleDetailView from '@/layouts/admin/AdminBottleDetailView'
 
 const routes = [
   {
@@ -65,6 +67,19 @@ const routes = [
     name: 'AdminLayout',
     component: AdminLayout,
     children: [
+      {
+        path: '/admin/bottles',
+        name: 'AdminBottleView',
+        component: AdminBottleView,
+        children : [
+          {
+            path:'/admin/bottles/:bottleNo',
+            name: 'AdminBottleDetailView',
+            component: AdminBottleDetailView,
+            props:true
+          }
+        ]
+      }
 
     ]
   }

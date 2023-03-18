@@ -66,6 +66,7 @@
     <ul class="list-unstyled">
       <li v-for="reply in replyList">
         {{ reply.userNo }}&nbsp;&nbsp;&nbsp;&nbsp;{{ reply.createTime }}&nbsp;&nbsp;&nbsp;&nbsp;{{ reply.replyContent }}
+        <button class="btn-primary.custom-button" @click="deleteReply(reply.replyNo)">삭제</button>
       </li>
     </ul>
 
@@ -115,35 +116,37 @@
 
 
     <!-- 리뷰 작성 폼 -->
-     <div class="related-list">
-      <div class="section-title">리뷰 작성:</div>
-      <form @submit.prevent="addReview">
-        <div>
-          <label for="reviewTitle">제목:</label>
-          <input type="text" id="reviewTitle" v-model="reviewTitle" />
-        </div>
-        <div>
-          <label for="reviewContent">내용:</label>
-          <textarea id="reviewContent" v-model="reviewContent"></textarea>
-        </div>
-         <div>
-        <label for="grade">점수:</label>
-        <fieldset id="grade">
-          <input type="radio" id="score5" name="score" value="5" v-model="grade">
-          <label for="score5">5점</label>
-          <input type="radio" id="score4" name="score" value="4" v-model="grade">
-          <label for="score4">4점</label>
-          <input type="radio" id="score3" name="score" value="3" v-model="grade">
-          <label for="score3">3점</label>
-          <input type="radio" id="score2" name="score" value="2" v-model="grade">
-          <label for="score2">2점</label>
-          <input type="radio" id="score1" name="score" value="1" v-model="grade">
-          <label for="score1">1점</label>
-        </fieldset>
-      </div>
-        <button type="submit">작성 완료</button>
-      </form>
+<div class="related-list">
+  <div class="section-title">리뷰 작성:</div>
+  <form @submit.prevent="addReview">
+    <div class="form-group">
+      <label for="reviewTitle">제목:</label>
+      <input type="text" id="reviewTitle" v-model="reviewTitle" class="review-form-control" />
     </div>
+    <div class="form-group">
+      <label for="reviewContent">내용:</label>
+      <textarea id="reviewContent" v-model="reviewContent" class="review-form-control"></textarea>
+    </div>
+    <div class="form-group">
+      <label>점수:</label>
+      <div class="rating-input">
+        <input type="radio" id="score5" name="score" value="5" v-model="grade">
+        <label for="score5">5점</label>
+        <input type="radio" id="score4" name="score" value="4" v-model="grade">
+        <label for="score4">4점</label>
+        <input type="radio" id="score3" name="score" value="3" v-model="grade">
+        <label for="score3">3점</label>
+        <input type="radio" id="score2" name="score" value="2" v-model="grade">
+        <label for="score2">2점</label>
+        <input type="radio" id="score1" name="score" value="1" v-model="grade">
+        <label for="score1">1점</label>
+      </div>
+    </div>
+    <div class="form-group">
+      <button type="submit" class="btn btn-primary">작성 완료</button>
+    </div>
+  </form>
+</div>
   </div>
 
 
@@ -302,7 +305,7 @@ export default {
       })
     }
 
-    // 삭제
+    // 리뷰 삭제
     const deleteReview = function(){
 
       axios.get(`/api/bottles/${bottle.value.bottleNo}/reviews/${selectedReview.value.reviewNo}/deletion`)
@@ -334,6 +337,14 @@ export default {
       )
     }
     
+    // 리플 삭제
+    const deleteReply = function(replyNo){
+      axios.get(`/api/bottles/${bottle.value.bottleNo}/reviews/${selectedReview.value.reviewNo}/replies/${replyNo}/deletion`)
+      .then(res => {
+          replyList.value=res.data
+      })
+    }
+
 
   return {
     bottle,
@@ -362,7 +373,8 @@ export default {
     closeEditModal,
     newReplyContent,
     addReply,
-    deleteReview
+    deleteReview,
+    deleteReply
   }
 
   }
@@ -386,6 +398,9 @@ export default {
 
   /* 관련 보틀/음식/태그/리뷰 리스트 스타일 */
   .related-list {
+    border: 1px solid orange;
+    border-radius: 5px;
+    padding: 10px;
     margin-top: 10px;
     margin-bottom: 20px;
   }
@@ -395,6 +410,8 @@ export default {
     padding: 0;
   }
   .related-list li {
+    text-decoration: underline;
+    text-decoration-color: orange;
     margin-bottom: 5px;
     color: white;
   }
@@ -402,6 +419,52 @@ export default {
     text-decoration: underline;
     cursor: pointer;
   }
+
+  .form-group {
+      margin-bottom: 10px;
+    }
+
+
+  .review-form-control {
+    width: 100%;
+    padding: 10px;
+    font-size: 16px;
+    border: 2px solid black;
+    border-radius: 5px;
+  }
+
+ /* Style for rating stars */
+  .rating-input input[type='radio'] {
+    display: none;
+  }
+
+  .rating-input label {
+    display: inline-block;
+    font-size: 25px;
+    color: #ccc;
+    cursor: pointer;
+    transition: color 0.2s;
+  }
+
+  .rating-input label:before {
+    content: '★';
+    margin-right: 5px;
+    color: #ccc;
+  }
+
+  .rating-input input[type='radio']:checked + label {
+    color: #FF8000;
+  }
+
+  .rating-input input[type='radio']:checked + label:before {
+    color: #FF8000;
+  }
+
+  .btn-primary {
+  background-color: orange;
+  border-color: orange;
+  color: white;
+}
 
   .tag-box {
   display: inline-block;
@@ -457,5 +520,10 @@ export default {
   background-color: white;
   border-color: orange;
   color: orange;
+}
+
+.form-control {
+  height: 70px;
+  width: 300px;
 }
 </style>
