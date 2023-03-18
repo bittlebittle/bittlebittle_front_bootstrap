@@ -45,13 +45,10 @@ export default {
   name: 'BoardCreateComp',
   setup () {
     const boardDate = {
-      'boardTitle' : '',
-      'boardContent' : '',
-      'userNo' : ''
+      boardTitle: '',
+      boardContent: '',
+      userNo: ''
     }
-
-
-
   }
 }
 </script>

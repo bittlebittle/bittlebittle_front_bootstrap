@@ -78,13 +78,6 @@ export default {
     const user = useUserStore()
     const userInfo = user.getLoginUserInfo
 
-    // const config = {
-    //   headers: {
-    //     Authorization: userInfo.Authorization,
-    //     RefreshTokenIdx: userInfo.RefreshTokenIdx
-    //   }
-    // }
-
     const getLoginUser = () => {
       if (userInfo != null) {
         getUser(`/api/users/${userInfo.userNo}`

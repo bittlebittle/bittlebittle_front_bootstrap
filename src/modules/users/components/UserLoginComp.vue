@@ -50,7 +50,6 @@ export default {
             //  RefreshTokenIdx: '$2a$10$LIinM0T3QxBxVHXL6teSPuqgLKx.DYYtHOpciO8k113onr3JBy/uK'}
             // 이런 식으로 데이터가 조회되니
             // 이 데이터를 header 에 넣어서 axios 에 전송해주시면 됩니다.
-
             // axios.get(url, data, {header :
             //   {
             //     Authorization: user.getLoginUserHeaderInfo.Authorization,
