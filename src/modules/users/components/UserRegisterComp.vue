@@ -1,6 +1,6 @@
 <template>
   <form class="register-form" action="insert.me" method="post">
-		  <p style="margin-bottom: 10px; font-size: 15px;" >🍊 제주 공간 대여 플랫폼 🍊<br></p>
+		  <p style="margin-bottom: 10px; font-size: 15px;" ><br></p>
 	      <p style="margin-bottom: 50px;"><a href="/tamnaji" style="font-weight: bold; color: #fd6500; text-decoration: none">탐나지</a>에 오신 것을 환영합니다!</p>
 	      <div>
 	      <input type="email" id="email-2" name="memberId" placeholder="이메일" />
@@ -20,7 +20,7 @@
 	      <input type="text" id="birthday" name="birthday" placeholder="생년월일 8자리  ex)19980120" />
 
 	      <button type="submit" >회원가입</button>
-	      <p class="message">이미 탐나지 회원이신가요? <a href="#" class="back">로그인</a></p>
+	      <p class="message">이미 회원이신가요? <a href="#" class="back">로그인</a></p>
     </form>
 </template>
 
