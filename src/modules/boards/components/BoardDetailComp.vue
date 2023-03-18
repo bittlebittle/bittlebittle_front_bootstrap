@@ -24,6 +24,11 @@
       </table>
     </div>
 
+    <div class="button-container">
+  <button class="custom-button edit-button">수정</button>
+  <button class="custom-button delete-button">삭제</button>
+</div>
+
     <div class="bright-section comments">
       <h2>댓글</h2>
       <table>
@@ -47,7 +52,11 @@
         </tbody>
       </table>
     </div>
-
+<!-- Add this code right after the closing </div> tag for the comments table and before the comment-form div -->
+<div class="button-container">
+  <button class="custom-button edit-button">수정</button>
+  <button class="custom-button delete-button">삭제</button>
+</div>
     <!-- Add this code right after the comments table and before the closing </div> tag -->
     <div class="comment-form">
       <textarea v-model="newComment" class="comment-input" placeholder="댓글을 입력하세요..."></textarea>
@@ -225,5 +234,54 @@ const comments = ref([]);
 /* 수정된 footer 스타일 추가 */
 #footer {
   background-color: transparent;
+}
+
+.comment-input {
+  width: 100%;
+  min-height: 80px;
+  margin-bottom: 10px;
+  resize: none;
+  border: 1px solid #cccccc;
+  border-radius: 4px;
+  padding: 10px;
+}
+
+.comment-submit {
+  background-color: #42b983;
+  color: #ffffff;
+  border: none;
+  border-radius: 4px;
+  padding: 10px 20px;
+  cursor: pointer;
+  font-size: 1em;
+  font-weight: bold;
+  transition: background-color 0.3s;
+}
+
+.comment-submit:hover {
+  background-color: #2a8c63;
+}
+
+.button-container {
+  display: flex;
+  justify-content: flex-end;
+  margin-bottom: 20px;
+}
+
+.custom-button {
+  background-color: #42b983;
+  color: #ffffff;
+  border: none;
+  border-radius: 4px;
+  padding: 10px 20px;
+  cursor: pointer;
+  font-size: 1em;
+  font-weight: bold;
+  transition: background-color 0.3s;
+  margin-left: 10px;
+}
+
+.custom-button:hover {
+  background-color: #2a8c63;
 }
 </style>
