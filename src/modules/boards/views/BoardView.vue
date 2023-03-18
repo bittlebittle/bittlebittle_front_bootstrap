@@ -1,21 +1,31 @@
 <template>
-  <router-view />
+  <div class="container">
+   <div class="content"> <!-- 수정 -->
+      <router-view />
+    </div>
+  </div>
 </template>
 
 <script>
 export default {
-  name: 'BoardView',
-  setup () {
-    const posts = [
-      { title: '첫 번째 게시물' },
-      { title: '두 번째 게시물' },
-      { title: '세 번째 게시물' }
-    ]
-    return { posts }
-  }
+  name: 'BoardView'
 }
 </script>
 
-<style>
+<style scoped >
+  .container {
+    margin: 0 auto;
+    width: 900px;
+    min-height: 70vh; /* 추가 */
+    display: flex;
+    flex-direction: column; /* 추가 */
+    background-color: #FFFAF6; /* 추가 */
+  }
 
+  .content {
+    flex-grow: 1; /* 추가 */
+    background-color: #FFFAF6; /* 추가 */
+    padding: 20px; /* 추가 */
+    border-radius: 5px; /* 추가 */
+  }
 </style>

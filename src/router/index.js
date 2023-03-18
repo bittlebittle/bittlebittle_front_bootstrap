@@ -1,9 +1,12 @@
 import { createRouter, createWebHistory } from 'vue-router'
 import DefaultLayout from '@/layouts/default/Index'
 import AdminLayout from '@/layouts/admin/Index'
+import AuthenticationLayout from '@/layouts/authentication/Index'
 import MainView from '@/modules/MainView'
+import UserView from '@/modules/users/views/UserView'
 import BoardView from '@/modules/boards/views/BoardView'
 import BottleView from '@/modules/bottles/views/BottleView'
+import BottleDetailView from '@/modules/bottles/views/BottleDetailView'
 import NoticeView from '@/modules/notices/views/NoticeView'
 import FaqView from '@/modules/faqs/views/FaqView'
 
@@ -19,9 +22,29 @@ const routes = [
         component: MainView
       },
       {
+        path: '/users',
+        name: 'UserView',
+        component: UserView,
+        children: [
+          {
+            path: '/users/:userNo',
+            name: 'UserMyPageComp',
+            component: () => import('@/modules/users/components/UserMyPageComp')
+          }
+        ]
+      },
+      {
         path: '/bottles',
         name: 'BottleView',
-        component: BottleView
+        component: BottleView,
+        children: [
+          {
+            path: '/bottles/:bottleNo',
+            name: 'BottleDetailView',
+            component: BottleDetailView,
+            props: true
+          }
+        ]
       },
       {
         path: '/boards',
@@ -37,6 +60,11 @@ const routes = [
             path: '/boards/:boardNo',
             name: 'BoardDetailComp',
             component: () => import('@/modules/boards/components/BoardDetailComp')
+          },
+          {
+            path: '/boards/addition',
+            name: 'BoardCreateComp',
+            component: () => import('@/modules/boards/components/BoardCreateComp')
           }
         ]
       },
@@ -52,21 +80,25 @@ const routes = [
       }
     ]
   }, {
-    path: '/',
+    path: '/admin',
     name: 'AdminLayout',
     component: AdminLayout,
     children: [
 
     ]
+  },
+  {
+    path: '/auth',
+    name: 'AuthenticationLayout',
+    component: AuthenticationLayout,
+    children: [
+      {
+        path: '/login',
+        name: 'UserLoginComp',
+        component: () => import('@/modules/users/components/UserLoginComp')
+      }
+    ]
   }
-  // {
-  //   path: '/about',
-  //   name: 'about',
-  //   // route level code-splitting
-  //   // this generates a separate chunk (about.[hash].js) for this route
-  //   // which is lazy-loaded when the route is visited.
-  //   component: () => import(/* webpackChunkName: "about" */ '../views/AboutView.vue')
-  // }
 ]
 
 const router = createRouter({

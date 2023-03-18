@@ -1,15 +1,15 @@
 import { defineStore } from 'pinia'
-import { computed, reactive } from 'vue'
+import { computed, ref } from 'vue'
 
 export const useUserStore = defineStore('user', () => {
-  const state = reactive({ user: {} })
+  // 로그인 시 header 에 전달된 jwt 와 refrechindex 정보를 전역에 저장
+  const userInfo = ref(null)
 
-  const getLoginUser = computed(() => state.user)
+  const getLoginUserInfo = computed(() => userInfo.value)
 
-  function setLoginUser (userData) {
-    console.log(userData)
-    state.user = userData
+  function setLoginUserInfo (jwt) {
+    userInfo.value = jwt
   }
 
-  return { state, getLoginUser, setLoginUser }
+  return { getLoginUserInfo, setLoginUserInfo }
 })

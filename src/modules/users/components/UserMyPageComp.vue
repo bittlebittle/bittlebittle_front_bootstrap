@@ -1,12 +1,12 @@
 <template>
-<router-view></router-view>
+  <div class="text-white">
+    마이페이지
+  </div>
 </template>
 
 <script>
 export default {
-  name: 'UserView',
-  setup () {
-  }
+  name: 'UserMyPageComp'
 }
 </script>
 
