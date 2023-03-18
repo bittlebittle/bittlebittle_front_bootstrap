@@ -1,15 +1,18 @@
-import { createAxiosInstance } from './index'
+import { getFormAxiosInstance } from './index'
+
+
+import { useUserStore } from '@/stores/users'
+
+const user = useUserStore()
+
+const axios = getFormAxiosInstance(user.getLoginUserInfo)
 
 function addFood (url, FoodData) {
-  return createAxiosInstance().post(url, FoodData, {
-    headers: {
-      'Content-Type': 'multipart/form-data'
-    }
-  })
+  return axios.post(url, FormData)
 }
 
 function getFood (url) {
-  return createAxiosInstance.get(url)
+  return axios.get(url)
 }
 
 export { addFood, getFood }

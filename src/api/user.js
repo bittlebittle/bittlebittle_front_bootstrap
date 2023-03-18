@@ -1,29 +1,28 @@
-import { createAxiosInstance } from './index'
+import { getJsonAxiosInstance } from './index'
+import { useUserStore } from '@/stores/users'
 
-const axios = createAxiosInstance()
+// 회원 관련 기능에서는 이미지가 필요없기 때문에 json 으로 axios 생성
+const user = useUserStore()
+const axios = getJsonAxiosInstance(user.getLoginUserInfo)
 
-function getLoginUser (url, userData) {
-  return axios.post(url, userData,  {
-    headers: {
-      'Content-Type': 'application/json;'
-    }
-  })
+function loginUser (url, userData) {
+  return axios.post(url, userData)
 }
 
-function getBoardDetail (url) {
+function getUser (url) {
   return axios.get(url)
 }
 
-function editBoard (url, boardData) {
+function editUser (url, boardData) {
   return axios.post(url, boardData)
 }
 
-function addBoard (url, boardData) {
+function addUser (url, boardData) {
   return axios.post(url, boardData)
 }
 
-function deleteBoard (url) {
+function removeUser (url) {
   return axios.get(url)
 }
 
-export { getBoardList, getBoardDetail, editBoard, addBoard, deleteBoard }
+export { loginUser, getUser, editUser, addUser, removeUser }

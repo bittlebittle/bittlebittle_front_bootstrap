@@ -1,7 +1,9 @@
 import { createRouter, createWebHistory } from 'vue-router'
 import DefaultLayout from '@/layouts/default/Index'
 import AdminLayout from '@/layouts/admin/Index'
+import AuthenticationLayout from '@/layouts/authentication/Index'
 import MainView from '@/modules/MainView'
+import UserView from '@/modules/users/views/UserView'
 import BoardView from '@/modules/boards/views/BoardView'
 import BottleView from '@/modules/bottles/views/BottleView'
 import NoticeView from '@/modules/notices/views/NoticeView'
@@ -17,6 +19,18 @@ const routes = [
         path: '/',
         name: 'MainView',
         component: MainView
+      },
+      {
+        path: '/users',
+        name: 'UserView',
+        component: UserView,
+        children: [
+          {
+            path: '/users/:userNo',
+            name: 'UserMyPageComp',
+            component: () => import('@/modules/users/components/UserMyPageComp')
+          }
+        ]
       },
       {
         path: '/bottles',
@@ -52,21 +66,25 @@ const routes = [
       }
     ]
   }, {
-    path: '/',
+    path: '/admin',
     name: 'AdminLayout',
     component: AdminLayout,
     children: [
 
     ]
+  },
+  {
+    path: '/auth',
+    name: 'AuthenticationLayout',
+    component: AuthenticationLayout,
+    children: [
+      {
+        path: '/login',
+        name: 'UserLoginComp',
+        component: () => import('@/modules/users/components/UserLoginComp')
+      }
+    ]
   }
-  // {
-  //   path: '/about',
-  //   name: 'about',
-  //   // route level code-splitting
-  //   // this generates a separate chunk (about.[hash].js) for this route
-  //   // which is lazy-loaded when the route is visited.
-  //   component: () => import(/* webpackChunkName: "about" */ '../views/AboutView.vue')
-  // }
 ]
 
 const router = createRouter({

@@ -1,41 +1,5 @@
 <template>
-<!-- <div class="container">
-    <h4>자유게시판</h4>
-    <table class="table table-striped table-hover text-white ">
-      <thead>
-        <tr>
-          <th class="text-white" scope="col" v-for="item in theadList" :key="item">{{ item }}</th>
-        </tr>
-      </thead>
-      <tbody>
-        <tr>
-          <th class="text-white" scope="row">1</th>
-          <td class="text-white">Mark</td>
-          <td class="text-white">Otto</td>
-          <td class="text-white">@mdo</td>
-        </tr>
-        <tr>
-          <th class="text-white" scope="row">1</th>
-          <td class="text-white">Mark</td>
-          <td class="text-white">Otto</td>
-          <td>@mdo</td>
-        </tr>
-      </tbody>
-    </table>
-  </div> -->
-
-  <!-- 여기부터 컨텐츠 영역 ---------------------------->
 <div class="container">
-
-  <!-- <div class="content" id="aside" style=" background: white">
-
-    <div class="side-menu" style="margin-left: 10px;">
-      <div class="side-menubar">
-        <img src="resources/images/jeju-sea.gif" style="width: 350px; border-radius: 270px; border: 15px solid rgb(235, 235, 235);">
-      </div>
-    </div>
-
-  </div> -->
 
   <div class="content-2" id="content" style=" height:650px;">
     <p style="margin-top: 10px; margin-bottom: 20px; font-size: 25px; display:block;">커뮤니티</p>

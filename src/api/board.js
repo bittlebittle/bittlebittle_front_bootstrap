@@ -1,6 +1,9 @@
 import { getJsonAxiosInstance } from './index'
+import { useUserStore } from '@/stores/users'
 
-const axios = getJsonAxiosInstance()
+const user = useUserStore()
+
+const axios = getJsonAxiosInstance(user.getLoginUserInfo)
 
 function getBoardList (url) {
   return axios.get(url)
