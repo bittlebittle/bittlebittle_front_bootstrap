@@ -32,8 +32,6 @@
 
     <h6>댓글</h6>
     <div class="button-container">
-  <button class="custom-button edit-button">수정</button>
-  <button class="custom-button delete-button">삭제</button>
 </div>
     <div class="bright-section comments">
       <table>

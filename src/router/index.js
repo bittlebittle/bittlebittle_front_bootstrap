@@ -1,7 +1,7 @@
 import { createRouter, createWebHistory } from 'vue-router'
 import DefaultLayout from '@/layouts/default/Index'
 import AdminLayout from '@/layouts/admin/Index'
-import AuthenticationLayout from '@/layouts/authentication/index'
+import AuthenticationLayout from '@/layouts/authentication/Index'
 import MainView from '@/modules/MainView'
 import UserView from '@/modules/users/views/UserView'
 import BoardView from '@/modules/boards/views/BoardView'
@@ -95,12 +95,12 @@ const routes = [
         path: '/admin/bottles',
         name: 'AdminBottleView',
         component: AdminBottleView,
-        children : [
+        children: [
           {
-            path:'/admin/bottles/:bottleNo',
+            path: '/admin/bottles/:bottleNo',
             name: 'AdminBottleDetailView',
             component: AdminBottleDetailView,
-            props:true
+            props: true
           }
         ]
       }
