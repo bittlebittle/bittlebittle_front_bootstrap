@@ -3,6 +3,27 @@
   <div>
     <input type="text" v-model="keyword" placeholder="검색어를 입력하세요">
     <button @click="search">검색</button>
+    <br>
+    <!-- 태그 목록 -->
+    <table class="table table-striped">
+      <tbody>
+        <tr v-for="tag in tags" :key="tag.tagNo">
+          <th scope="row">
+            <div class="form-check">
+              <label :for="`tag-${tag.tagNo}`">{{ tag.tagName }}</label>
+            </div>
+          </th>
+          <td>
+            <div class="form-check" v-for="value in tag.values" :key="value">
+              <input class="form-check-input" type="checkbox" :value="value" :id="`tag-${tag.tagNo}-${value}`" v-model="selectedTags[tag.tagNo]">
+              <label class="form-check-label" :for="`tag-${tag.tagNo}-${value}`">{{ value }}</label>
+            </div>
+          </td>
+        </tr>
+      </tbody>
+    </table>
+
+    <!-- <router-view :bottles="filteredBottles" :favorites="favorites" /> -->
 
 <!-- 보틀목록 -->
     <table>
@@ -91,11 +112,10 @@ export default {
       }
       )
     }
-
+  
   }
 }
 </script>
 
 <style>
 </style>
-

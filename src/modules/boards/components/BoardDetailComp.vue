@@ -151,6 +151,7 @@ export default {
 
 </script>
 
+
 <style scope>
 /*디테일뷰 관련*/
 .container {
