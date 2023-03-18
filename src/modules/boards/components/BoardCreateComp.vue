@@ -45,7 +45,6 @@ import { addBoard } from '@/api/board'
 export default {
   name: 'BoardCreateComp',
   setup () {
-
     const user = useUserStore()
 
     const boardData = {
