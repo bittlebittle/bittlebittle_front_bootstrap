@@ -43,11 +43,11 @@
       </ul>
     </div>
     <!-- modal -->
-    <b-modal v-model="reviewModal" title="리뷰 상세 내용" v-if="reviewModal">
+    <b-modal v-model="reviewModal" title="리뷰 상세 내용" v-if="reviewModal">  
       <div class="modal-content">
         <div class="modal-header">
           <h5 class="modal-title">{{ selectedReview.reviewTitle }}</h5>
-          <button type="button" class="close" aria-label="Close" @click="closeModal()">
+          <button type="button" class="close" aria-label="Close" @click="closeReviewModal()">
             <span aria-hidden="true">&times;</span>
           </button>
         </div>
@@ -62,27 +62,8 @@
         <b-button v-if="selectedReview.userNo === currentUserNo" class="btn btn-delete" @click="deleteReview()">삭제</b-button>
       </div>
 
-    <!-- replyList 출력 -->
-    <ul class="list-unstyled">
-      <li v-for="reply in replyList">
-        {{ reply.userNo }}&nbsp;&nbsp;&nbsp;&nbsp;{{ reply.createTime }}&nbsp;&nbsp;&nbsp;&nbsp;{{ reply.replyContent }}
-        <button v-if="selectedReview.userNo === currentUserNo" class="btn-primary.custom-button" @click="deleteReply(reply.replyNo)">삭제</button>
-      </li>
-    </ul>
-
-    <!-- reply 작성 폼 -->
-  <form @submit.prevent="addReply">
-    <div class="form-group">
-      <label for="replyContent">댓글 작성</label>
-      <textarea class="form-control" id="replyContent" v-model="newReplyContent"></textarea>
-    </div>
-    <button type="submit" class="btn btn-primary custom-button">작성</button>
-  </form>
-
-    </b-modal>
-
-  <!-- 리뷰 수정 모달 -->
-  <b-modal v-model="editModalVisible" title="리뷰 수정" v-if="editModalVisible">
+      <!-- 리뷰 수정 모달 -->
+  <b-modal v-model="editReviewModalVisible" title="리뷰 수정" v-if="editReviewModalVisible">
       <div class="modal-content">
         <form @submit.prevent="saveReview">
         <div>
@@ -112,6 +93,39 @@
         <button @click="closeEditModal()">취소</button>
       </form>
       </div>
+    </b-modal>
+    <br>
+    
+    <!-- replyList 출력 -->
+    <ul class="list-unstyled">
+      <li v-for="reply in replyList" :key="reply.replyNo">
+        {{ reply.userNo }}&nbsp;&nbsp;&nbsp;&nbsp;{{ reply.createTime }}&nbsp;&nbsp;&nbsp;&nbsp;{{ reply.replyContent }}
+        <button v-if="selectedReview.userNo === currentUserNo" class="btn btn-edit" @click="showEditReplyModal(reply)">수정</button>
+        <button v-if="selectedReview.userNo === currentUserNo" class="btn btn-delete" @click="deleteReply(reply.replyNo)">삭제</button>
+      </li>
+    </ul>
+
+    <b-modal v-model="editReplyModalVisible" title="댓글 수정" v-if="editReplyModalVisible">
+      <div class="modal-content">
+        <form @submit.prevent="saveReply">
+          <div>
+            <label for="replyContent">내용:</label>
+            <textarea id="replyContent" v-model="editReplyContent"></textarea>
+          </div>
+          <button class="btn btn-edit" type="submit">수정 완료</button>
+          <button class="btn btn-edit" @click="closeEditReplyModal()">취소</button>
+        </form>
+      </div>
+    </b-modal>
+
+    <!-- reply 작성 폼 -->
+  <form @submit.prevent="addReply">
+    <div class="form-group">
+      <label for="replyContent">댓글 작성</label>
+      <textarea class="form-control" id="replyContent" v-model="newReplyContent"></textarea>
+    </div>
+    <button type="submit" class="btn btn-primary custom-button">작성</button>
+  </form>
     </b-modal>
 
     <!-- 리뷰 작성 폼 -->
@@ -230,7 +244,7 @@ export default {
 
     const pageUpdate = (bottleNo) => {
       reviewModal.value = false
-      editModalVisible.value = false
+      editReviewModalVisible.value = false
       router.push('/bottles/' + bottleNo)
       getBottle(bottleNo)
     }
@@ -248,7 +262,6 @@ export default {
       axios.get(`/api/bottles/${bottle.value.bottleNo}/reviews/${review.reviewNo}`)
         .then(res => {
           replyList.value = res.data.replyList
-          console.log(replyList.value)
         })
         .catch(err => {
           console.log(err)
@@ -256,20 +269,22 @@ export default {
 
       selectedReview.value = review
       reviewModal.value = true
-      editModalVisible.value = false
+      editReviewModalVisible.value = false
+      editReplyModalVisible.value=false
     }
 
-    const closeModal = () => {
+    const closeReviewModal = () => {
       selectedReview.value = null
       reviewModal.value = false
-      editModalVisible.value = false
+      editReviewModalVisible.value = false
+      editReplyModalVisible.value = false
     }
 
-    const editModalVisible = ref(false)
+    const editReviewModalVisible = ref(false)
 
     const showEditModal = (selectedReview) => {
       editReviewNo.value = selectedReview.reviewNo
-      editModalVisible.value = true
+      editReviewModalVisible.value = true
       editReviewTitle.value = selectedReview.reviewTitle
       editReviewContent.value = selectedReview.reviewContent
       editGrade.value = selectedReview.grade
@@ -296,7 +311,7 @@ export default {
           reviewList.value = res.data
 
           reviewModal.value = false
-          editModalVisible.value = false
+          editReviewModalVisible.value = false
         })
         .catch(err => {
           console.log(err)
@@ -309,18 +324,19 @@ export default {
         .then(res => {
           reviewList.value = res.data
           reviewModal.value = false
-          editModalVisible.value = false
+          editReviewModalVisible.value = false
         })
     }
 
     const closeEditModal = () => {
-      editModalVisible.value = false
+      editReviewModalVisible.value = false
     }
 
     const newReplyContent = ref('')
 
     const addReply = function () {
       const data = new FormData()
+      data.append('userNo', user.getLoginUserInfo.userNo)
       data.append('replyContent', newReplyContent.value)
 
       axios.post(`/api/bottles/${bottle.value.bottleNo}/reviews/${selectedReview.value.reviewNo}/replies`, data)
@@ -329,6 +345,36 @@ export default {
           newReplyContent.value = ''
         }
         )
+    }
+
+    // 리플 수정
+    const editReplyModalVisible = ref(false)
+    const editReplyContent = ref('')
+    const selectedReplyNo = ref(0)
+
+    const showEditReplyModal = function(selectedReply){
+      editReplyModalVisible.value = true
+      editReplyContent.value = selectedReply.replyContent
+      selectedReplyNo.value = selectedReply.replyNo
+    }
+
+    const saveReply = function(){
+      const data = new FormData()
+      data.append('replyNo', selectedReplyNo.value)
+      data.append('replyContent', editReplyContent.value)
+
+      axios.post(`/api/bottles/${bottle.value.bottleNo}/reviews/${selectedReview.value.reviewNo}/replies/set-data`, data)
+      .then(res=> {
+        replyList.value=res.data
+        editReplyModalVisible.value=false
+      })
+      .catch(err => {
+        console.log(err)
+      })
+    }
+
+    const closeEditReplyModal = function(){
+      editReplyModalVisible.value=false
     }
 
     // 리플 삭제
@@ -355,8 +401,8 @@ export default {
       reviewModal,
       showReviewModal,
       replyList,
-      closeModal,
-      editModalVisible,
+      closeReviewModal,
+      editReviewModalVisible,
       showEditModal,
       editReviewNo,
       editReviewTitle,
@@ -369,7 +415,13 @@ export default {
       deleteReview,
       deleteReply,
       user,
-      currentUserNo
+      currentUserNo,
+      editReplyModalVisible,
+      closeEditReplyModal,
+      editReplyContent,
+      showEditReplyModal,
+      selectedReplyNo,
+      saveReply
     }
   }
 }
@@ -477,6 +529,7 @@ export default {
     background-color: #000;
     color: #ff9933;
     border: 3px solid #ff9933;
+    padding: 10px;
   }
 
   .modal-header {

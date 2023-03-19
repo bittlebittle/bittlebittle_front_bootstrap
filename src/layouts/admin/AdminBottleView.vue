@@ -54,6 +54,7 @@
   <div>
     <input type="text" v-model="keyword" placeholder="검색어를 입력하세요">
     <button @click="search">검색</button>
+    
     <table>
       <thead>
         <tr>
@@ -71,7 +72,7 @@
             </router-link>
           </td>
           <td>
-            <button @click="deleteBottle(bottle.bottleNo)">삭제</button>
+            <button class="delete-button" @click="deleteBottle(bottle.bottleNo)">삭제</button>
           </td>
         </tr>
       </tbody>
@@ -84,13 +85,14 @@
 import { getFormAxiosInstance } from '@/api/index'
 import { onMounted } from '@vue/runtime-core'
 import { ref } from '@vue/reactivity'
+import { useUserStore } from '@/stores/users'
 
 export default {
   name: 'AdminBottleView',
   
   setup () {
-
-    const axios = getFormAxiosInstance();
+    const user = useUserStore();
+    const axios = getFormAxiosInstance(user.getLoginUserInfo);
 
     const bottles = ref([]);
     const favorites = ref([]);
@@ -310,11 +312,6 @@ export default {
     color: #ff9933;
   }
 
-  .btn-edit, .btn-delete {
-    color: #fff;
-    border: 1px solid #ff9933;
-  }
-
   .btn-primary.custom-button {
   background-color: orange;
   border-color: orange;
@@ -330,4 +327,12 @@ export default {
   height: 70px;
   width: 300px;
 }
+
+.delete-button {
+  background-color: black; /* 검정 바탕 */
+  color: white; /* 하얀색 글씨 */
+  border: 2px solid orange; /* 주황색 테두리 */
+  border-radius: 4px; /* 모서리를 둥글게 */
+  font-size: 16px; /* 글자 크기 */
+  }
 </style>
