@@ -96,12 +96,12 @@ const routes = [
         path: '/admin/bottles',
         name: 'AdminBottleView',
         component: AdminBottleView,
-        children : [
+        children: [
           {
-            path:'/admin/bottles/:bottleNo',
+            path: '/admin/bottles/:bottleNo',
             name: 'AdminBottleDetailView',
             component: AdminBottleDetailView,
-            props:true
+            props: true
           }
         ]
       },

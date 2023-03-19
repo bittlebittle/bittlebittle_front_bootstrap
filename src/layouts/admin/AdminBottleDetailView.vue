@@ -93,7 +93,7 @@
 
     <!-- replyList 출력 -->
     <ul class="list-unstyled">
-      <li v-for="reply in replyList">
+      <li v-for="reply in replyList" :key="reply.replyNo">
         {{ reply.userNo }}&nbsp;&nbsp;&nbsp;&nbsp;{{ reply.createTime }}&nbsp;&nbsp;&nbsp;&nbsp;{{ reply.replyContent }}
         <button class="btn-primary.custom-button" @click="deleteReply(reply.replyNo)">삭제</button>
       </li>

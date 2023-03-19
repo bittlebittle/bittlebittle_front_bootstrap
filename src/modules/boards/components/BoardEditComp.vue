@@ -65,7 +65,6 @@ export default {
 }
 </script>
 
-
 <style scroped >
 /*글쓰기 관련 ----------*/
 a{
@@ -108,15 +107,6 @@ legend {
     width: 550px;
     margin-bottom: 10px;
 }
-/* #submit {
-    width: 100px;
-    height: 40px;
-    background-color: white;
-    border-radius: 20px;
-    border: none;
-    box-shadow: #BFE9A5 0px 1px 10px;
-} */
-
 .buttons {
   text-align: center;
 }
@@ -130,7 +120,6 @@ legend {
   margin-left: 1rem;
 }
 #submit {
-
   box-shadow: #f4b967 0px 1px 10px;
 }
 #submit:hover {
@@ -139,7 +128,6 @@ legend {
     cursor: pointer;
 }
 #cancel {
-
   box-shadow: #f47a67 0px 1px 10px;
 }
 
