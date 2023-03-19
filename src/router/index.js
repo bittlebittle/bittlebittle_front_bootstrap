@@ -33,6 +33,11 @@ const routes = [
             path: '/users/:userNo',
             name: 'UserMyPageComp',
             component: () => import('@/modules/users/components/UserMyPageComp')
+          },
+          {
+            path: '/users/addition',
+            name: 'UserRegisterComp',
+            component: () => import('@/modules/users/components/UserRegisterComp')
           }
         ]
       },

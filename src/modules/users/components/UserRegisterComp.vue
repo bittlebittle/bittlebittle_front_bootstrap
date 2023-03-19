@@ -1,10 +1,12 @@
 <template>
-  <form class="register-form" action="insert.me" method="post">
+  <form class="register-form" @submit.prevent="registerUser">
 		  <p style="margin-bottom: 10px; font-size: 15px;" ><br></p>
-	      <p style="margin-bottom: 50px;"><a href="/tamnaji" style="font-weight: bold; color: #fd6500; text-decoration: none">탐나지</a>에 오신 것을 환영합니다!</p>
+	      <p style="margin-bottom: 50px;">
+          <router-link to='/' style="font-weight: bold; color: #fd6500; text-decoration: none">BITTLE-BITTLE</router-link>
+          에 오신 것을 환영합니다!</p>
 	      <div>
 	      <input type="email" id="email-2" name="memberId" placeholder="이메일" />
-          <button type="button" class="mail-Check-Btn" id="confirm" style="margin-bottom: 10px">인증</button>
+          <button type="button" class="mail-Check-Btn" id="confirm" style="margin-bottom: 10px">아이디 중복 확인</button>
           </div><br>
 	      <div id="mail-check-warn1"></div>
           <input type="text" id="emailcheck" name="emailcheck" placeholder="인증번호 6자리" disabled="disabled" maxlength="6" />
@@ -26,7 +28,7 @@
 
 <script>
 export default {
-
+  name: 'UserRegisterComp'
 }
 </script>
 
@@ -103,9 +105,17 @@ export default {
 .form .message a:hover {
   cursor: pointer;
 }
-.form .register-form,
+.form {}
+
+.register-form {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+}
+
 .form .find-form {
   display: none;
+  text-align: center;
 }
 .container {
   position: relative;
