@@ -11,7 +11,7 @@
       <div class="section-title">관련 보틀 리스트:</div>
       <ul>
         <li v-for="relatedBottle in relatedBottleList" :key="relatedBottle.bottleNo" @click=pageUpdate(relatedBottle.bottleNo)>
-    
+
               {{ relatedBottle.bottleName }}
         </li>
       </ul>
@@ -114,7 +114,6 @@
       </div>
     </b-modal>
 
-
     <!-- 리뷰 작성 폼 -->
 <div class="related-list">
   <div class="section-title">리뷰 작성:</div>
@@ -149,30 +148,29 @@
 </div>
   </div>
 
-
 </template>
 
 <script>
 import { getFormAxiosInstance } from '@/api/index'
-import { onMounted, ref, computed } from '@vue/runtime-core'
+import { onMounted, ref, computed } from 'vue'
 import { useRouter } from 'vue-router'
 import { useUserStore } from '@/stores/users.js'
 
 export default {
   name: 'BottleDetailView',
- 
+
   props: {
     bottleNo: {
       type: String,
       required: true
     }
   },
-  
+
   setup (props) {
-    const axios = getFormAxiosInstance()
+
     const user = useUserStore()
+    const axios = getFormAxiosInstance(user.getLoginUserInfo)
     const currentUserNo = user.getLoginUserInfo.userNo
-    
 
     const bottle = ref(null)
     const relatedBottleList = ref([])
@@ -183,65 +181,63 @@ export default {
     const reviewContent = ref('')
     const grade = ref(0)
 
- 
-    const getBottle = function(hhh){
-      let url = '';
-      if(!hhh) {
+    const getBottle = function (hhh) {
+      let url = ''
+      if (!hhh) {
         url = `/api/bottles/${props.bottleNo}`
       } else {
         url = '/api/bottles/' + hhh
       }
       axios.get(url)
-      .then(res => {
-        bottle.value = res.data.bottle
-        relatedBottleList.value = res.data.relatedBottleList
-        foodList.value = res.data.foodList
-        tagListByBottle.value = res.data.tagListByBottle
-        reviewList.value = res.data.reviewList
+        .then(res => {
+          bottle.value = res.data.bottle
+          relatedBottleList.value = res.data.relatedBottleList
+          foodList.value = res.data.foodList
+          tagListByBottle.value = res.data.tagListByBottle
+          reviewList.value = res.data.reviewList
 
-        console.log(res.data)
-      })
-      .catch(err => {
-        console.log(err)
-      })
+          console.log(res.data)
+        })
+        .catch(err => {
+          console.log(err)
+        })
     }
 
-    const addReview = function() {
+    // 리뷰 작성
+    const addReview = function () {
       const url = `/api/bottles/${bottle.value.bottleNo}/reviews`
 
-    const data = new FormData();
-        data.append('userNo', user.getLoginUserInfo.userNo);
-        data.append('reviewTitle', reviewTitle.value);
-        data.append('reviewContent', reviewContent.value);
-        data.append('grade', grade.value);
+      const data = new FormData()
+      data.append('userNo', user.getLoginUserInfo.userNo)
+      data.append('reviewTitle', reviewTitle.value)
+      data.append('reviewContent', reviewContent.value)
+      data.append('grade', grade.value)
 
       axios.post(url, data)
-      .then(res => {
+        .then(res => {
         // 리뷰 등록 후 새로고침 없이 해당 보틀의 리뷰 리스트 갱신
-        reviewList.value= res.data
-        reviewTitle.value = ''
-        reviewContent.value = ''
-        grade.value=''
-      })
-      .catch(err => {
-        console.log(err)
-      })
+          reviewList.value = res.data
+          reviewTitle.value = ''
+          reviewContent.value = ''
+          grade.value = ''
+        })
+        .catch(err => {
+          console.log(err)
+        })
     }
 
-  const router = useRouter()
+    const router = useRouter()
 
-  const pageUpdate = (bottleNo) => {
-      reviewModal.value = false    
+    const pageUpdate = (bottleNo) => {
+      reviewModal.value = false
       editModalVisible.value = false
-      router.push('/bottles/'+bottleNo)
+      router.push('/bottles/' + bottleNo)
       getBottle(bottleNo)
     }
-
 
     onMounted(() => {
       getBottle()
     })
-
 
     // Function to show the modal with review details
     const selectedReview = ref(null)
@@ -249,35 +245,34 @@ export default {
     const replyList = ref([])
 
     const showReviewModal = (review) => {
-
       axios.get(`/api/bottles/${bottle.value.bottleNo}/reviews/${review.reviewNo}`)
-      .then(res => {
-        replyList.value = res.data.replyList
-        console.log(replyList.value)
-      })
-      .catch(err => {
-        console.log(err)
-      })
+        .then(res => {
+          replyList.value = res.data.replyList
+          console.log(replyList.value)
+        })
+        .catch(err => {
+          console.log(err)
+        })
 
       selectedReview.value = review
       reviewModal.value = true
       editModalVisible.value = false
-    };
+    }
 
     const closeModal = () => {
       selectedReview.value = null
       reviewModal.value = false
       editModalVisible.value = false
-    };
+    }
 
     const editModalVisible = ref(false)
 
     const showEditModal = (selectedReview) => {
-      editReviewNo.value=selectedReview.reviewNo
-      editModalVisible.value=true
-      editReviewTitle.value=selectedReview.reviewTitle
-      editReviewContent.value=selectedReview.reviewContent
-      editGrade.value=selectedReview.grade
+      editReviewNo.value = selectedReview.reviewNo
+      editModalVisible.value = true
+      editReviewTitle.value = selectedReview.reviewTitle
+      editReviewContent.value = selectedReview.reviewContent
+      editGrade.value = selectedReview.grade
     }
 
     const editReviewNo = ref(0)
@@ -285,107 +280,97 @@ export default {
     const editReviewContent = ref('')
     const editGrade = ref(0)
 
-    const saveReview = function() {
+    const saveReview = function () {
       const url = `/api/bottles/${bottle.value.bottleNo}/reviews/set-data`
-      
-    const data = new FormData();
-        data.append('reviewNo', editReviewNo.value);
-        data.append('reviewTitle', editReviewTitle.value);
-        data.append('reviewContent', editReviewContent.value);
-        data.append('grade', editGrade.value);
-        
+
+      const data = new FormData()
+      data.append('reviewNo', editReviewNo.value)
+      data.append('reviewTitle', editReviewTitle.value)
+      data.append('reviewContent', editReviewContent.value)
+      data.append('grade', editGrade.value)
+
       axios.post(url, data)
-      .then(res => {
+        .then(res => {
         // 리뷰 등록 후 새로고침 없이 해당 보틀의 리뷰 리스트 갱신
 
-        reviewList.value= res.data
+          reviewList.value = res.data
 
-        reviewModal.value=false
-        editModalVisible.value=false
-
-      })
-      .catch(err => {
-        console.log(err)
-      })
+          reviewModal.value = false
+          editModalVisible.value = false
+        })
+        .catch(err => {
+          console.log(err)
+        })
     }
 
     // 리뷰 삭제
-    const deleteReview = function(){
-
+    const deleteReview = function () {
       axios.get(`/api/bottles/${bottle.value.bottleNo}/reviews/${selectedReview.value.reviewNo}/deletion`)
-      .then(res => {
-          reviewList.value=res.data
+        .then(res => {
+          reviewList.value = res.data
           reviewModal.value = false
           editModalVisible.value = false
-      })
-      
+        })
     }
 
-
     const closeEditModal = () => {
-      editModalVisible.value=false
+      editModalVisible.value = false
     }
 
     const newReplyContent = ref('')
 
-    const addReply = function(){
-
-      const data = new FormData();
-        data.append('replyContent', newReplyContent.value);
+    const addReply = function () {
+      const data = new FormData()
+      data.append('replyContent', newReplyContent.value)
 
       axios.post(`/api/bottles/${bottle.value.bottleNo}/reviews/${selectedReview.value.reviewNo}/replies`, data)
-      .then(res=>{
-        replyList.value=res.data
-        newReplyContent.value=''
-      }
-      )
+        .then(res => {
+          replyList.value = res.data
+          newReplyContent.value = ''
+        }
+        )
     }
-    
+
     // 리플 삭제
-    const deleteReply = function(replyNo){
+    const deleteReply = function (replyNo) {
       axios.get(`/api/bottles/${bottle.value.bottleNo}/reviews/${selectedReview.value.reviewNo}/replies/${replyNo}/deletion`)
-      .then(res => {
-          replyList.value=res.data
-      })
+        .then(res => {
+          replyList.value = res.data
+        })
     }
 
-
-
-
-
-  return {
-    bottle,
-    relatedBottleList,
-    foodList,
-    tagListByBottle,
-    reviewList,
-    reviewTitle,
-    reviewContent,
-    grade,
-    getBottle,
-    addReview,
-    pageUpdate,
-    selectedReview,
-    reviewModal,
-    showReviewModal,
-    replyList,
-    closeModal,
-    editModalVisible,
-    showEditModal,
-    editReviewNo,
-    editReviewTitle,
-    editReviewContent,
-    editGrade,
-    saveReview,
-    closeEditModal,
-    newReplyContent,
-    addReply,
-    deleteReview,
-    deleteReply,
-    user,
-    currentUserNo
-  }
-
+    return {
+      bottle,
+      relatedBottleList,
+      foodList,
+      tagListByBottle,
+      reviewList,
+      reviewTitle,
+      reviewContent,
+      grade,
+      getBottle,
+      addReview,
+      pageUpdate,
+      selectedReview,
+      reviewModal,
+      showReviewModal,
+      replyList,
+      closeModal,
+      editModalVisible,
+      showEditModal,
+      editReviewNo,
+      editReviewTitle,
+      editReviewContent,
+      editGrade,
+      saveReview,
+      closeEditModal,
+      newReplyContent,
+      addReply,
+      deleteReview,
+      deleteReply,
+      user,
+      currentUserNo
+    }
   }
 }
 </script>
@@ -432,7 +417,6 @@ export default {
   .form-group {
       margin-bottom: 10px;
     }
-
 
   .review-form-control {
     width: 100%;
