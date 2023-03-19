@@ -58,15 +58,15 @@
         </div>
       </div>
       <div class="d-flex justify-content-end">
-        <b-button class="btn btn-edit" @click="showEditModal(selectedReview)">수정</b-button>
-        <b-button class="btn btn-delete" @click="deleteReview()">삭제</b-button>
+        <b-button v-if="selectedReview.userNo === currentUserNo" class="btn btn-edit" @click="showEditModal(selectedReview)">수정</b-button>
+        <b-button v-if="selectedReview.userNo === currentUserNo" class="btn btn-delete" @click="deleteReview()">삭제</b-button>
       </div>
 
     <!-- replyList 출력 -->
     <ul class="list-unstyled">
       <li v-for="reply in replyList">
         {{ reply.userNo }}&nbsp;&nbsp;&nbsp;&nbsp;{{ reply.createTime }}&nbsp;&nbsp;&nbsp;&nbsp;{{ reply.replyContent }}
-        <button class="btn-primary.custom-button" @click="deleteReply(reply.replyNo)">삭제</button>
+        <button v-if="selectedReview.userNo === currentUserNo" class="btn-primary.custom-button" @click="deleteReply(reply.replyNo)">삭제</button>
       </li>
     </ul>
 
@@ -171,6 +171,7 @@ export default {
   setup (props) {
     const axios = getFormAxiosInstance()
     const user = useUserStore()
+    const currentUserNo = user.getLoginUserInfo.userNo
     
 
     const bottle = ref(null)
@@ -207,8 +208,9 @@ export default {
 
     const addReview = function() {
       const url = `/api/bottles/${bottle.value.bottleNo}/reviews`
-      
+
     const data = new FormData();
+        data.append('userNo', user.getLoginUserInfo.userNo);
         data.append('reviewTitle', reviewTitle.value);
         data.append('reviewContent', reviewContent.value);
         data.append('grade', grade.value);
@@ -380,7 +382,8 @@ export default {
     addReply,
     deleteReview,
     deleteReply,
-    user
+    user,
+    currentUserNo
   }
 
   }

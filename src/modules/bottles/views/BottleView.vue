@@ -1,10 +1,9 @@
 <template>
     <router-view />
   <div>
+  <div>
     <input type="text" v-model="keyword" placeholder="검색어를 입력하세요">
     <button @click="search">검색</button>
-
-<!-- 보틀목록 -->
     <table>
       <thead>
         <tr>
@@ -15,14 +14,15 @@
       <tbody>
         <tr v-for="bottle in bottles" :key="bottle.bottleNo">
           <td>{{ bottle.bottleNo }}</td>
-          <td> {{ bottle.bottleName }}
-            <!-- <router-link :to="{ name:'BottleDetailView', params : { bottleNo : bottle.bottleNo} }">
+          <td>
+            <router-link :to="{ name:'BottleDetailView', params : { bottleNo : bottle.bottleNo} }">
               {{ bottle.bottleName }}
-            </router-link> -->
+            </router-link>
           </td>
         </tr>
       </tbody>
     </table>
+  </div>
   </div>
 </template>
 
@@ -41,35 +41,23 @@ export default {
     const bottles = ref([]);
     const favorites = ref([]);
     const keyword = ref(''); // 검색어 변수 선언
-    const tags = ref([]);
 
     onMounted(()=>{
 
       axios.get('/api/bottles/all')
         .then(res => {
-          console.log(res.data)
           bottles.value = res.data.bottle
           favorites.value = res.data.favorites
-          })
+		    })
         .catch(err=>{
           console.log(err)  
-        }),
-
-        axios.get('/api/tags')
-        .then(res => {
-          console.log(res.data)
-          tags.value = res.data.tags
-          })
-        .catch(err=>{
-          console.log(err)  
-        })        
+        })
     })
 
    return {
     bottles,
     favorites,
-    keyword,
-    tags
+    keyword
    }
 
   },
@@ -78,7 +66,7 @@ export default {
 
     search(){
 
-      const axios = getFormAxiosInstance();
+      const axios = createAxiosInstance();
 
       axios.get('/api/bottles/all', {
         params: {
@@ -97,5 +85,7 @@ export default {
 </script>
 
 <style>
-</style>
 
+
+
+</style>

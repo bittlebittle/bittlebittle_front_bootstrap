@@ -11,6 +11,7 @@ import NoticeView from '@/modules/notices/views/NoticeView'
 import FaqView from '@/modules/faqs/views/FaqView'
 import AdminBottleView from '@/layouts/admin/AdminBottleView'
 import AdminBottleDetailView from '@/layouts/admin/AdminBottleDetailView'
+import AdminTagView from '@/layouts/admin/AdminTagView'
 
 const routes = [
   {
@@ -103,6 +104,11 @@ const routes = [
             props: true
           }
         ]
+      },
+      {
+        path: '/admin/tags',
+        name: 'AdminTagView',
+        component: AdminTagView
       }
 
     ]
