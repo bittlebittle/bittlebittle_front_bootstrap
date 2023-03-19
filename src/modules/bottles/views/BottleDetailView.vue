@@ -169,7 +169,7 @@ export default {
   },
   
   setup (props) {
-    const axios = getFormAxiosInstance()
+    const axios = getFormAxiosInstance(user.getLoginUserInfo)
     const user = useUserStore()
     const currentUserNo = user.getLoginUserInfo.userNo
     
