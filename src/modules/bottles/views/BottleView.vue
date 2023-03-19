@@ -16,9 +16,9 @@
         <tr v-for="bottle in bottles" :key="bottle.bottleNo">
           <td>{{ bottle.bottleNo }}</td>
           <td> {{ bottle.bottleName }}
-            <!-- <router-link :to="{ name:'BottleDetailView', params : { bottleNo : bottle.bottleNo} }">
+            <router-link :to="{ name:'BottleDetailView', params : { bottleNo : bottle.bottleNo} }">
               {{ bottle.bottleName }}
-            </router-link> -->
+            </router-link>
           </td>
         </tr>
       </tbody>
@@ -91,11 +91,10 @@ export default {
       }
       )
     }
-
+  
   }
 }
 </script>
 
 <style>
 </style>
-
