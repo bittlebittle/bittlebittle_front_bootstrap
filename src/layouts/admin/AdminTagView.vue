@@ -60,6 +60,7 @@
 <script>
 import { getJsonAxiosInstance } from '@/api/index'
 import { onMounted, ref } from 'vue'
+
 import { useUserStore } from '@/stores/users'
 
 export default {
@@ -67,8 +68,7 @@ export default {
 
   setup () {
     const user = useUserStore()
-    const axios = getJsonAxiosInstance(user.getLoginUserInfo)
-
+    const axios = user.getLoginUserInfo ? getJsonAxiosInstance(user.getLoginUserInfo) : getJsonAxiosInstance('')
     const tagTypeList = ref([])
     const tagList = ref([])
 

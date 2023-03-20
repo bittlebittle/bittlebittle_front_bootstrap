@@ -130,6 +130,11 @@ const routes = [
             name: 'AdminBottleDetailView',
             component: AdminBottleDetailView,
             props: true
+          },
+          {
+            path: '/admin/tags',
+            name: 'AdminTagView',
+            component: AdminTagView
           }
         ]
       },

@@ -1,7 +1,11 @@
 <template>
-      <router-view />
-
+  
   <button class="btn btn-primary" @click="showAddBottleModal()">보틀 추가</button>
+  
+  <router-link :to="{ name:'AdminTagView' }">
+            <button class="btn btn-primary">태그 수정</button>
+            </router-link>
+  
   <!-- bottle 추가 modal -->
   <b-modal v-model="addBottleModal" title="보틀 추가" v-if="addBottleModal">
     <div class="modal-content" style="padding: 20px;">
@@ -94,7 +98,9 @@ import { useUserStore } from '@/stores/users'
 export default {
   name: 'AdminBottleView',
   
+
   setup () {
+
     const user = useUserStore();
     const axios = getFormAxiosInstance(user.getLoginUserInfo);
 
@@ -177,6 +183,7 @@ export default {
     const deleteBottle = function(bottleNo){
       axios.get(`/api/admin/bottles/${bottleNo}/deletion`)
       .then(res => {
+        
         bottles.value = res.data
       })
       .catch(err => {
@@ -210,7 +217,6 @@ export default {
     deleteBottle,
     addBottleImage,
     handleImageUpload
-
    }
 
   },
@@ -352,4 +358,8 @@ export default {
   border-radius: 4px; /* 모서리를 둥글게 */
   font-size: 16px; /* 글자 크기 */
   }
+
+button {
+  margin-right: 10px;
+}
 </style>
