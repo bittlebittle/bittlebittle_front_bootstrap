@@ -7,16 +7,30 @@
     <router-link class="navbar-brand" to="/">BITTLE-BITTLE</router-link>
 
     <div class="d-lg-none">
-        <router-link :to="{name:'UserLoginComp'}" v-if="loginUser == null">
-            <button type="button" class="custom-btn btn btn-danger" data-bs-toggle="modal" data-bs-target="#BookingModal">
+      <template v-if="loginUser == null">
+        <router-link :to="{name:'UserLoginComp'}">
+            <button type="button" class="custom-btn btn btn-warning btn-sm" data-bs-toggle="modal" data-bs-target="#BookingModal">
               로그인
             </button>
         </router-link>
-        <router-link :to="{name:'UserMyPageComp', params: {userNo: loginUser.userNo }}" v-else>
-            <button type="button" class="custom-btn btn btn-danger" data-bs-toggle="modal" data-bs-target="#BookingModal">
+        <router-link :to="{name:'UserRegisterComp'}">
+            <button type="button" class="custom-btn btn btn-danger btn-sm" data-bs-toggle="modal" data-bs-target="#BookingModal">
+              회원가입
+            </button>
+        </router-link>
+      </template>
+      <template v-else>
+        <router-link :to="{name:'UserMyPageComp', params: {userNo: loginUser.userNo }}">
+            <button type="button" class="custom-btn btn btn-warning btn-sm" data-bs-toggle="modal" data-bs-target="#BookingModal">
               {{ loginUser.nickname }}
             </button>
         </router-link>
+        <router-link to="/">
+            <button type="button" class="custom-btn btn btn-danger btn-sm" data-bs-toggle="modal" data-bs-target="#BookingModal">
+              로그아웃
+            </button>
+        </router-link>
+      </template>
     </div>
 
     <div class="collapse navbar-collapse" id="navbarNav">
@@ -42,26 +56,36 @@
         </li>
 
         <li class="nav-item">
-          <router-link class="nav-link" to="/all">전체 검색</router-link>
+          <router-link class="nav-link" to="/bottles/all">전체 검색</router-link>
         </li>
       </ul>
     </div>
 
     <div class="d-none d-lg-block">
-      <!-- <button type="button" class="custom-btn btn btn-danger" data-bs-toggle="modal" data-bs-target="#BookingModal">
-        <span v-if="loginUser.value != null">{{ loginUser.value }}</span>
-        <span v-else>로그인</span>
-      </button> -->
-      <router-link :to="{name:'UserLoginComp'}" v-if="loginUser == null">
-            <button type="button" class="custom-btn btn btn-danger" data-bs-toggle="modal" data-bs-target="#BookingModal">
+      <template v-if="loginUser == null">
+        <router-link :to="{name:'UserLoginComp'}">
+            <button type="button" class="custom-btn btn btn-warning btn-sm" data-bs-toggle="modal" data-bs-target="#BookingModal">
               로그인
             </button>
-      </router-link>
-      <router-link :to="{name:'UserMyPageComp', params: {userNo: loginUser.userNo } }" v-else>
-          <button type="button" class="custom-btn btn btn-danger" data-bs-toggle="modal" data-bs-target="#BookingModal">
-            {{ loginUser.nickname }}
-          </button>
-      </router-link>
+        </router-link>
+        <router-link :to="{name:'UserRegisterComp'}">
+            <button type="button" class="custom-btn btn btn-danger btn-sm" data-bs-toggle="modal" data-bs-target="#BookingModal">
+              회원가입
+            </button>
+        </router-link>
+      </template>
+      <template v-else>
+        <router-link :to="{name:'UserMyPageComp', params: {userNo: loginUser.userNo }}">
+            <button type="button" class="custom-btn btn btn-warning btn-sm" data-bs-toggle="modal" data-bs-target="#BookingModal">
+              {{ loginUser.nickname }}
+            </button>
+        </router-link>
+        <router-link to="/">
+            <button type="button" class="custom-btn btn btn-danger btn-sm" data-bs-toggle="modal" data-bs-target="#BookingModal">
+              로그아웃
+            </button>
+        </router-link>
+      </template>
 
     </div>
 
@@ -105,6 +129,12 @@ export default {
 }
 
 </script>
-
-<style scope >
+<style scoped>
+.custom-btn {
+  border: 0;
+    color: var(--white-color);
+    font-size: var(--menu-font-size);
+    padding: 10px 20px;
+    margin-left: 10px;
+}
 </style>

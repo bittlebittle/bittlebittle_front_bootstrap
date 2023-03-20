@@ -40,7 +40,8 @@ export default {
             const userInfo = {
               Authorization: res.headers.authorization,
               RefreshTokenIdx: res.headers.refreshtokenidx,
-              userNo: res.data.userNo
+              userNo: res.data.userNo,
+              adminYN : res.data.adminYn
             }
             user.setLoginUserInfo(userInfo)
 
@@ -58,7 +59,11 @@ export default {
             //     RefreshTokenIdx: user.getLoginUserHeaderInfo.RefreshTokenIdx
             //   }
             // })
-            router.push('/')
+            if (userInfo.adminYN === 'Y') {
+              router.push('/admin')
+            } else {
+              router.push('/')
+            }
           } else {
             console.log('잘못된 접근입니다.')
           }

@@ -1,12 +1,13 @@
 import { createRouter, createWebHistory } from 'vue-router'
 import DefaultLayout from '@/layouts/default/Index'
 import AdminLayout from '@/layouts/admin/Index'
-import AuthenticationLayout from '@/layouts/authentication/index'
+import AuthenticationLayout from '@/layouts/authentication/Index'
 import MainView from '@/modules/MainView'
 import UserView from '@/modules/users/views/UserView'
 import BoardView from '@/modules/boards/views/BoardView'
 import Bottle from '@/modules/bottles/views/Bottle'
 import BottleView from '@/modules/bottles/views/BottleView'
+import BottleAll from '@/modules/bottles/views/BottleAll'
 import BottleDetailView from '@/modules/bottles/views/BottleDetailView'
 import NoticeView from '@/modules/notices/views/NoticeView'
 import FaqView from '@/modules/faqs/views/FaqView'
@@ -35,6 +36,11 @@ const routes = [
             path: '/users/:userNo',
             name: 'UserMyPageComp',
             component: () => import('@/modules/users/components/UserMyPageComp')
+          },
+          {
+            path: '/users/addition',
+            name: 'UserRegisterComp',
+            component: () => import('@/modules/users/components/UserRegisterComp')
           }
         ]
       },
@@ -52,6 +58,11 @@ const routes = [
             path: '/bottles/:bottleNo',
             name: 'BottleDetailView',
             component: BottleDetailView,
+            props: true
+          }, {
+            path: '/bottles/all',
+            name: 'BottleAll',
+            component: () => import('@/modules/bottles/views/BottleAll'),
             props: true
           }
         ]
@@ -92,6 +103,11 @@ const routes = [
         path: '/faqs',
         name: 'FaqView',
         component: FaqView
+      },
+      {
+        path: '/all',
+        name: 'BottleAll',
+        component: BottleAll
       }
     ]
   }, {

@@ -43,7 +43,7 @@
       </ul>
     </div>
     <!-- modal -->
-    <b-modal v-model="reviewModal" title="리뷰 상세 내용" v-if="reviewModal">  
+    <b-modal v-model="reviewModal" title="리뷰 상세 내용" v-if="reviewModal">
       <div class="modal-content">
         <div class="modal-header">
           <h5 class="modal-title">{{ selectedReview.reviewTitle }}</h5>
@@ -61,7 +61,7 @@
         <b-button v-if="selectedReview.userNo === currentUserNo" class="btn btn-edit" @click="showEditReviewModal()">수정</b-button>
         <b-button v-if="selectedReview.userNo === currentUserNo" class="btn btn-delete" @click="deleteReview()">삭제</b-button>
       </div>
-    
+
     <!-- replyList 출력 -->
     <ul class="list-unstyled">
       <li v-for="reply in replyList" :key="reply.replyNo">
@@ -183,8 +183,8 @@ export default {
   setup (props) {
 
     const user = useUserStore()
-    const axios = getFormAxiosInstance(user.getLoginUserInfo)
-    const currentUserNo = user.getLoginUserInfo.userNo
+    const axios = user.getLoginUserInfo ? getFormAxiosInstance(user.getLoginUserInfo) : getFormAxiosInstance('')
+    const currentUserNo = user.getLoginUserInfo?.userNo
 
     const bottle = ref(null)
     const relatedBottleList = ref([])

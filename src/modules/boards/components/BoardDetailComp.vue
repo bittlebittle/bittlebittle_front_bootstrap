@@ -22,7 +22,7 @@
         </tbody>
       </table>
     </div>
-    <template v-if="loginUser.userNo == board.userNo">
+    <template v-if="loginUser != null && loginUser.userNo == board.userNo">
       <div class="button-container">
         <button class="button-edit" @click="editBoard">수정</button>
         <button class="button-remove">삭제</button>
