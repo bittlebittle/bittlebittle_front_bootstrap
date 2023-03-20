@@ -239,7 +239,7 @@ export default {
 }
 </script>
 
-<style>
+<style scoped>
 
 .section-title {
     font-size: 1.2rem;
