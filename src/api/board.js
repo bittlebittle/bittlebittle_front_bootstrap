@@ -6,7 +6,7 @@ import { useUserStore } from '@/stores/users'
 // const user = useUserStore()
 // const axios = getJsonAxiosInstance(user.getLoginUserInfo)
 
-function getBoardList () {
+function $getBoardList () {
   const user = useUserStore()
   const axios = getJsonAxiosInstance(user.getLoginUserInfo)
   return axios.get('/api/boards')
@@ -18,19 +18,19 @@ function getReplyList (url) {
   return axios.get(url)
 }
 
-function getBoardDetail (boardNo) {
+function $getBoardDetail (boardNo) {
   const user = useUserStore()
   const axios = getJsonAxiosInstance(user.getLoginUserInfo)
   return axios.get(`/api/boards/${boardNo}`)
 }
 
-function editBoard (boardNo, boardData) {
+function $editBoard (boardNo, boardData) {
   const user = useUserStore()
   const axios = getJsonAxiosInstance(user.getLoginUserInfo)
   return axios.post(`/api/boards/${boardNo}/set-data`, boardData)
 }
 
-function addBoard (boardData) {
+function $addBoard (boardData) {
   const user = useUserStore()
   const axios = getJsonAxiosInstance(user.getLoginUserInfo)
   return axios.post('/api/boards', boardData)
@@ -42,10 +42,10 @@ function addReply (url, replyData) {
   return axios.post(url, replyData)
 }
 
-function removeBoard (boardNo) {
+function $removeBoard (boardNo) {
   const user = useUserStore()
   const axios = getJsonAxiosInstance(user.getLoginUserInfo)
   return axios.get(`/api/boards/${boardNo}/deletion`)
 }
 
-export { getBoardList, getReplyList, getBoardDetail, editBoard, addBoard, addReply, removeBoard }
+export { $getBoardList, getReplyList, $getBoardDetail, $editBoard, $addBoard, addReply, $removeBoard }

@@ -39,13 +39,13 @@
 
 <script>
 import { useUserStore } from '@/stores/users'
-import { addBoard } from '@/api/board'
+import { $addBoard } from '@/api/board'
+import { useRouter } from 'vue-router'
 // import { getJsonAxiosInstance } from '@/api'
 
 export default {
   name: 'BoardCreateComp',
   setup () {
-
     const user = useUserStore()
 
     const boardData = {
@@ -54,11 +54,14 @@ export default {
       userNo: user.getLoginUserInfo.userNo
     }
 
+    const router = useRouter()
+
     function registerBoard () {
       // 1)api 에 board 에 관련된 axios 함수를 빼놨을 경우
-      addBoard(boardData).then(
+      $addBoard(boardData).then(
         (res) => {
           console.log(res.data)
+          router.push('/boards')
         }
       ).catch(err => console.log(err))
 

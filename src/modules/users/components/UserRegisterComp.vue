@@ -1,32 +1,122 @@
 <template>
-  <form class="register-form" action="insert.me" method="post">
+  <form class="register-form" @submit.prevent="registerUser">
 		  <p style="margin-bottom: 10px; font-size: 15px;" ><br></p>
-	      <p style="margin-bottom: 50px;"><a href="/tamnaji" style="font-weight: bold; color: #fd6500; text-decoration: none">탐나지</a>에 오신 것을 환영합니다!</p>
-	      <div>
-	      <input type="email" id="email-2" name="memberId" placeholder="이메일" />
-          <button type="button" class="mail-Check-Btn" id="confirm" style="margin-bottom: 10px">인증</button>
-          </div><br>
-	      <div id="mail-check-warn1"></div>
-          <input type="text" id="emailcheck" name="emailcheck" placeholder="인증번호 6자리" disabled="disabled" maxlength="6" />
-	      <div id="mail-check-warn2"></div>
-	      <input type="password" id="password" name="memberPwd" placeholder="비밀번호" />
-	      <input type="password" id="password-confirm" name="password-confirm" placeholder="비밀번호 확인" />
-	      <div id="pw-check-warn"></div>
-	      <div>
-	      <input type="text" id="nickname" name="nickname" placeholder="닉네임(2글자 이상)" minlength="2" maxlength="10" />
-	      <button type="button" class="name-Check-Btn" id="confirm" style="margin-bottom: 10px">확인</button>
-	      </div><br>
-	      <div id="nn-check-warn"></div>
-	      <input type="text" id="birthday" name="birthday" placeholder="생년월일 8자리  ex)19980120" />
-
-	      <button type="submit" >회원가입</button>
-	      <p class="message">이미 회원이신가요? <a href="#" class="back">로그인</a></p>
+	      <p style="margin-bottom: 50px;">
+          <router-link to='/' style="font-weight: bold; color: #fd6500; text-decoration: none">BITTLE-BITTLE</router-link>
+          에 오신 것을 환영합니다!</p>
+          <table style="width: 27rem;">
+	      <tr>
+          <td style="width: 7rem;">* 아이디</td>
+          <td style="width: 10rem;"><input type="text" id="" v-model="registerData.userId" placeholder="아이디" /></td>
+          <td><button type="button" @click="idCheck" class="custom-btn btn btn-warning btn-sm" style="padding:8px; float: right;">아이디 확인</button>
+          </td>
+        </tr><br>
+        <tr>
+          <td colspan="3" style="text-align: center;">{{idCheckMsg}}</td>
+        </tr><br>
+        <tr>
+          <td>* 비밀번호</td>
+          <td colspan="2"><input type="password" v-model="registerData.userPwd" placeholder="비밀번호" /></td>
+        </tr><br>
+        <tr>
+          <td>* 비밀번호 확인</td>
+          <td colspan="2"><input type="password" id="password-confirm" v-model="registerData.chkPwd" placeholder="비밀번호 확인" /></td>
+        </tr><br>
+        <tr>
+          <td>* 이름</td>
+          <td colspan="2"><input type="text" v-model="registerData.userName" placeholder="이름" /></td>
+        </tr><br>
+        <tr>
+          <td>* 닉네임</td>
+          <td><input type="text" id="nickname" v-model="registerData.nickname" placeholder="닉네임(2글자 이상)" minlength="2" maxlength="10" /></td>
+          <td><button type="button" @click="nicknameCheck" class="custom-btn btn btn-warning btn-sm" style="padding:8px; float: right;" >확인</button></td>
+        </tr><br>
+        <tr>
+          <td>이메일</td>
+          <td colspan="2"><input type="email" id="email" v-model="registerData.email" placeholder="email" /></td>
+        </tr><br>
+        <tr>
+          <td>연락처</td>
+          <td colspan="2">
+            <!-- <select v-model="phoneNum.phone_1">
+                <option value="010" selected>010</option>
+                <option value="011">011</option>
+                <option value="016">016</option>
+                <option value="017">017</option>
+                <option value="019">019</option>
+            </select>
+            - <input type="text" v-model="phoneNum.phone_2" style="width: 7rem;"/> - <input style="width: 7rem;" type="text" v-model="phoneNum.phone_3" /></td> -->
+            <input type="text" v-model="registerData.value" style="width: 15rem;" placeholder="000-0000-0000 '-'을 붙여서 작성해주세요 '"/>
+            </td>
+          </tr>
+        </table><br><br><br>
+	      <button type="submit" class="custom-btn btn btn-warning" style="padding: 14px;">회원가입</button> <br><br>
+	      <p class="message">이미 회원이신가요? <router-link to="/">home</router-link></p>
     </form>
+
 </template>
 
 <script>
-export default {
+import { ref } from 'vue'
+import { $checkDuplicate, $addUser } from '@/api/user'
 
+export default {
+  name: 'UserRegisterComp',
+  setup () {
+    const idCheckMsg = ref(null)
+    // const phoneNum = {
+    //   phone_1: '',
+    //   phone_2: '',
+    //   phone_3: ''
+    // }
+
+    // const phone = computed(() => {
+    //   return phoneNum.phone_1 + '-' + phoneNum.phone_2 + '-' + phoneNum.phone_3
+    // })
+
+    const registerData = {
+      userId: '',
+      userPwd: '',
+      chkPwd: '',
+      userName: '',
+      nickname: '',
+      email: '',
+      phone: ''
+    }
+
+    function idCheck () {
+      $checkDuplicate(registerData.userId)
+        .then(res => {
+          console.log(res)
+          if (res.data.isDuplicate) {
+            idCheckMsg.value = '이미 존재하는 아이디 입니다.'
+          } else {
+            idCheckMsg.value = '사용 가능한 아이디 입니다.'
+          }
+        })
+        .catch(err => console.log(err))
+    }
+
+    function nicknameCheck () {
+
+    }
+
+    function registerUser () {
+      console.log(registerData)
+      $addUser(registerData).then(
+        res => console.log(res.data)
+      ).catch(err => console.log(err))
+    }
+
+    return {
+      registerData,
+      idCheckMsg,
+      idCheck,
+      nicknameCheck,
+      // phoneNum,
+      registerUser
+    }
+  }
 }
 </script>
 
@@ -103,9 +193,17 @@ export default {
 .form .message a:hover {
   cursor: pointer;
 }
-.form .register-form,
+.form {}
+
+.register-form {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+}
+
 .form .find-form {
   display: none;
+  text-align: center;
 }
 .container {
   position: relative;

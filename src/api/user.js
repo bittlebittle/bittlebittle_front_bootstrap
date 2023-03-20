@@ -8,44 +8,78 @@ import { useUserStore } from '@/stores/users'
 // const user = useUserStore()
 // const axios = getJsonAxiosInstance(user.getLoginUserInfo)
 
-/*
-
-예시코드
-
-자유게시판 리스트를
-
-
-*/
-
-
-function loginUser (url, userData) {
+function $loginUser (userData) {
   const user = useUserStore()
   const axios = getJsonAxiosInstance(user.getLoginUserInfo)
-  return axios.post(url, userData)
+  return axios.post('/api/users/login', userData)
 }
 
-function getUser (url) {
+function $logoutUser () {
   const user = useUserStore()
   const axios = getJsonAxiosInstance(user.getLoginUserInfo)
-  return axios.get(url)
+  try {
+    return axios.post('/api/users/logout')
+  } catch (error) {
+    console.error('Error logging out user:', error)
+  }
 }
 
-function editUser (url, boardData) {
+function $getUser () {
   const user = useUserStore()
   const axios = getJsonAxiosInstance(user.getLoginUserInfo)
-  return axios.post(url, boardData)
+  return axios.get(`/api/users/${user.getLoginUserInfo.userNo}`)
 }
 
-function addUser (url, boardData) {
+function $editUser (userData) {
   const user = useUserStore()
   const axios = getJsonAxiosInstance(user.getLoginUserInfo)
-  return axios.post(url, boardData)
+  return axios.post(`/api/users/${user.getLoginUserInfo.userNo}/set-data`, userData)
 }
 
-function removeUser (url) {
+function $addUser (userData) {
   const user = useUserStore()
   const axios = getJsonAxiosInstance(user.getLoginUserInfo)
-  return axios.get(url)
+  return axios.post('api/users', userData)
 }
 
-export { loginUser, getUser, editUser, addUser, removeUser }
+function $removeUser (userNo) {
+  const user = useUserStore()
+  const axios = getJsonAxiosInstance(user.getLoginUserInfo)
+  return axios.get(`api/users/${userNo}/deletion`)
+}
+
+async function $addUserTags (tagNoList) {
+  try {
+    const user = useUserStore()
+    const axios = getJsonAxiosInstance(user.getLoginUserInfo)
+    return axios.post(`${user.getLoginUserInfo.userNo}/tags`, tagNoList)
+  } catch (error) {
+    console.error('Error adding user tags:', error)
+  }
+}
+
+async function $deleteUserTags (tagNoList) {
+  try {
+    const user = useUserStore()
+    const axios = getJsonAxiosInstance(user.getLoginUserInfo)
+    return axios.post(`${user.getLoginUserInfo.userNo}/tags/deletion`, tagNoList)
+  } catch (error) {
+    console.error('Error deleting user tags:', error)
+  }
+}
+
+async function $checkDuplicate (userId) {
+  try {
+    const user = useUserStore()
+    const axios = getJsonAxiosInstance(user.getLoginUserInfo)
+    return axios.post('api/users/check-duplicate', { userId: userId })
+  } catch (error) {
+    console.error('Error deleting user tags:', error)
+  }
+}
+
+export {
+  $loginUser, $getUser, $editUser, $addUser, $removeUser,
+  $logoutUser, $checkDuplicate,
+  $addUserTags, $deleteUserTags
+}

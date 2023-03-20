@@ -33,7 +33,6 @@
     
   </div>
 
-
   <!-- 보틀목록 -->
     <table>
       <thead>
@@ -57,10 +56,8 @@
 
 <script>
 import { getFormAxiosInstance } from '@/api/index'
-import { onMounted } from '@vue/runtime-core'
-import { ref } from '@vue/reactivity'
+import { onMounted, ref } from 'vue'
 import { useUserStore } from '@/stores/users'
-
 
 export default {
   name: 'BottleAll',
@@ -83,6 +80,7 @@ export default {
     // 전체조회를 하는 axios 를 하나의 함수로 만들구, onMounted 할 때랑 검색할 때 같이 쓰는게 좋을..?
 
     onMounted(()=>{
+
       axios.get('/api/bottles/all')
         .then(res => {
           console.log('bottles data', res.data)
@@ -93,7 +91,7 @@ export default {
           console.log('error', err)
         }),
 
-        axios.get('/api/tags')
+      axios.get('/api/tags')
         .then(res => {
           console.log('tags data', res.data)
           tags.value = res.data.tags
@@ -109,13 +107,13 @@ export default {
             }
           }
         })
-        .catch(err=>{
-          console.log('error', err)  
-        })        
+        .catch(err => {
+          console.log('error', err)
+        })
     })
 
     const filterBottles = () => {
-      let filtered = bottles.value;
+      let filtered = bottles.value
       for (let i = 0; i < selectedTags.value.length; i++) {
         if (selectedTags.value[i]) {
           filtered = filtered.filter(bottle => {
@@ -123,7 +121,7 @@ export default {
           })
         }
       }
-      filteredBottles.value = filtered;
+      filteredBottles.value = filtered
     }
 
     function search() {
@@ -148,13 +146,9 @@ export default {
         }
 
     const filteredTagList = (tagTypeNo) => {
-      return tagList.value.filter(tag => tag.keyTypeNo === tagTypeNo);
+      return tagList.value.filter(tag => tag.keyTypeNo === tagTypeNo)
     }
 
-  // function filteredTagList(tagTypeNo) {
-  //     console.log('zzz', tagList.value);
-  //     return tagList.value.filter(tag => tag.keyTypeNo === tagTypeNo);
-  //   }
 
     const selectAllTags = () => {
       selectedTags.value = tagList.value.map(tag => tag.tagNo);
@@ -174,18 +168,17 @@ export default {
     selectedTags,
     filteredBottles,
     filteredTagList,
-    search,
-    selectAllTags
+    search
    }
 
   },
 
   methods: {
-    filteredTagList(tagTypeNo) {
-      console.log('zzz', this.tagList);
-      return this.tagList.filter(tag => tag.keyTypeNo === tagTypeNo);
+    filteredTagList (tagTypeNo) {
+      console.log('zzz', this.tagList)
+      return this.tagList.filter(tag => tag.keyTypeNo === tagTypeNo)
     }
-  
+
   }
 }
 </script>

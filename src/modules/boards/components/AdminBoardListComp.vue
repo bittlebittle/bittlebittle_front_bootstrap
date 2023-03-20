@@ -1,4 +1,7 @@
 <template>
+  <div class="container">
+   <div class="content"> <!-- 수정 -->
+     <p class="title">커뮤니티</p>
      <div class="search-container">
        <select v-model="searchOption" style="margin-right: 10px;">
          <option value="boardTitle">제목</option>
@@ -11,6 +14,8 @@
      <table id="boardList">
       <thead>
          <tr>
+          <th><input type="checkbox" v-model="selectAll" @change="toggleAllCheckboxes" /></th> <!-- 추가 -->
+    
            <th>No</th>
            <th style="width: 380px;">제목</th>
            <th>작성자</th>
@@ -18,6 +23,23 @@
          </tr>
        </thead>
        <tbody>
+
+        <template v-if="state.boardList.length">
+  <tr
+    v-for="item in state.boardList"
+    :key="item.boardNo" 
+    @click="boardDetail(item.boardNo)"
+    id="table-hover"
+  >
+    <td><input type="checkbox" v-model="item.checked" /></td> <!-- 체크박스 추가 -->
+    <td class="bno">{{ item.boardNo }}</td>
+    <td>{{ item.boardTitle }}</td>
+    <td>{{ item.nickname }}</td>
+    <td>{{ item.createDate }}</td>
+  </tr>
+</template>
+
+        <!--
          <template v-if="state.boardList.length">
            <tr
              v-for="item in state.boardList"
@@ -30,7 +52,7 @@
              <td>{{ item.nickname }}</td>
              <td>{{ item.createDate }}</td>
            </tr>
-         </template>
+         </template> -->
          <template v-else>
            <tr>
              <td colspan="4">게시글이 존재하지 않습니다.</td>
@@ -38,86 +60,19 @@
          </template>
        </tbody>
      </table>
-     <template v-if="loginUser != null">
-      <div class="write-button-container">
-        <button id="write-button" @click="moveCreateBoard">작성하기</button>
-      </div>
-    </template>
+     <div class="write-button-container">
+       <button id="write-button" onclick="location.href='enrollForm.bo'">작성하기</button>
+     </div>
+
+     <!-- Add the 'Delete Selected' button next to the 'Write' button -->
+<div class="write-button-container">
+  <button @click="deleteSelected" class="custom-button">선택 삭제</button> <!-- 추가 -->
+  <button id="write-button" onclick="location.href='enrollForm.bo'">작성하기</button>
+</div>
+
+   </div> <!-- 수정 -->
+ </div>
 </template>
-
-<script>
-import { ref, onMounted } from 'vue'
-import { $getBoardList } from '@/api/board'
-import { useRouter } from 'vue-router'
-import { useUserStore } from '@/stores/users'
-
-
-export default {
-  name: 'BoardListComp',
-  setup () {
-    const theadList = [
-      '글번호', '글제목', '작성일', '작성자'
-    ]
-
-    const state = ref({ boardList: [] })
-
-    const setBoardList = () => {
-      $getBoardList()
-        .then(res => {
-          console.log(res.data)
-          state.value.boardList = res.data
-        })
-        .catch(err => {
-          console.log(err)
-        })
-    }
-
-    const boardDetail = (boardNo) => {
-      router.push(`/boards/${boardNo}`)
-    }
-
-    const searchOption = ref('boardTitle')
-    const searchText = ref('')
-
-    const filterBoardList = () => {
-      if (searchText.value.trim() === '') {
-        setBoardList()
-      } else {
-        const filteredList = state.value.boardList.filter((item) =>
-          item[searchOption.value].toLowerCase().includes(searchText.value.toLowerCase())
-        )
-        state.value.boardList = filteredList
-      }
-    }
-
-    // 라우터 전환
-    const router = useRouter()
-    function moveCreateBoard () {
-      router.push('/boards/addition')
-    }
-
-    // 로그인 유저가 존재하는지 유무 확인
-    const loginUser = useUserStore().getLoginUserInfo
-
-    onMounted(() => {
-      setBoardList()
-    })
-
-    return {
-      theadList,
-      state,
-      boardDetail,
-      searchOption,
-      searchText,
-      filterBoardList,
-      moveCreateBoard,
-      loginUser
-    }
-  }
-}
-</script>
-
-
 
 <style scoped>
   .container {
@@ -127,6 +82,12 @@ export default {
     display: flex;
     flex-direction: column; /* 추가 */
     background-color: #FFFAF6; /* 추가 */
+  }
+
+  .title {
+    font-size: 35px;
+    text-align: center;
+    margin-bottom: 30px;
   }
 
   .content {
@@ -216,3 +177,78 @@ export default {
     cursor: pointer;
   }
 </style>
+
+<script>
+import { ref, onMounted } from 'vue';
+import { getBoardList } from '@/api/board';
+import router from '@/router';
+
+export default {
+  name: 'BoardListComp',
+  setup() {
+
+    const selectAll = ref(false);
+
+const toggleAllCheckboxes = () => {
+  state.value.boardList.forEach(item => {
+    item.checked = selectAll.value;
+  });
+};
+
+const deleteSelected = () => {
+  state.value.boardList = state.value.boardList.filter(item => !item.checked);
+};
+
+    const theadList = [
+      '글번호', '글제목', '작성일', '작성자'
+    ];
+
+    const state = ref({ boardList: [] });
+
+    const setBoardList = () => {
+      getBoardList('/api/boards')
+        .then(res => {
+          console.log(res.data)
+          state.value.boardList = res.data
+        })
+        .catch(err => {
+          console.log(err)
+        })
+    };
+
+    const boardDetail = (boardNo) => {
+      router.push(`/boards/${boardNo}`)
+    };
+
+    const searchOption = ref('boardTitle');
+    const searchText = ref('');
+
+    const filterBoardList = () => {
+      if (searchText.value.trim() === '') {
+        setBoardList();
+      } else {
+        const filteredList = state.value.boardList.filter((item) =>
+          item[searchOption.value].toLowerCase().includes(searchText.value.toLowerCase())
+        );
+        state.value.boardList = filteredList;
+      }
+    };
+
+    onMounted(() => {
+      setBoardList();
+    });
+
+    return {
+  theadList,
+  state,
+  boardDetail,
+  searchOption,
+  searchText,
+  filterBoardList,
+  selectAll, // 추가
+  toggleAllCheckboxes, // 추가
+  deleteSelected // 추가
+};
+  },
+};
+</script>

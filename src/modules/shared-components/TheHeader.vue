@@ -7,61 +7,116 @@
     <router-link class="navbar-brand" to="/">BITTLE-BITTLE</router-link>
 
     <div class="d-lg-none">
-        <router-link :to="{name:'UserLoginComp'}" v-if="loginUser == null">
-            <button type="button" class="custom-btn btn btn-danger" data-bs-toggle="modal" data-bs-target="#BookingModal">
+      <template v-if="loginUser == null">
+        <router-link :to="{name:'UserLoginComp'}">
+            <button type="button" class="custom-btn btn btn-warning btn-sm" data-bs-toggle="modal" data-bs-target="#BookingModal">
               로그인
             </button>
         </router-link>
-        <router-link :to="{name:'UserMyPageComp', params: {userNo: loginUser.userNo }}" v-else>
-            <button type="button" class="custom-btn btn btn-danger" data-bs-toggle="modal" data-bs-target="#BookingModal">
+        <router-link :to="{name:'UserRegisterComp'}">
+            <button type="button" class="custom-btn btn btn-danger btn-sm" data-bs-toggle="modal" data-bs-target="#BookingModal">
+              회원가입
+            </button>
+        </router-link>
+      </template>
+      <template v-else>
+        <router-link :to="{name:'UserMyPageComp', params: {userNo: loginUser.userNo }}">
+            <button type="button" class="custom-btn btn btn-warning btn-sm" data-bs-toggle="modal" data-bs-target="#BookingModal">
               {{ loginUser.nickname }}
             </button>
         </router-link>
+        <!-- <router-link to="/"> -->
+            <button type="button" @click="logout" class="custom-btn btn btn-danger btn-sm" data-bs-toggle="modal" data-bs-target="#BookingModal">
+              로그아웃
+            </button>
+        <!-- </router-link> -->
+      </template>
     </div>
 
     <div class="collapse navbar-collapse" id="navbarNav">
       <ul class="navbar-nav mx-auto">
         <li class="nav-item">
-          <router-link class="nav-link active" to="/">Home</router-link>
+          <template v-if="loginUser != null && loginUser.adminYN == 'Y'">
+            <router-link class="nav-link active" to="/admin">Home</router-link>
+          </template>
+          <template v-else>
+            <router-link class="nav-link active" to="/">Home</router-link>
+          </template>
         </li>
 
         <li class="nav-item">
-          <router-link class="nav-link" to="/bottles">bottle</router-link>
+          <template v-if="loginUser != null && loginUser.adminYN == 'Y'">
+            <router-link class="nav-link" to="/admin/bottles">bottle</router-link>
+          </template>
+          <template v-else>
+            <router-link class="nav-link" to="/bottles">bottle</router-link>
+          </template>
         </li>
 
         <li class="nav-item">
+          <template v-if="loginUser != null && loginUser.adminYN == 'Y'">
+          <router-link class="nav-link" to="/admin/boards">자유게시판</router-link>
+          </template>
+          <template v-else>
           <router-link class="nav-link" to="/boards">자유게시판</router-link>
+        </template>
         </li>
 
         <li class="nav-item">
+          <template v-if="loginUser != null && loginUser.adminYN == 'Y'">
+            <router-link class="nav-link" to="/admin/notices">공지사항</router-link>
+          </template>
+          <template v-else>
           <router-link class="nav-link" to="/notices">공지사항</router-link>
+          </template>
         </li>
 
         <li class="nav-item">
+          <template v-if="loginUser != null && loginUser.adminYN == 'Y'">
+
+          <router-link class="nav-link" to="/admin/faqs">FAQ</router-link>
+          </template>
+          <template v-else>
           <router-link class="nav-link" to="/faqs">FAQ</router-link>
+        </template>
         </li>
-        
+
         <li class="nav-item">
-          <router-link class="nav-link" to="/all">전체 검색</router-link>
+          <template v-if="loginUser != null && loginUser.adminYN == 'Y'">
+            <router-link class="nav-link" to="/admin/bottles/all">전체 검색</router-link>
+          </template>
+          <template v-else>
+          <router-link class="nav-link" to="/bottles/all">전체 검색</router-link>
+        </template>
         </li>
       </ul>
     </div>
 
     <div class="d-none d-lg-block">
-      <!-- <button type="button" class="custom-btn btn btn-danger" data-bs-toggle="modal" data-bs-target="#BookingModal">
-        <span v-if="loginUser.value != null">{{ loginUser.value }}</span>
-        <span v-else>로그인</span>
-      </button> -->
-      <router-link :to="{name:'UserLoginComp'}" v-if="loginUser == null">
-            <button type="button" class="custom-btn btn btn-danger" data-bs-toggle="modal" data-bs-target="#BookingModal">
+      <template v-if="loginUser == null">
+        <router-link :to="{name:'UserLoginComp'}">
+            <button type="button" class="custom-btn btn btn-warning btn-sm" data-bs-toggle="modal" data-bs-target="#BookingModal">
               로그인
             </button>
-      </router-link>
-      <router-link :to="{name:'UserMyPageComp', params: {userNo: loginUser.userNo } }" v-else>
-          <button type="button" class="custom-btn btn btn-danger" data-bs-toggle="modal" data-bs-target="#BookingModal">
-            {{ loginUser.nickname }}
-          </button>
-      </router-link>
+        </router-link>
+        <router-link :to="{name:'UserRegisterComp'}">
+            <button type="button" class="custom-btn btn btn-danger btn-sm" data-bs-toggle="modal" data-bs-target="#BookingModal">
+              회원가입
+            </button>
+        </router-link>
+      </template>
+      <template v-else>
+        <router-link :to="{name:'UserMyPageComp', params: {userNo: loginUser.userNo }}">
+            <button type="button" class="custom-btn btn btn-warning btn-sm" data-bs-toggle="modal" data-bs-target="#BookingModal">
+              {{ loginUser.nickname }}
+            </button>
+        </router-link>
+        <!-- <router-link to="/"> -->
+            <button type="button" @click="logout" class="custom-btn btn btn-danger btn-sm" data-bs-toggle="modal" data-bs-target="#BookingModal">
+              로그아웃
+            </button>
+        <!-- </router-link> -->
+      </template>
 
     </div>
 
@@ -71,8 +126,9 @@
 
 <script>
 import { useUserStore } from '@/stores/users'
-import { getUser } from '@/api/user'
+import { $getUser, $logoutUser } from '@/api/user'
 import { ref, onMounted } from 'vue'
+import { useRouter } from 'vue-router'
 
 export default {
   name: 'TheHeader',
@@ -80,16 +136,36 @@ export default {
     const loginUser = ref(null)
 
     const user = useUserStore()
-    const userInfo = user.getLoginUserInfo
+
+    const router = useRouter()
 
     const getLoginUser = () => {
-      if (userInfo != null) {
-        getUser(`/api/users/${userInfo.userNo}`
+      const userInfo = user.getLoginUserInfo
+      if (userInfo != null && loginUser.value == null) {
+        $getUser(userInfo.userNo
         ).then(res => {
           console.log(res.data)
           loginUser.value = res.data
+          loginUser.value.adminYN = userInfo.adminYN
         }).catch(err => console.log(err))
       }
+    }
+
+    // 로그아웃
+    function logout () {
+      // 전역에 있는 userInfo 초기화
+      // 서버에 있는 토큰 제거
+      $logoutUser().then(res => {
+        console.log(res.data)
+        if (res.data.success === true) {
+          user.setLoginUserInfo({})
+          loginUser.value = null
+          console.log(loginUser.value)
+          router.push('/')
+        } else {
+          console.log('로그아웃 실패')
+        }
+      }).catch(err => console.log(err))
     }
 
     onMounted(() => {
@@ -99,12 +175,18 @@ export default {
     return {
       getLoginUser,
       loginUser,
-      userInfo
+      logout
     }
   }
 }
 
 </script>
-
-<style scope >
+<style scoped>
+.custom-btn {
+  border: 0;
+    color: var(--white-color);
+    font-size: var(--menu-font-size);
+    padding: 10px 20px;
+    margin-left: 10px;
+}
 </style>

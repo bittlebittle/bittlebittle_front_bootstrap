@@ -1,15 +1,20 @@
 import { createRouter, createWebHistory } from 'vue-router'
 import DefaultLayout from '@/layouts/default/Index'
 import AdminLayout from '@/layouts/admin/Index'
-import AuthenticationLayout from '@/layouts/authentication/index'
+import AuthenticationLayout from '@/layouts/authentication/Index'
 import MainView from '@/modules/MainView'
 import UserView from '@/modules/users/views/UserView'
 import BoardView from '@/modules/boards/views/BoardView'
+import Bottle from '@/modules/bottles/views/Bottle'
 import BottleView from '@/modules/bottles/views/BottleView'
 import BottleAll from '@/modules/bottles/views/BottleAll'
 import BottleDetailView from '@/modules/bottles/views/BottleDetailView'
 import NoticeView from '@/modules/notices/views/NoticeView'
 import FaqView from '@/modules/faqs/views/FaqView'
+import AdminBottleView from '@/layouts/admin/AdminBottleView'
+import AdminBottleDetailView from '@/layouts/admin/AdminBottleDetailView'
+import AdminBottle from '@/layouts/admin/AdminBottle'
+import AdminTagView from '@/layouts/admin/AdminTagView'
 
 const routes = [
   {
@@ -31,18 +36,33 @@ const routes = [
             path: '/users/:userNo',
             name: 'UserMyPageComp',
             component: () => import('@/modules/users/components/UserMyPageComp')
+          },
+          {
+            path: '/users/addition',
+            name: 'UserRegisterComp',
+            component: () => import('@/modules/users/components/UserRegisterComp')
           }
         ]
       },
       {
         path: '/bottles',
-        name: 'BottleView',
-        component: BottleView,
+        name: 'Bottle',
+        component: Bottle,
         children: [
+          {
+            path: '/bottles',
+            name: 'BottleView',
+            component: BottleView
+          },
           {
             path: '/bottles/:bottleNo',
             name: 'BottleDetailView',
             component: BottleDetailView,
+            props: true
+          }, {
+            path: '/bottles/all',
+            name: 'BottleAll',
+            component: () => import('@/modules/bottles/views/BottleAll'),
             props: true
           }
         ]
@@ -66,6 +86,11 @@ const routes = [
             path: '/boards/addition',
             name: 'BoardCreateComp',
             component: () => import('@/modules/boards/components/BoardCreateComp')
+          },
+          {
+            path: '/boards/set-data',
+            name: 'BoardEditComp',
+            component: () => import('@/modules/boards/components/BoardEditComp')
           }
         ]
       },
@@ -90,6 +115,34 @@ const routes = [
     name: 'AdminLayout',
     component: AdminLayout,
     children: [
+      {
+        path: '/admin/bottles',
+        name: 'AdminBottle',
+        component: AdminBottle,
+        children: [
+          {
+            path: '/admin/bottles',
+            name: 'AdminBottleView',
+            component: AdminBottleView
+          },
+          {
+            path: '/admin/bottles/:bottleNo',
+            name: 'AdminBottleDetailView',
+            component: AdminBottleDetailView,
+            props: true
+          },
+          {
+            path: '/admin/tags',
+            name: 'AdminTagView',
+            component: AdminTagView
+          }
+        ]
+      },
+      {
+        path: '/admin/tags',
+        name: 'AdminTagView',
+        component: AdminTagView
+      }
 
     ]
   },
