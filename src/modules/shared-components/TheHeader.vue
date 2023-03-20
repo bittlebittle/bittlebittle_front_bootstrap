@@ -25,18 +25,18 @@
               {{ loginUser.nickname }}
             </button>
         </router-link>
-        <router-link to="/">
-            <button type="button" class="custom-btn btn btn-danger btn-sm" data-bs-toggle="modal" data-bs-target="#BookingModal">
+        <!-- <router-link to="/"> -->
+            <button type="button" @click="logout" class="custom-btn btn btn-danger btn-sm" data-bs-toggle="modal" data-bs-target="#BookingModal">
               로그아웃
             </button>
-        </router-link>
+        <!-- </router-link> -->
       </template>
     </div>
 
     <div class="collapse navbar-collapse" id="navbarNav">
       <ul class="navbar-nav mx-auto">
         <li class="nav-item">
-          <template v-if="loginUser != null && userInfo.adminYN == 'Y'">
+          <template v-if="loginUser != null && loginUser.adminYN == 'Y'">
             <router-link class="nav-link active" to="/admin">Home</router-link>
           </template>
           <template v-else>
@@ -45,7 +45,7 @@
         </li>
 
         <li class="nav-item">
-          <template v-if="loginUser != null && userInfo.adminYN == 'Y'">
+          <template v-if="loginUser != null && loginUser.adminYN == 'Y'">
             <router-link class="nav-link" to="/admin/bottles">bottle</router-link>
           </template>
           <template v-else>
@@ -54,7 +54,7 @@
         </li>
 
         <li class="nav-item">
-          <template v-if="loginUser != null && userInfo.adminYN == 'Y'">
+          <template v-if="loginUser != null && loginUser.adminYN == 'Y'">
           <router-link class="nav-link" to="/admin/boards">자유게시판</router-link>
           </template>
           <template v-else>
@@ -63,7 +63,7 @@
         </li>
 
         <li class="nav-item">
-          <template v-if="loginUser != null && userInfo.adminYN == 'Y'">
+          <template v-if="loginUser != null && loginUser.adminYN == 'Y'">
             <router-link class="nav-link" to="/admin/notices">공지사항</router-link>
           </template>
           <template v-else>
@@ -72,7 +72,7 @@
         </li>
 
         <li class="nav-item">
-          <template v-if="loginUser != null && userInfo.adminYN == 'Y'">
+          <template v-if="loginUser != null && loginUser.adminYN == 'Y'">
 
           <router-link class="nav-link" to="/admin/faqs">FAQ</router-link>
           </template>
@@ -82,7 +82,7 @@
         </li>
 
         <li class="nav-item">
-          <template v-if="loginUser != null && userInfo.adminYN == 'Y'">
+          <template v-if="loginUser != null && loginUser.adminYN == 'Y'">
             <router-link class="nav-link" to="/admin/bottles/all">전체 검색</router-link>
           </template>
           <template v-else>
@@ -111,11 +111,11 @@
               {{ loginUser.nickname }}
             </button>
         </router-link>
-        <router-link to="/">
-            <button type="button" class="custom-btn btn btn-danger btn-sm" data-bs-toggle="modal" data-bs-target="#BookingModal">
+        <!-- <router-link to="/"> -->
+            <button type="button" @click="logout" class="custom-btn btn btn-danger btn-sm" data-bs-toggle="modal" data-bs-target="#BookingModal">
               로그아웃
             </button>
-        </router-link>
+        <!-- </router-link> -->
       </template>
 
     </div>
@@ -126,8 +126,9 @@
 
 <script>
 import { useUserStore } from '@/stores/users'
-import { $getUser } from '@/api/user'
+import { $getUser, $logoutUser } from '@/api/user'
 import { ref, onMounted } from 'vue'
+import { useRouter } from 'vue-router'
 
 export default {
   name: 'TheHeader',
@@ -135,16 +136,36 @@ export default {
     const loginUser = ref(null)
 
     const user = useUserStore()
-    const userInfo = user.getLoginUserInfo
+
+    const router = useRouter()
 
     const getLoginUser = () => {
-      if (userInfo != null) {
+      const userInfo = user.getLoginUserInfo
+      if (userInfo != null && loginUser.value == null) {
         $getUser(userInfo.userNo
         ).then(res => {
           console.log(res.data)
           loginUser.value = res.data
+          loginUser.value.adminYN = userInfo.adminYN
         }).catch(err => console.log(err))
       }
+    }
+
+    // 로그아웃
+    function logout () {
+      // 전역에 있는 userInfo 초기화
+      // 서버에 있는 토큰 제거
+      $logoutUser().then(res => {
+        console.log(res.data)
+        if (res.data.success === true) {
+          user.setLoginUserInfo({})
+          loginUser.value = null
+          console.log(loginUser.value)
+          router.push('/')
+        } else {
+          console.log('로그아웃 실패')
+        }
+      }).catch(err => console.log(err))
     }
 
     onMounted(() => {
@@ -154,7 +175,7 @@ export default {
     return {
       getLoginUser,
       loginUser,
-      userInfo
+      logout
     }
   }
 }
