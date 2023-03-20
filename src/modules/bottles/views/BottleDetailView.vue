@@ -431,7 +431,7 @@ export default {
 }
 </script>
 
-<style>
+<style scoped>
 
   .bottle-detail-view {
     background-color: black;

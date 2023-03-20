@@ -14,6 +14,10 @@
       <div class="modal-body">
         <form>
           <div class="form-group">
+            <label for="imgUrl">보틀 이미지</label>
+            <input type="file" class="form-control-file" id="imgUrl" accept="image/*" @change="handleImageUpload">
+          </div>
+          <div class="form-group">
             <label for="bottleName">보틀 이름</label>
             <input type="text" class="form-control" id="bottleName" v-model="addBottleName">
           </div>
@@ -151,6 +155,8 @@ export default {
         data.append('bottleAbv', addBottleAbv.value);
         data.append('tagNoList', selectedAddTags.value);
 
+        // imgUrl에 이미지 루트 넣어야됨!
+
       axios.post(url, data)
       .then(res => {
           bottles.value = res.data
@@ -178,6 +184,14 @@ export default {
       })
     }
 
+    // 이미지
+
+    const addBottleImage = ref()
+
+    const handleImageUpload = function(event){
+        addBottleImage.value=event.target.files[0]
+    }
+
    return {
     bottles,
     favorites,
@@ -193,7 +207,10 @@ export default {
     selectedAddTags,
     addBottle,
     closeAddBottleModal,
-    deleteBottle
+    deleteBottle,
+    addBottleImage,
+    handleImageUpload
+
    }
 
   },
@@ -220,7 +237,7 @@ export default {
 }
 </script>
 
-<style>
+<style scoped>
   /* 각 섹션 제목 스타일 */
   .section-title {
     font-size: 1.2rem;

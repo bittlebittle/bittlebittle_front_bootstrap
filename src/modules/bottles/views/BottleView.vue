@@ -1,5 +1,4 @@
 <template>
-    <router-view />
   <div>
   <div>
     <input type="text" v-model="keyword" placeholder="검색어를 입력하세요">
