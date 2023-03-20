@@ -48,38 +48,45 @@
 	      <p class="message">이미 회원이신가요? <router-link to="/">home</router-link></p>
     </form>
 
-
 </template>
 
 <script>
-import { ref, computed  } from 'vue'
+import { ref, computed } from 'vue'
+import { $checkDuplicate } from '@/api/user'
 
 export default {
   name: 'UserRegisterComp',
   setup () {
     const idCheckMsg = ref(null)
-    const phoneNum = ref({
+    const phoneNum = {
       phone_1: '',
       phone_2: '',
       phone_3: ''
-    })
+    }
 
     const phone = computed(() => {
-      return phoneNum.phone_1.value + '-' + phoneNum.phone_2.value + '-' + phoneNum.phone_3.value
+      return phoneNum.phone_1 + '-' + phoneNum.phone_2 + '-' + phoneNum.phone_3
     })
 
-    const registerData = ref({
+    const registerData = {
       userId: '',
       userPwd: '',
       chkPwd: '',
       nickname: '',
       email: '',
-      phone: phone.value
-    })
-    // phoneNum.phone_1.value + phoneNum.phone_2.value + phoneNum.phone_3.value
+      phone: phone
+    }
 
     function idCheck () {
-      console.log(registerData.value)
+      $checkDuplicate(registerData.userId)
+        .then(res => {
+          if (res.data.isDuplicate) {
+            idCheckMsg.value = '이미 존재하는 아이디 입니다.'
+          } else {
+            idCheckMsg.value = '사용 가능한 아이디 입니다.'
+          }
+        })
+        .catch(err => console.log(err))
     }
 
     function nicknameCheck () {

@@ -36,27 +36,58 @@
     <div class="collapse navbar-collapse" id="navbarNav">
       <ul class="navbar-nav mx-auto">
         <li class="nav-item">
-          <router-link class="nav-link active" to="/">Home</router-link>
+          <template v-if="loginUser != null && userInfo.adminYN == 'Y'">
+            <router-link class="nav-link active" to="/admin">Home</router-link>
+          </template>
+          <template v-else>
+            <router-link class="nav-link active" to="/">Home</router-link>
+          </template>
         </li>
 
         <li class="nav-item">
-          <router-link class="nav-link" to="/bottles">bottle</router-link>
+          <template v-if="loginUser != null && userInfo.adminYN == 'Y'">
+            <router-link class="nav-link" to="/admin/bottles">bottle</router-link>
+          </template>
+          <template v-else>
+            <router-link class="nav-link" to="/bottles">bottle</router-link>
+          </template>
         </li>
 
         <li class="nav-item">
+          <template v-if="loginUser != null && userInfo.adminYN == 'Y'">
+          <router-link class="nav-link" to="/admin/boards">자유게시판</router-link>
+          </template>
+          <template v-else>
           <router-link class="nav-link" to="/boards">자유게시판</router-link>
+        </template>
         </li>
 
         <li class="nav-item">
+          <template v-if="loginUser != null && userInfo.adminYN == 'Y'">
+            <router-link class="nav-link" to="/admin/notices">공지사항</router-link>
+          </template>
+          <template v-else>
           <router-link class="nav-link" to="/notices">공지사항</router-link>
+          </template>
         </li>
 
         <li class="nav-item">
+          <template v-if="loginUser != null && userInfo.adminYN == 'Y'">
+
+          <router-link class="nav-link" to="/admin/faqs">FAQ</router-link>
+          </template>
+          <template v-else>
           <router-link class="nav-link" to="/faqs">FAQ</router-link>
+        </template>
         </li>
 
         <li class="nav-item">
+          <template v-if="loginUser != null && userInfo.adminYN == 'Y'">
+            <router-link class="nav-link" to="/admin/bottles/all">전체 검색</router-link>
+          </template>
+          <template v-else>
           <router-link class="nav-link" to="/bottles/all">전체 검색</router-link>
+        </template>
         </li>
       </ul>
     </div>
