@@ -5,7 +5,7 @@
 
 <script>
 export default {
-    name: "AdminBottle"
+  name: "AdminBottle"
 }
 </script>
 
