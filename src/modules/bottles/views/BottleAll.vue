@@ -93,7 +93,7 @@ export default {
           console.log('error', err)
         }),
 
-      axios.get('/api/admin/tags')
+      axios.get('/api/tags')
         .then(res => {
           console.log('tags data', res.data)
           tags.value = res.data.tags
