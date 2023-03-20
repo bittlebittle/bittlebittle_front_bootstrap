@@ -50,7 +50,7 @@ export default {
           favorites.value = res.data.favorites
 		    })
         .catch(err=>{
-          console.log(err)  
+          console.log(err)
         })
     })
 
@@ -85,7 +85,5 @@ export default {
 </script>
 
 <style>
-
-
-
 </style>
+

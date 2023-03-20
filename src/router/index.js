@@ -1,11 +1,12 @@
 import { createRouter, createWebHistory } from 'vue-router'
 import DefaultLayout from '@/layouts/default/Index'
 import AdminLayout from '@/layouts/admin/Index'
-import AuthenticationLayout from '@/layouts/authentication/index'
+import AuthenticationLayout from '@/layouts/authentication/Index'
 import MainView from '@/modules/MainView'
 import UserView from '@/modules/users/views/UserView'
 import BoardView from '@/modules/boards/views/BoardView'
 import BottleView from '@/modules/bottles/views/BottleView'
+import BottleAll from '@/modules/bottles/views/BottleAll'
 import BottleDetailView from '@/modules/bottles/views/BottleDetailView'
 import NoticeView from '@/modules/notices/views/NoticeView'
 import FaqView from '@/modules/faqs/views/FaqView'
@@ -95,6 +96,11 @@ const routes = [
         path: '/faqs',
         name: 'FaqView',
         component: FaqView
+      },
+      {
+        path: '/all',
+        name: 'BottleAll',
+        component: BottleAll
       }
     ]
   }, {
