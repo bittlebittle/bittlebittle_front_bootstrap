@@ -98,11 +98,6 @@ const routes = [
         path: '/faqs',
         name: 'FaqView',
         component: FaqView
-      },
-      {
-        path: '/all',
-        name: 'BottleAll',
-        component: BottleAll
       }
     ]
   }, {
