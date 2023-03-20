@@ -58,21 +58,54 @@
         </div>
       </div>
       <div class="d-flex justify-content-end">
-        <b-button v-if="selectedReview.userNo === currentUserNo" class="btn btn-edit" @click="showEditModal(selectedReview)">수정</b-button>
+        <b-button v-if="selectedReview.userNo === currentUserNo" class="btn btn-edit" @click="showEditReviewModal()">수정</b-button>
         <b-button v-if="selectedReview.userNo === currentUserNo" class="btn btn-delete" @click="deleteReview()">삭제</b-button>
       </div>
+    
+    <!-- replyList 출력 -->
+    <ul class="list-unstyled">
+      <li v-for="reply in replyList" :key="reply.replyNo">
+        {{ reply.userNo }}&nbsp;&nbsp;&nbsp;&nbsp;{{ reply.createTime }}&nbsp;&nbsp;&nbsp;&nbsp;{{ reply.replyContent }}
+        <button v-if="selectedReview.userNo === currentUserNo" class="btn btn-edit" @click="showEditReplyModal(reply)">수정</button>
+        <button v-if="selectedReview.userNo === currentUserNo" class="btn btn-delete" @click="deleteReply(reply.replyNo)">삭제</button>
+      </li>
+    </ul>
+
+    <b-modal v-model="editReplyModalVisible" title="댓글 수정" v-if="editReplyModalVisible">
+      <div class="modal-content">
+        <form @submit.prevent="saveReply">
+          <div>
+            <label for="replyContent">내용:</label><br>
+            <textarea class="form-control" id="replyContent" v-model="editReplyContent"></textarea>
+          </div>
+          <br>
+          <button class="btn btn-primary" type="submit">수정 완료</button>
+          <button @click="closeEditReplyModal()">취소</button>
+        </form>
+      </div>
+    </b-modal>
+
+    <!-- reply 작성 폼 -->
+  <form @submit.prevent="addReply">
+    <div class="form-group">
+      <label for="replyContent">댓글 작성</label>
+      <textarea class="form-control" id="replyContent" v-model="newReplyContent"></textarea>
+    </div>
+    <button type="submit" class="btn btn-primary custom-button">작성</button>
+  </form>
+    </b-modal>
 
       <!-- 리뷰 수정 모달 -->
   <b-modal v-model="editReviewModalVisible" title="리뷰 수정" v-if="editReviewModalVisible">
-      <div class="modal-content">
+      <div class="edit-modal-content">
         <form @submit.prevent="saveReview">
         <div>
           <label for="reviewTitle">제목:</label>
-          <input type="text" id="reviewTitle" v-model="editReviewTitle" />
+          <input class="review-form-control" type="text" id="reviewTitle" v-model="editReviewTitle"/>
         </div>
         <div>
           <label for="reviewContent">내용:</label>
-          <textarea id="reviewContent" v-model="editReviewContent"></textarea>
+          <textarea class="review-form-control" id="reviewContent" v-model="editReviewContent"></textarea>
         </div>
          <div>
         <label for="grade">점수:</label>
@@ -89,43 +122,10 @@
           <label for="score1">1점</label>
         </fieldset>
       </div>
-        <button type="submit">작성 완료</button>
+        <button class="btn btn-primary" type="submit">작성 완료</button>
         <button @click="closeEditModal()">취소</button>
       </form>
       </div>
-    </b-modal>
-    <br>
-    
-    <!-- replyList 출력 -->
-    <ul class="list-unstyled">
-      <li v-for="reply in replyList" :key="reply.replyNo">
-        {{ reply.userNo }}&nbsp;&nbsp;&nbsp;&nbsp;{{ reply.createTime }}&nbsp;&nbsp;&nbsp;&nbsp;{{ reply.replyContent }}
-        <button v-if="selectedReview.userNo === currentUserNo" class="btn btn-edit" @click="showEditReplyModal(reply)">수정</button>
-        <button v-if="selectedReview.userNo === currentUserNo" class="btn btn-delete" @click="deleteReply(reply.replyNo)">삭제</button>
-      </li>
-    </ul>
-
-    <b-modal v-model="editReplyModalVisible" title="댓글 수정" v-if="editReplyModalVisible">
-      <div class="modal-content">
-        <form @submit.prevent="saveReply">
-          <div>
-            <label for="replyContent">내용:</label>
-            <textarea id="replyContent" v-model="editReplyContent"></textarea>
-          </div>
-          <button class="btn btn-edit" type="submit">수정 완료</button>
-          <button class="btn btn-edit" @click="closeEditReplyModal()">취소</button>
-        </form>
-      </div>
-    </b-modal>
-
-    <!-- reply 작성 폼 -->
-  <form @submit.prevent="addReply">
-    <div class="form-group">
-      <label for="replyContent">댓글 작성</label>
-      <textarea class="form-control" id="replyContent" v-model="newReplyContent"></textarea>
-    </div>
-    <button type="submit" class="btn btn-primary custom-button">작성</button>
-  </form>
     </b-modal>
 
     <!-- 리뷰 작성 폼 -->
@@ -282,12 +282,13 @@ export default {
 
     const editReviewModalVisible = ref(false)
 
-    const showEditModal = (selectedReview) => {
-      editReviewNo.value = selectedReview.reviewNo
+    const showEditReviewModal = () => {
+      reviewModal.value = false
       editReviewModalVisible.value = true
-      editReviewTitle.value = selectedReview.reviewTitle
-      editReviewContent.value = selectedReview.reviewContent
-      editGrade.value = selectedReview.grade
+      editReviewNo.value = selectedReview.value.reviewNo
+      editReviewTitle.value = selectedReview.value.reviewTitle
+      editReviewContent.value = selectedReview.value.reviewContent
+      editGrade.value = selectedReview.value.grade
     }
 
     const editReviewNo = ref(0)
@@ -309,9 +310,12 @@ export default {
         // 리뷰 등록 후 새로고침 없이 해당 보틀의 리뷰 리스트 갱신
 
           reviewList.value = res.data
-
-          reviewModal.value = false
+          reviewModal.value = true
           editReviewModalVisible.value = false
+          selectedReview.value.reviewTitle=editReviewTitle.value
+          selectedReview.value.reviewContent=editReviewContent.value
+          selectedReview.value.grade=editGrade.value
+
         })
         .catch(err => {
           console.log(err)
@@ -403,7 +407,7 @@ export default {
       replyList,
       closeReviewModal,
       editReviewModalVisible,
-      showEditModal,
+      showEditReviewModal,
       editReviewNo,
       editReviewTitle,
       editReviewContent,
@@ -532,6 +536,18 @@ export default {
     padding: 10px;
   }
 
+  .edit-modal-content {
+    width: 50%;
+    position: fixed;
+    top: 50%;
+    left: 50%;
+    transform: translate(-50%, -50%);
+    background-color: #000;
+    color: #ff9933;
+    border: 3px solid #ff9933;
+    padding: 10px;
+  }
+
   .modal-header {
     border-bottom: none;
   }
@@ -569,7 +585,7 @@ export default {
 }
 
 .form-control {
-  height: 70px;
-  width: 300px;
+  height: 50px;
+  width: 500px;
 }
 </style>
