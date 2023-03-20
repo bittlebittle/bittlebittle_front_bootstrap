@@ -17,7 +17,6 @@
             <input type="radio" :name="`tag-${tagType.tagTypeNo}`" :value = "null" v-model="selectedTags[tagType.tagTypeNo-1]">
             전체선택
           </label>
-
           <label v-for="tag in tagList.filter(tag => tag.keyTypeNo === tagType.tagTypeNo)" :key="tag.tagNo" class="tag-box">
             <input type="radio" :name="`tag-${tagType.tagTypeNo}`" :value="tag.tagNo" v-model="selectedTags[tagType.tagTypeNo-1]">
             {{ tag.tagName }}
@@ -91,7 +90,7 @@ export default {
           console.log('error', err)
         }),
 
-      axios.get('/api/tags')
+      axios.get('/api/admin/tags')
         .then(res => {
           console.log('tags data', res.data)
           tags.value = res.data.tags
