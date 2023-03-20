@@ -68,4 +68,18 @@ async function $deleteUserTags (tagNoList) {
   }
 }
 
-export { $loginUser, $getUser, $editUser, $addUser, $removeUser, $logoutUser, $addUserTags, $deleteUserTags }
+async function $checkDuplicate (userId) {
+  try {
+    const user = useUserStore()
+    const axios = getJsonAxiosInstance(user.getLoginUserInfo)
+    await axios.post('api/users/check-duplicate', { userId: userId })
+  } catch (error) {
+    console.error('Error deleting user tags:', error)
+  }
+}
+
+export {
+  $loginUser, $getUser, $editUser, $addUser, $removeUser,
+  $logoutUser, $checkDuplicate,
+  $addUserTags, $deleteUserTags
+}
