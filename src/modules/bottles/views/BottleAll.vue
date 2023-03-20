@@ -1,6 +1,4 @@
 <template>
- <router-view />
-
 <!-- 태그 목록 -->
   <div class="container mt-3">
     <div class="row">
@@ -18,10 +16,6 @@
       <div v-for="tagType in tagTypeList" :key="tagType.tagTypeNo">
         <div>{{ tagType.tagTypeName }}</div>
         <div>
-          <!-- <label v-for="tag in tagList.filter(tag => tag.keyTypeNo === tagType.tagTypeNo)" :key="tag.tagNo" class="tag-box">
-            <input type="radio" :name="`tag-${tagType.tagTypeNo}`" :value="tag.tagNo" v-model="selectedTags[tagType.tagTypeNo-1]">
-            {{ tag.tagName }}
-          </label> -->
           <label v-for="tag in tagList.filter(tag => tag.keyTypeNo === tagType.tagTypeNo)" :key="tag.tagNo" class="tag-box">
             <input type="radio" :name="`tag-${tagType.tagTypeNo}`" :value="tag.tagNo" v-model="selectedTags[tagType.tagTypeNo-1]">
             {{ tag.tagName }}

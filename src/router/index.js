@@ -6,7 +6,6 @@ import MainView from '@/modules/MainView'
 import UserView from '@/modules/users/views/UserView'
 import BoardView from '@/modules/boards/views/BoardView'
 import Bottle from '@/modules/bottles/views/Bottle'
-import BottleView from '@/modules/bottles/views/BottleView'
 import BottleAll from '@/modules/bottles/views/BottleAll'
 import BottleDetailView from '@/modules/bottles/views/BottleDetailView'
 import NoticeView from '@/modules/notices/views/NoticeView'
@@ -51,20 +50,16 @@ const routes = [
         children: [
           {
             path: '/bottles',
-            name: 'BottleView',
-            component: BottleView
+            name: 'BottleAll',
+            component: BottleAll
           },
           {
             path: '/bottles/:bottleNo',
             name: 'BottleDetailView',
             component: BottleDetailView,
             props: true
-          }, {
-            path: '/bottles/all',
-            name: 'BottleAll',
-            component: () => import('@/modules/bottles/views/BottleAll'),
-            props: true
           }
+          
         ]
       },
       {
