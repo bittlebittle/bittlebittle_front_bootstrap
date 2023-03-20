@@ -34,15 +34,17 @@
         <tr>
           <td>연락처</td>
           <td colspan="2">
-            <select v-model="phoneNum.phone_1">
+            <!-- <select v-model="phoneNum.phone_1">
                 <option value="010" selected>010</option>
                 <option value="011">011</option>
                 <option value="016">016</option>
                 <option value="017">017</option>
                 <option value="019">019</option>
             </select>
-            - <input type="text" v-model="phoneNum.phone_2" style="width: 7rem;"/> - <input style="width: 7rem;" type="text" v-model="phoneNum.phone_3" /></td>
-        </tr>
+            - <input type="text" v-model="phoneNum.phone_2" style="width: 7rem;"/> - <input style="width: 7rem;" type="text" v-model="phoneNum.phone_3" /></td> -->
+            <input type="text" v-model="registerData.value" style="width: 15rem;" placeholder="000-0000-0000 '-'을 붙여서 작성해주세요 '"/>
+            </td>
+          </tr>
         </table><br><br><br>
 	      <button type="submit" class="custom-btn btn btn-warning" style="padding: 14px;">회원가입</button> <br><br>
 	      <p class="message">이미 회원이신가요? <router-link to="/">home</router-link></p>
@@ -58,15 +60,15 @@ export default {
   name: 'UserRegisterComp',
   setup () {
     const idCheckMsg = ref(null)
-    const phoneNum = ref({
-      phone_1: '',
-      phone_2: '',
-      phone_3: ''
-    })
+    // const phoneNum = ref({
+    //   phone_1: '',
+    //   phone_2: '',
+    //   phone_3: ''
+    // })
 
-    const phone = computed(() => {
-      return phoneNum.phone_1.value + '-' + phoneNum.phone_2.value + '-' + phoneNum.phone_3.value
-    })
+    // const phone = computed(() => {
+    //   return phoneNum.phone_1.value + '-' + phoneNum.phone_2.value + '-' + phoneNum.phone_3.value
+    // })
 
     const registerData = ref({
       userId: '',
@@ -74,7 +76,7 @@ export default {
       chkPwd: '',
       nickname: '',
       email: '',
-      phone: phone.value
+      phone: ''
     })
     // phoneNum.phone_1.value + phoneNum.phone_2.value + phoneNum.phone_3.value
 
@@ -90,8 +92,7 @@ export default {
       registerData,
       idCheckMsg,
       idCheck,
-      nicknameCheck,
-      phoneNum
+      nicknameCheck
     }
   }
 }
