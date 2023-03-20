@@ -6,7 +6,6 @@
             <button class="btn btn-primary">태그 수정</button>
   </router-link>
 
-  <img :src="imageUrl">
   <!-- bottle 추가 modal -->
   <b-modal v-model="addBottleModal" title="보틀 추가" v-if="addBottleModal">
     <div class="modal-content" style="padding: 20px;">
@@ -56,8 +55,7 @@
         <b-button class="btn btn-secondary" @click="closeAddBottleModal()">취소</b-button>
       </div>
     </div>
-    <img src="/Users/s/Desktop/C/Kosa_Education/bittlebittle/bittlebittle_backend/target/BITTLEBITTLE/resources/image/bottle/2023032015404486774.png">
-  </b-modal>
+    </b-modal>
 
   <div>AdminBottleView</div>
   <div>
@@ -110,6 +108,7 @@ export default {
     onMounted(() => {
       axios.get('/api/bottles/all')
         .then(res => {
+          console.log(res.data.bottle)
           bottles.value = res.data.bottle
           favorites.value = res.data.favorites
 		    })
@@ -192,7 +191,9 @@ export default {
       addBottleImage.value = event.target.files[0]
     }
 
-    const imageUrl = 'http://localhost:8080/resources/image/bottle/2023032015351948598.png'
+    //
+    const imageUrl = 'http://localhost:8080/bittlebittle/image?path=bottle&name=스크린샷 2023-03-18 오후 6.12.49.png'
+
 
     return {
       bottles,
