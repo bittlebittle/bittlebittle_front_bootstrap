@@ -56,7 +56,7 @@
         </li>
 
         <li class="nav-item">
-          <router-link class="nav-link" to="/all">전체 검색</router-link>
+          <router-link class="nav-link" to="/bottles/all">전체 검색</router-link>
         </li>
       </ul>
     </div>

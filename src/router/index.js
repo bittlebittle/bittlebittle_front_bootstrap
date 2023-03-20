@@ -51,6 +51,11 @@ const routes = [
             name: 'BottleDetailView',
             component: BottleDetailView,
             props: true
+          }, {
+            path: '/bottles/all',
+            name: 'BottleAll',
+            component: () => import('@/modules/bottles/views/BottleAll'),
+            props: true
           }
         ]
       },
