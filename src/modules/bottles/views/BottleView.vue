@@ -15,7 +15,7 @@
       <tbody>
         <tr v-for="bottle in bottles" :key="bottle.bottleNo">
           <td>{{ bottle.bottleNo }}</td>
-          <td> {{ bottle.bottleName }}
+          <td>
             <router-link :to="{ name:'BottleDetailView', params : { bottleNo : bottle.bottleNo} }">
               {{ bottle.bottleName }}
             </router-link>
@@ -30,30 +30,40 @@
 import { getFormAxiosInstance } from '@/api/index'
 import { onMounted } from '@vue/runtime-core'
 import { ref } from '@vue/reactivity'
+import { useUserStore } from '@/stores/users'
 
 export default {
   name: 'BottleView',
 
   setup () {
-
-    const axios = getFormAxiosInstance();
+    const user = useUserStore()
+    const axios = getFormAxiosInstance(user.getLoginUserInfo);
 
     const bottles = ref([]);
     const favorites = ref([]);
-    const keyword = ref(''); // 검색어 변수 선언
     const tags = ref([]);
 
     onMounted(()=>{
 
-      axios.get('/api/bottles/all')
-        .then(res => {
-          console.log(res.data)
-          bottles.value = res.data.bottle
-          favorites.value = res.data.favorites
-          })
-        .catch(err=>{
-          console.log(err)  
-        }),
+      // axios.get('/api/bottles/all')
+      //   .then(res => {
+      //     console.log(res.data)
+      //     bottles.value = res.data.bottle
+      //     favorites.value = res.data.favorites
+      //     })
+      //   .catch(err=>{
+      //     console.log(err)  
+      //   }),
+
+        axios.get('/api/bottles')
+          .then(res => {
+            console.log(res.data)
+            bottles.value = res.data.bottle
+            favorites.value = res.data.favorites
+            })
+          .catch(err=>{
+            console.log(err)  
+          }),
 
         axios.get('/api/tags')
         .then(res => {
@@ -96,5 +106,8 @@ export default {
 }
 </script>
 
-<style>
+<style scoped>
+* {
+  color: var(--white-color);
+}
 </style>
