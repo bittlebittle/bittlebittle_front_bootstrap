@@ -1,17 +1,22 @@
 <template>
       
   <div>AdminTagView</div>
-<div>
+  <h5> * 클릭하면 수정 가능 </h5>
+  <div>
     <div class="related-list">
       <div class="section-title">태그 타입 리스트:</div>
       <div class="tag-box" v-for="tagType in tagTypeList" :key="tagType.tagTypeNo">
         <span @click="showEditTagTypeModal(tagType)">{{ tagType.tagTypeName }}</span>
         <button @click="deleteTagType(tagType.tagTypeNo)">X</button>
       </div>
-      <div v-if="editTagTypeModal">
+      <div class="edit-input" v-if="editTagTypeModal">
         <input v-model="editTagTypeName">
+        <br>
+        <br>
+        <button @click="closeInput()">취소</button>
         <button class="save-button" @click="saveTagTypeName">저장</button>
       </div>
+      <br>
       <br>
       <div>
         <input v-model="newTagType" placeholder="새 태그 타입 추가">
@@ -28,11 +33,16 @@
         <button @click="deleteTag(tag.tagNo)">X</button>
       </div>
       </div>
-      <div v-if="editTagModal">
+      <div class="edit-input" v-if="editTagModal">
         <input v-model="editTagName">
+        <br>
+        <br>
         <select v-model="editKeyTypeNo">
           <option v-for="tagType in tagTypeList" :value="tagType.tagTypeNo" :key="tagType.tagTypeNo">{{ tagType.tagTypeName }}</option>
         </select>
+        <br>
+        <br>
+        <button @click="closeInput()">취소</button>
         <button class="save-button" @click="saveTagName">저장</button>
       </div>
       <br>
@@ -193,6 +203,11 @@ export default {
           console.log(err)
         })
     }
+
+      const closeInput = function(){
+        editTagTypeModal.value=false
+        editTagModal.value=false
+      }
     
 
    return {
@@ -215,7 +230,8 @@ export default {
         editTagName,
         editKeyTypeNo,
         showEditTagModal,
-        saveTagName
+        saveTagName,
+        closeInput
    }
 
   }
@@ -257,4 +273,20 @@ export default {
   margin-bottom: 4px;
 }
 
+.edit-input {
+  position: fixed;
+  top: 50%;
+  left: 50%;
+  transform: translate(-50%, -50%);
+  background-color: #000;
+  color: #ff9933;
+  border: 3px solid #ff9933;
+  padding: 10px;
+  flex-direction: row;
+  gap: 20px; /* element 사이의 간격을 20px로 설정 */
+}
+
+div > * {
+  margin-right: 10px; /* 각 엘리먼트 사이에 10px 간격을 줌 */
+}
 </style>
