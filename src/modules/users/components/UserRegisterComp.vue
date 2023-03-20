@@ -116,17 +116,21 @@ export default {
     })
 
     function idCheck () {
-      $checkDuplicate(registerData.userId)
-        .then(res => {
-          console.log(res)
-          if (res.data.isDuplicate) {
-            idCheckMsg.value = '이미 존재하는 아이디 입니다.'
-          } else {
-            idCheckMsg.value = '사용 가능한 아이디 입니다.'
-          }
-        })
-        .catch(err => console.log(err))
-    }
+  if (registerData.userId === '') {
+    idCheckMsg.value = '아이디를 입력해주세요.';
+    return;
+  }
+  $checkDuplicate(registerData.userId)
+    .then(res => {
+      console.log(res)
+      if (res.data.isDuplicate) {
+        idCheckMsg.value = '이미 존재하는 아이디 입니다.'
+      } else {
+        idCheckMsg.value = '사용 가능한 아이디 입니다.'
+      }
+    })
+    .catch(err => console.log(err))
+}
 
     function nicknameCheck () {
 
