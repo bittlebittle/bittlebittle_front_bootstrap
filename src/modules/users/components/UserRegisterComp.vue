@@ -16,11 +16,15 @@
         </tr><br>
         <tr>
           <td>* 비밀번호</td>
-          <td colspan="2"><input type="password" id="password" v-model="registerData.userPwd" placeholder="비밀번호" /></td>
+          <td colspan="2"><input type="password" v-model="registerData.userPwd" placeholder="비밀번호" /></td>
         </tr><br>
         <tr>
           <td>* 비밀번호 확인</td>
           <td colspan="2"><input type="password" id="password-confirm" v-model="registerData.chkPwd" placeholder="비밀번호 확인" /></td>
+        </tr><br>
+        <tr>
+          <td>* 이름</td>
+          <td colspan="2"><input type="text" v-model="registerData.userName" placeholder="이름" /></td>
         </tr><br>
         <tr>
           <td>* 닉네임</td>
@@ -34,15 +38,17 @@
         <tr>
           <td>연락처</td>
           <td colspan="2">
-            <select v-model="phoneNum.phone_1">
+            <!-- <select v-model="phoneNum.phone_1">
                 <option value="010" selected>010</option>
                 <option value="011">011</option>
                 <option value="016">016</option>
                 <option value="017">017</option>
                 <option value="019">019</option>
             </select>
-            - <input type="text" v-model="phoneNum.phone_2" style="width: 7rem;"/> - <input style="width: 7rem;" type="text" v-model="phoneNum.phone_3" /></td>
-        </tr>
+            - <input type="text" v-model="phoneNum.phone_2" style="width: 7rem;"/> - <input style="width: 7rem;" type="text" v-model="phoneNum.phone_3" /></td> -->
+            <input type="text" v-model="registerData.value" style="width: 15rem;" placeholder="000-0000-0000 '-'을 붙여서 작성해주세요 '"/>
+            </td>
+          </tr>
         </table><br><br><br>
 	      <button type="submit" class="custom-btn btn btn-warning" style="padding: 14px;">회원가입</button> <br><br>
 	      <p class="message">이미 회원이신가요? <router-link to="/">home</router-link></p>
@@ -51,35 +57,37 @@
 </template>
 
 <script>
-import { ref, computed } from 'vue'
-import { $checkDuplicate } from '@/api/user'
+import { ref } from 'vue'
+import { $checkDuplicate, $addUser } from '@/api/user'
 
 export default {
   name: 'UserRegisterComp',
   setup () {
     const idCheckMsg = ref(null)
-    const phoneNum = {
-      phone_1: '',
-      phone_2: '',
-      phone_3: ''
-    }
+    // const phoneNum = {
+    //   phone_1: '',
+    //   phone_2: '',
+    //   phone_3: ''
+    // }
 
-    const phone = computed(() => {
-      return phoneNum.phone_1 + '-' + phoneNum.phone_2 + '-' + phoneNum.phone_3
-    })
+    // const phone = computed(() => {
+    //   return phoneNum.phone_1 + '-' + phoneNum.phone_2 + '-' + phoneNum.phone_3
+    // })
 
     const registerData = {
       userId: '',
       userPwd: '',
       chkPwd: '',
+      userName: '',
       nickname: '',
       email: '',
-      phone: phone
+      phone: ''
     }
 
     function idCheck () {
       $checkDuplicate(registerData.userId)
         .then(res => {
+          console.log(res)
           if (res.data.isDuplicate) {
             idCheckMsg.value = '이미 존재하는 아이디 입니다.'
           } else {
@@ -93,12 +101,20 @@ export default {
 
     }
 
+    function registerUser () {
+      console.log(registerData)
+      $addUser(registerData).then(
+        res => console.log(res.data)
+      ).catch(err => console.log(err))
+    }
+
     return {
       registerData,
       idCheckMsg,
       idCheck,
       nicknameCheck,
-      phoneNum
+      // phoneNum,
+      registerUser
     }
   }
 }

@@ -10,6 +10,7 @@ export const useUserStore = defineStore('user', () => {
 
   function setLoginUserInfo (jwt) {
     userInfo.value = jwt
+    console.log(userInfo.value)
   }
 
   return { getLoginUserInfo, setLoginUserInfo }

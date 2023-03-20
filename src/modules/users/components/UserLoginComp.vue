@@ -41,7 +41,7 @@ export default {
               Authorization: res.headers.authorization,
               RefreshTokenIdx: res.headers.refreshtokenidx,
               userNo: res.data.userNo,
-              adminYN : res.data.adminYn
+              adminYN: res.data.adminYn
             }
             user.setLoginUserInfo(userInfo)
 
