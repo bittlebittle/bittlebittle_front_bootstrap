@@ -110,7 +110,7 @@
 import { getFormAxiosInstance } from '@/api/index'
 import { onMounted, ref, computed } from '@vue/runtime-core'
 import { useRouter } from 'vue-router'
-
+import { useUserStore } from '@/stores/users.js'
 
 export default {
   name: 'BottleDetailView',
@@ -123,7 +123,8 @@ export default {
   },
   
   setup (props) {
-    const axios = getFormAxiosInstance()
+    const user = useUserStore()
+    const axios = user.getLoginUserInfo ? getFormAxiosInstance(user.getLoginUserInfo) : getFormAxiosInstance('')
    
     const bottle = ref(null)
     const tagListByBottle = ref([])
@@ -213,7 +214,10 @@ export default {
 
     axios.post(url, data)
     .then(res => {
-      console.log('성공')
+      bottle.value = res.data.bottle
+      tagListByBottle.value = res.data.tagListByBottle
+      editBottleModal.value = false
+
     })
 
   }
@@ -293,14 +297,15 @@ export default {
     tagTypeList,
     tagList,
     selectedTags,
-    closeReviewModal
+    closeReviewModal,
+    user
   }
 
   }
 }
 </script>
 
-<style>
+<style scoped>
 
   .bottle-detail-view {
     background-color: black;

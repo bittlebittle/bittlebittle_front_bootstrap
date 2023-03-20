@@ -15,12 +15,24 @@
           <td colspan="3" style="text-align: center;">{{idCheckMsg}}</td>
         </tr><br>
         <tr>
-          <td>* 비밀번호</td>
-          <td colspan="2"><input type="password" id="password" v-model="registerData.userPwd" placeholder="비밀번호" /></td>
-        </tr><br>
+    <td>* 비밀번호</td>
+    <td colspan="2">
+      <input type="password" v-model="registerData.userPwd" placeholder="비밀번호" />
+      <p v-if="pwdErrorMsg" class="error-msg">{{ pwdErrorMsg }}</p>
+    </td>
+  </tr>
+        <br>
         <tr>
-          <td>* 비밀번호 확인</td>
-          <td colspan="2"><input type="password" id="password-confirm" v-model="registerData.chkPwd" placeholder="비밀번호 확인" /></td>
+    <td>* 비밀번호 확인</td>
+    <td colspan="2">
+      <input type="password" id="password-confirm" v-model="registerData.chkPwd" placeholder="비밀번호 확인" />
+      <p v-if="pwdConfirmErrorMsg" class="error-msg">{{ pwdConfirmErrorMsg }}</p>
+    </td>
+  </tr>
+        <br>
+        <tr>
+          <td>* 이름</td>
+          <td colspan="2"><input type="text" v-model="registerData.userName" placeholder="이름" /></td>
         </tr><br>
         <tr>
           <td>* 닉네임</td>
@@ -50,49 +62,110 @@
 	      <p class="message">이미 회원이신가요? <router-link to="/">home</router-link></p>
     </form>
 
-
 </template>
 
 <script>
-import { ref, computed  } from 'vue'
+import { ref, watch } from 'vue'
+import { $checkDuplicate, $addUser } from '@/api/user'
 
 export default {
   name: 'UserRegisterComp',
   setup () {
     const idCheckMsg = ref(null)
-    // const phoneNum = ref({
+
+    const pwdErrorMsg = ref(null)
+    const pwdConfirmErrorMsg = ref(null)
+
+    const passwordRegex = /^(?=.*[A-Za-z])(?=.*\d)[A-Za-z\d]{8,}$/
+
+    // const phoneNum = {
     //   phone_1: '',
     //   phone_2: '',
     //   phone_3: ''
-    // })
+    // }
 
     // const phone = computed(() => {
-    //   return phoneNum.phone_1.value + '-' + phoneNum.phone_2.value + '-' + phoneNum.phone_3.value
+    //   return phoneNum.phone_1 + '-' + phoneNum.phone_2 + '-' + phoneNum.phone_3
     // })
 
-    const registerData = ref({
+    const registerData = {
       userId: '',
       userPwd: '',
       chkPwd: '',
+      userName: '',
       nickname: '',
       email: '',
       phone: ''
+
+    }
+
+    watch(registerData.userPwd, newVal => {
+      if (!newVal.match(passwordRegex)) {
+        pwdErrorMsg.value = '입력을 다시 해주세요'
+      } else {
+        pwdErrorMsg.value = null
+      }
     })
-    // phoneNum.phone_1.value + phoneNum.phone_2.value + phoneNum.phone_3.value
+
+    watch(registerData.chkPwd, newVal => {
+      if (registerData.userPwd !== newVal) {
+        pwdConfirmErrorMsg.value = '비밀번호가 일치하지 않습니다.'
+      } else {
+        pwdConfirmErrorMsg.value = null
+      }
+    })
 
     function idCheck () {
-      console.log(registerData.value)
+      $checkDuplicate(registerData.userId)
+        .then(res => {
+          console.log(res)
+          if (res.data.isDuplicate) {
+            idCheckMsg.value = '이미 존재하는 아이디 입니다.'
+          } else {
+            idCheckMsg.value = '사용 가능한 아이디 입니다.'
+          }
+        })
+        .catch(err => console.log(err))
     }
 
     function nicknameCheck () {
 
     }
 
+    function checkAllFields() {
+      let fields = Object.values(registerData)
+      let result = fields.every(field => field !== '')
+      if (!result) {
+        alert('입력되지 않은 항목이 있습니다.')
+        return false
+      }
+
+      if (idCheckMsg.value !== '사용 가능한 아이디 입니다.') {
+        alert('아이디 중복확인을 해주세요.')
+        return false
+      }
+
+      return true
+    }
+
+
+    function registerUser () {
+      if (checkAllFields()) {
+        console.log(registerData)
+        $addUser(registerData).then(
+          res => console.log(res.data)
+        ).catch(err => console.log(err))
+      }
+    }
+
     return {
       registerData,
       idCheckMsg,
       idCheck,
-      nicknameCheck
+
+      nicknameCheck,
+
+      registerUser
     }
   }
 }
@@ -245,4 +318,9 @@ body {
 #confirm:hover {
   background-color: green;
 }
+.error-msg {
+    font-size: 12px;
+    color: red;
+    margin-top: 5px;
+  }
 </style>

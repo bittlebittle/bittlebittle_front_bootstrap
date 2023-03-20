@@ -1,5 +1,5 @@
 <template>
-      
+
   <div>AdminTagView</div>
   <h5> * 클릭하면 수정 가능 </h5>
   <div>
@@ -59,84 +59,82 @@
 
 <script>
 import { getJsonAxiosInstance } from '@/api/index'
-import { onMounted } from '@vue/runtime-core'
-import { ref } from '@vue/reactivity'
+import { onMounted, ref } from 'vue'
+
 import { useUserStore } from '@/stores/users'
 
 export default {
   name: 'AdminTagView',
-  
-  setup () {
-    const user = useUserStore();
-    const axios = getJsonAxiosInstance(user.getLoginUserInfo);
 
+  setup () {
+    const user = useUserStore()
+    const axios = user.getLoginUserInfo ? getJsonAxiosInstance(user.getLoginUserInfo) : getJsonAxiosInstance('')
     const tagTypeList = ref([])
     const tagList = ref([])
-    
-    onMounted(()=>{
 
-        axios.get('api/admin/tagtypes')
+    onMounted(() => {
+      axios.get('api/admin/tagtypes')
         .then(res => {
-            tagTypeList.value=res.data
+          tagTypeList.value = res.data
         })
         .catch(err => {
-            console.log(err)
+          console.log(err)
         })
-        
-        axios.get('/api/admin/tags')
+
+      axios.get('/api/admin/tags')
         .then(res => {
-            tagList.value = res.data
+          tagList.value = res.data
 		    })
-        .catch(err=>{
-          console.log(err)  
+        .catch(err => {
+          console.log(err)
         })
     })
 
     const newTagType = ref('')
 
-    const addTagType = function(){
-        let data = {
-            tagTypeName : newTagType.value
-        }
-        axios.post('/api/admin/tagtypes', data)
-        .then(res =>{
-           tagTypeList.value=res.data
-           newTagType.value=''
+    const addTagType = function () {
+      const data = {
+        tagTypeName: newTagType.value
+      }
+      axios.post('/api/admin/tagtypes', data)
+        .then(res => {
+          tagTypeList.value = res.data
+          newTagType.value = ''
         })
     }
 
     const selectedTagType = ref(0)
     const newTag = ref('')
 
-    const addTag = function(){
-        let data = {
-            keyTypeNo : selectedTagType.value,
-            tagName : newTag.value
-        }
-        axios.post('api/admin/tags', data)
+    const addTag = function () {
+      const data = {
+        keyTypeNo: selectedTagType.value,
+        tagName: newTag.value
+      }
+      axios.post('api/admin/tags', data)
         .then(res => {
-            tagList.value = res.data
-            newTag.value=''
+          tagList.value = res.data
+          newTag.value = ''
         })
     }
 
-    const deleteTagType = function(tagTypeNo){
-        axios.get(`/api/admin/tagtypes/${tagTypeNo}/deletion`)
+    const deleteTagType = function (tagTypeNo) {
+      axios.get(`/api/admin/tagtypes/${tagTypeNo}/deletion`)
         .then(res => {
-            tagTypeList.value = res.data
+          tagTypeList.value = res.data
         })
         .catch(err => {
-            console.log(err)
+          console.log(err)
         })
     }
 
-    const deleteTag = function(tagNo){
-        axios.get(`/api/admin/tags/${tagNo}/deletion`)
+    const deleteTag = function (tagNo) {
+      axios.get(`/api/admin/tags/${tagNo}/deletion`)
         .then(res => {
-            tagList.value = res.data
+          tagList.value = res.data
         })
         .catch(err => {
-            console.log(err)
+          console.log(err)
         })
     }
 
@@ -146,24 +144,22 @@ export default {
     const editTagTypeNo = ref(0)
     const editTagTypeName = ref('')
 
-    const showEditTagTypeModal = function(selectedTagType){
-        editTagTypeModal.value = true
-        editTagTypeNo.value = selectedTagType.tagTypeNo
-        editTagTypeName.value = selectedTagType.tagTypeName
-
+    const showEditTagTypeModal = function (selectedTagType) {
+      editTagTypeModal.value = true
+      editTagTypeNo.value = selectedTagType.tagTypeNo
+      editTagTypeName.value = selectedTagType.tagTypeName
     }
 
-    const saveTagTypeName = function(){
-        
-        let data = {
-          tagTypeNo : editTagTypeNo.value,
-          tagTypeName : editTagTypeName.value
-        }
-        
-        axios.post('/api/admin/tagtypes/set-data', data)
+    const saveTagTypeName = function () {
+      const data = {
+        tagTypeNo: editTagTypeNo.value,
+        tagTypeName: editTagTypeName.value
+      }
+
+      axios.post('/api/admin/tagtypes/set-data', data)
         .then(res => {
-            tagTypeList.value = res.data
-            editTagTypeModal.value = false
+          tagTypeList.value = res.data
+          editTagTypeModal.value = false
         })
         .catch(err => {
           console.log(err)
@@ -172,68 +168,63 @@ export default {
 
     // 태그 수정
 
-
     const editTagModal = ref(false)
     const editTagNo = ref(0)
     const editTagName = ref('')
     const editKeyTypeNo = ref(0)
 
-    const showEditTagModal = function(selectedTag){
-        editTagModal.value = true
-        editTagNo.value = selectedTag.tagNo
-        editTagName.value = selectedTag.tagName
-        editKeyTypeNo.value = selectedTag.keyTypeNo
-
+    const showEditTagModal = function (selectedTag) {
+      editTagModal.value = true
+      editTagNo.value = selectedTag.tagNo
+      editTagName.value = selectedTag.tagName
+      editKeyTypeNo.value = selectedTag.keyTypeNo
     }
 
-    const saveTagName = function(){
-      
-        let data = {
-          tagNo : editTagNo.value,
-          tagName : editTagName.value,
-          keyTypeNo: editKeyTypeNo.value
-        }
-        
-        axios.post('/api/admin/tags/set-data', data)
+    const saveTagName = function () {
+      const data = {
+        tagNo: editTagNo.value,
+        tagName: editTagName.value,
+        keyTypeNo: editKeyTypeNo.value
+      }
+
+      axios.post('/api/admin/tags/set-data', data)
         .then(res => {
-            tagList.value = res.data
-            editTagModal.value = false
+          tagList.value = res.data
+          editTagModal.value = false
         })
         .catch(err => {
           console.log(err)
         })
     }
 
-      const closeInput = function(){
-        editTagTypeModal.value=false
-        editTagModal.value=false
-      }
-    
+    const closeInput = function () {
+      editTagTypeModal.value = false
+      editTagModal.value = false
+    }
 
-   return {
-        tagTypeList,
-        tagList,
-        newTagType,
-        addTagType,
-        selectedTagType,
-        newTag,
-        addTag,
-        deleteTagType,
-        deleteTag,
-        editTagTypeModal,
-        editTagTypeNo,
-        editTagTypeName,
-        showEditTagTypeModal,
-        saveTagTypeName,
-        editTagModal,
-        editTagNo,
-        editTagName,
-        editKeyTypeNo,
-        showEditTagModal,
-        saveTagName,
-        closeInput
-   }
-
+    return {
+      tagTypeList,
+      tagList,
+      newTagType,
+      addTagType,
+      selectedTagType,
+      newTag,
+      addTag,
+      deleteTagType,
+      deleteTag,
+      editTagTypeModal,
+      editTagTypeNo,
+      editTagTypeName,
+      showEditTagTypeModal,
+      saveTagTypeName,
+      editTagModal,
+      editTagNo,
+      editTagName,
+      editKeyTypeNo,
+      showEditTagModal,
+      saveTagName,
+      closeInput
+    }
   }
 
 }

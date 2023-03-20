@@ -1,7 +1,12 @@
 <template>
-      <router-view />
 
   <button class="btn btn-primary" @click="showAddBottleModal()">보틀 추가</button>
+
+  <router-link :to="{ name:'AdminTagView' }">
+            <button class="btn btn-primary">태그 수정</button>
+  </router-link>
+
+  <img :src="imageUrl">
   <!-- bottle 추가 modal -->
   <b-modal v-model="addBottleModal" title="보틀 추가" v-if="addBottleModal">
     <div class="modal-content" style="padding: 20px;">
@@ -13,6 +18,10 @@
       </div>
       <div class="modal-body">
         <form>
+          <div class="form-group">
+            <label for="imgUrl">보틀 이미지</label>
+            <input type="file" class="form-control-file" id="imgUrl" accept="image/*" @change="handleImageUpload">
+          </div>
           <div class="form-group">
             <label for="bottleName">보틀 이름</label>
             <input type="text" class="form-control" id="bottleName" v-model="addBottleName">
@@ -47,6 +56,7 @@
         <b-button class="btn btn-secondary" @click="closeAddBottleModal()">취소</b-button>
       </div>
     </div>
+    <img src="/Users/s/Desktop/C/Kosa_Education/bittlebittle/bittlebittle_backend/target/BITTLEBITTLE/resources/image/bottle/2023032015404486774.png">
   </b-modal>
 
   <div>AdminBottleView</div>
@@ -54,7 +64,7 @@
   <div>
     <input type="text" v-model="keyword" placeholder="검색어를 입력하세요">
     <button @click="search">검색</button>
-    
+
     <table>
       <thead>
         <tr>
@@ -83,30 +93,28 @@
 
 <script>
 import { getFormAxiosInstance } from '@/api/index'
-import { onMounted } from '@vue/runtime-core'
-import { ref } from '@vue/reactivity'
+import { onMounted, ref } from 'vue'
 import { useUserStore } from '@/stores/users'
 
 export default {
   name: 'AdminBottleView',
-  
+
   setup () {
-    const user = useUserStore();
-    const axios = getFormAxiosInstance(user.getLoginUserInfo);
+    const user = useUserStore()
+    const axios = getFormAxiosInstance(user.getLoginUserInfo)
 
-    const bottles = ref([]);
-    const favorites = ref([]);
-    const keyword = ref(''); // 검색어 변수 선언
+    const bottles = ref([])
+    const favorites = ref([])
+    const keyword = ref('') // 검색어 변수 선언
 
-    onMounted(()=>{
-
+    onMounted(() => {
       axios.get('/api/bottles/all')
         .then(res => {
           bottles.value = res.data.bottle
           favorites.value = res.data.favorites
 		    })
-        .catch(err=>{
-          console.log(err)  
+        .catch(err => {
+          console.log(err)
         })
     })
 
@@ -119,40 +127,40 @@ export default {
     const tagList = ref([])
     const selectedAddTags = ref([])
 
-    const showAddBottleModal = function(){
+    const showAddBottleModal = function () {
       addBottleModal.value = true
 
-      axios.get(`/api/admin/tagtypes`)
-      .then(res => {
-        tagTypeList.value = res.data
-      })
-      .catch(err => {
-        console.log(err)
-      })
+      axios.get('/api/admin/tagtypes')
+        .then(res => {
+          tagTypeList.value = res.data
+        })
+        .catch(err => {
+          console.log(err)
+        })
 
-      axios.get(`/api/admin/tags`)
-      .then(res => {
-        tagList.value = res.data
-      })
-      .catch(err => {
-        console.log(err)
-      })
-
-
+      axios.get('/api/admin/tags')
+        .then(res => {
+          tagList.value = res.data
+        })
+        .catch(err => {
+          console.log(err)
+        })
     }
- 
-    const addBottle = function(){
-        const url = `/api/admin/bottles`
-    
-    const data = new FormData();
-        data.append('bottleName', addBottleName.value);
-        data.append('bottleContent', addBottleContent.value);
-        data.append('bottleBrand', addBottleBrand.value);
-        data.append('bottleAbv', addBottleAbv.value);
-        data.append('tagNoList', selectedAddTags.value);
+
+    const addBottle = function () {
+      const url = '/api/admin/bottles'
+
+      const data = new FormData()
+      data.append('bottleName', addBottleName.value)
+      data.append('bottleContent', addBottleContent.value)
+      data.append('bottleBrand', addBottleBrand.value)
+      data.append('bottleAbv', addBottleAbv.value)
+      data.append('tagNoList', selectedAddTags.value)
+      data.append('imgUrlOrigin', addBottleImage.value)
+      // imgUrl에 이미지 루트 넣어야됨!
 
       axios.post(url, data)
-      .then(res => {
+        .then(res => {
           bottles.value = res.data
           addBottleModal.value = false
           addBottleName.value = ''
@@ -160,67 +168,75 @@ export default {
           addBottleBrand.value = ''
           addBottleAbv.value = 0
           selectedAddTags.value = []
-
-      })
+        })
     }
 
-    const closeAddBottleModal = function(){
+    const closeAddBottleModal = function () {
       addBottleModal.value = false
     }
 
-    const deleteBottle = function(bottleNo){
+    const deleteBottle = function (bottleNo) {
       axios.get(`/api/admin/bottles/${bottleNo}/deletion`)
-      .then(res => {
-        bottles.value = res.data
-      })
-      .catch(err => {
-        console.log(err)
-      })
+        .then(res => {
+          bottles.value = res.data
+        })
+        .catch(err => {
+          console.log(err)
+        })
     }
 
-   return {
-    bottles,
-    favorites,
-    keyword,
-    addBottleModal,
-    showAddBottleModal,
-    addBottleName,
-    addBottleContent,
-    addBottleBrand,
-    addBottleAbv,
-    tagTypeList,
-    tagList,
-    selectedAddTags,
-    addBottle,
-    closeAddBottleModal,
-    deleteBottle
-   }
+    // 이미지
 
-  },
-
-  methods: {
-
-    search(){
-
-      const axios = createAxiosInstance();
-
-      axios.get('/api/bottles/all', {
-        params: {
-          keyword: this.keyword.value
-        }
-      })
-      .then(res => {
-        this.bottles = res.data.bottle
-        console.log(res.data)
-      }
-      )
+    const addBottleImage = ref()
+    const handleImageUpload = function (event) {
+      addBottleImage.value = event.target.files[0]
     }
 
+    const imageUrl = 'http://localhost:8080/resources/image/bottle/2023032015351948598.png'
+
+    return {
+      bottles,
+      favorites,
+      keyword,
+      addBottleModal,
+      showAddBottleModal,
+      addBottleName,
+      addBottleContent,
+      addBottleBrand,
+      addBottleAbv,
+      tagTypeList,
+      tagList,
+      selectedAddTags,
+      addBottle,
+      closeAddBottleModal,
+      deleteBottle,
+      addBottleImage,
+      handleImageUpload,
+      imageUrl
+    }
   }
+  // , methods: {
+
+  //   search () {
+  //     const axios = createAxiosInstance()
+
+  //     axios.get('/api/bottles/all', {
+  //       params: {
+  //         keyword: this.keyword.value
+  //       }
+  //     })
+  //       .then(res => {
+  //         this.bottles = res.data.bottle
+  //         console.log(res.data)
+  //           }
+  //           )
+  //       }
+  //   }
 }
+
 </script>
 
-<style>
+<style scoped>
   /* 각 섹션 제목 스타일 */
   .section-title {
     font-size: 1.2rem;
@@ -255,7 +271,6 @@ export default {
   .form-group {
       margin-bottom: 10px;
     }
-
 
   .review-form-control {
     width: 100%;
@@ -335,4 +350,8 @@ export default {
   border-radius: 4px; /* 모서리를 둥글게 */
   font-size: 16px; /* 글자 크기 */
   }
+
+button {
+  margin-right: 10px;
+}
 </style>
