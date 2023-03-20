@@ -41,11 +41,6 @@ https://www.tooplate.com/view/2129-crispy-kitchen
   --font-weight-bold:             700;
 }
 
-/* 글자색 흰색으로 바꾸려고 만들었어요 */
-* {
-  color: var(--white-color);
-}
-
 body {
     background: var(--dark-color);
     font-family: var(--body-font-family);    

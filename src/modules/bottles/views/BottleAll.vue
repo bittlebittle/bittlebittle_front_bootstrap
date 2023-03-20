@@ -1,7 +1,7 @@
 <template>
  <router-view />
 
- <!-- 태그 목록 -->
+<!-- 태그 목록 -->
   <div class="container mt-3">
     <div class="row">
       <div class="col-md-6">
@@ -10,13 +10,23 @@
       <div class="col-md-2">
         <button class="btn btn-primary" @click="search">검색</button>
       </div>
+
+      <label>
+        <input type="radio" name="all-tags" v-model="allTagsSelected" @click="selectAllTags">
+        전체선택
+      </label>
       <div v-for="tagType in tagTypeList" :key="tagType.tagTypeNo">
         <div>{{ tagType.tagTypeName }}</div>
         <div>
+          <!-- <label v-for="tag in tagList.filter(tag => tag.keyTypeNo === tagType.tagTypeNo)" :key="tag.tagNo" class="tag-box">
+            <input type="radio" :name="`tag-${tagType.tagTypeNo}`" :value="tag.tagNo" v-model="selectedTags[tagType.tagTypeNo-1]">
+            {{ tag.tagName }}
+          </label> -->
           <label v-for="tag in tagList.filter(tag => tag.keyTypeNo === tagType.tagTypeNo)" :key="tag.tagNo" class="tag-box">
             <input type="radio" :name="`tag-${tagType.tagTypeNo}`" :value="tag.tagNo" v-model="selectedTags[tagType.tagTypeNo-1]">
             {{ tag.tagName }}
           </label>
+
         </div>
       </div>
     </div>
@@ -52,14 +62,16 @@
 import { getFormAxiosInstance } from '@/api/index'
 import { onMounted } from '@vue/runtime-core'
 import { ref } from '@vue/reactivity'
+import { useUserStore } from '@/stores/users'
 
 
 export default {
   name: 'BottleAll',
 
   setup () {
-
-    const axios = getFormAxiosInstance();
+    // axios Instance 를 생성할 때, token 문제 때문에 인자로 데이터하나가 필요해
+    const user = useUserStore()
+    const axios = getFormAxiosInstance(user.getLoginUserInfo);
 
     const bottles = ref([]);
     const favorites = ref([]);
@@ -69,15 +81,25 @@ export default {
     const tagTypeList = ref([]);
     const selectedTags = ref([]);
     const filteredBottles = ref([]);
+    const selectAllTags = ref(false);
+
+    // 전체조회를 하는 axios 를 하나의 함수로 만들구, onMounted 할 때랑 검색할 때 같이 쓰는게 좋을..?
+
+
 
     onMounted(()=>{
-
       axios.get('/api/bottles/all')
         .then(res => {
           console.log('bottles data', res.data)
           bottles.value = res.data.bottle
           favorites.value = res.data.favorites
-
+          
+          // console.log('tags data', res.data)
+          // tags.value = res.data.tags
+          // tagList.value = res.data.tagList
+          // tagTypeList.value = res.data.tagTypeList
+          // selectedTags.value = Array(tagTypeList.value.length).fill('')
+          // console.log('tagTypeList', res.data.tagTypeList)
           })
         .catch(err=>{
           console.log('error', err)
@@ -116,9 +138,35 @@ export default {
       filteredBottles.value = filtered;
     }
 
-  const filteredTagList = (tagTypeNo) => {
+    function search() {
+
+          console.log('키워드 : ', keyword.value);
+          // console.log('selectedTags', selectedTags.value);
+          console.log('selectedTags', selectedTags.value.filter(tag => tag !==''));
+          axios.post('/api/bottles/all', {
+              keyword: keyword.value
+              // ,tagNoList: selectedTags.value
+              ,tagNoList: selectedTags.value.filter(tag => tag !=='')
+          })
+          .then(res => {
+            console.log('RESULT', res.data)
+            this.bottles = res.data.bottle
+          })
+          .catch(err=>{
+            console.log('error', err)
+          })
+        }
+
+    const filteredTagList = (tagTypeNo) => {
       return tagList.value.filter(tag => tag.keyTypeNo === tagTypeNo);
     }
+
+  // function filteredTagList(tagTypeNo) {
+  //     console.log('zzz', tagList.value);
+  //     return tagList.value.filter(tag => tag.keyTypeNo === tagTypeNo);
+  //   }
+
+  
 
    return {
     bottles,
@@ -129,34 +177,13 @@ export default {
     tagTypeList,
     selectedTags,
     filteredBottles,
-    filteredTagList
+    filteredTagList,
+    search
    }
 
   },
 
   methods: {
-
-    search(){
-
-      const axios = getFormAxiosInstance();
-
-      console.log('키워드 : ', this.keyword);
-      console.log('selectedTags', this.selectedTags);
-      axios.get('/api/bottles/all', {
-        params: {
-          keyword: this.keyword
-          , tagNoList: this.selectedTags
-        }
-      })
-      .then(res => {
-        console.log('RESULT', res.data)
-        this.bottles = res.data.bottle
-      })
-      .catch(err=>{
-        console.log('error', err)
-      })
-    },
-
     filteredTagList(tagTypeNo) {
       console.log('zzz', this.tagList);
       return this.tagList.filter(tag => tag.keyTypeNo === tagTypeNo);
@@ -166,6 +193,9 @@ export default {
 }
 </script>
 
-<style>
-
+<style scoped>
+/* 글자색 흰색으로 바꾸려고 만들었어요 */
+* {
+  color: var(--white-color);
+}
 </style>
