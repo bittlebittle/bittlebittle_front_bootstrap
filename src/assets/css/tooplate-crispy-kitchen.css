@@ -465,6 +465,7 @@ strong {
 .menu-thumb {
   position: relative;
   overflow: hidden;
+  max-width: 300px;
 }
 
 .menu-info {
@@ -477,6 +478,8 @@ strong {
 
 .menu-image-wrap {
   position: relative;
+  margin: 0;
+  max-width: 300px;
 }
 
 .menu-tag {
@@ -874,3 +877,9 @@ strong {
   }
 }
 
+.temp {
+  display: flex;
+  flex-direction: row;
+
+  color:#fff;
+}
