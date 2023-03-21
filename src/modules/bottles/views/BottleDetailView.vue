@@ -6,6 +6,8 @@
     <div>보틀 브랜드: {{ bottle.bottleBrand }}</div>
     <div>보틀 도수: {{ bottle.bottleAbv }}</div>
 
+    <a href="#reviewSection">리뷰 바로보기</a>
+
     <!-- 관련 보틀 리스트 -->
     <div class="related-list">
       <div class="section-title">관련 보틀 리스트:</div>
@@ -28,7 +30,7 @@
     </div>
 
     <!-- 태그 리스트 -->
-    <div class="related-list">
+    <div id="reviewSection" class="related-list">
       <div class="section-title">태그 리스트:</div>
           <div class="tag-box" v-for="tag in tagListByBottle" :key="tag.tagNo">{{ tag.tagName }}</div>
     </div>

@@ -59,9 +59,11 @@
 
   <div>AdminBottleView</div>
   <div>
-  <div>
-    <input type="text" v-model="keyword" placeholder="검색어를 입력하세요">
-    <button @click="search">검색</button>
+    <div>
+   <div>
+        <input type="text" class="form-control" v-model="keyword" placeholder="검색어를 입력하세요">
+        <button class="btn btn-primary" @click="search">검색</button>
+   </div>
 
     <table>
       <thead>
@@ -154,7 +156,7 @@ export default {
       data.append('bottleContent', addBottleContent.value)
       data.append('bottleBrand', addBottleBrand.value)
       data.append('bottleAbv', addBottleAbv.value)
-      data.append('tagNoList', selectedAddTags.value)
+      data.append('tagNoList', selectedAddTags.value.filter(Boolean));
       data.append('imgUrlOrigin', addBottleImage.value)
       // imgUrl에 이미지 루트 넣어야됨!
 
@@ -190,8 +192,24 @@ export default {
     const handleImageUpload = function (event) {
       addBottleImage.value = event.target.files[0]
     }
+    
+    // 검색
 
-    //
+    const search = function() {
+
+          axios.post('/api/bottles/all', {
+              keyword: keyword.value
+          })
+          .then(res => {
+            console.log('RESULT', res.data)
+            this.bottles = res.data.bottle
+          })
+          .catch(err=>{
+            console.log('error', err)
+          })
+        }
+
+
     const imageUrl = 'http://localhost:8080/bittlebittle/image?path=bottle&name=스크린샷 2023-03-18 오후 6.12.49.png'
 
 
@@ -213,26 +231,10 @@ export default {
       deleteBottle,
       addBottleImage,
       handleImageUpload,
-      imageUrl
+      imageUrl,
+      search
     }
-  }
-  // , methods: {
 
-  //   search () {
-  //     const axios = createAxiosInstance()
-
-  //     axios.get('/api/bottles/all', {
-  //       params: {
-  //         keyword: this.keyword.value
-  //       }
-  //     })
-  //       .then(res => {
-  //         this.bottles = res.data.bottle
-  //         console.log(res.data)
-  //           }
-  //           )
-  //       }
-  //   }
 }
 
 </script>
@@ -340,8 +342,8 @@ export default {
 }
 
 .form-control {
-  height: 70px;
-  width: 300px;
+  height: 50px;
+  width: 600px;
 }
 
 .delete-button {

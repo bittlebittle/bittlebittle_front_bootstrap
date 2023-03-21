@@ -131,6 +131,33 @@ const routes = [
         path: '/admin/tags',
         name: 'AdminTagView',
         component: AdminTagView
+      },
+      {
+        path: '/admin/notices',
+        name: 'NoticeView',
+        component: NoticeView,
+        children: [
+          {
+            path: '/admin/notices',
+            name: 'NoticeListComp',
+            component: () => import('@/modules/notices/components/NoticeListComp')
+          },
+          {
+            path: '/admin/notices/:boardNo',
+            name: 'NoticeDetailComp',
+            component: () => import('@/modules/notices/components/NoticeDetailComp')
+          },
+          {
+            path: '/admin/notices/addition',
+            name: 'NoticeCreateComp',
+            component: () => import('@/modules/notices/components/NoticeCreateComp')
+          },
+          {
+            path: '/admin/notices/set-data',
+            name: 'NoticeEditComp',
+            component: () => import('@/modules/notices/components/NoticeEditComp')
+          }
+        ]
       }
 
     ]
