@@ -4,7 +4,7 @@
       <div class="info-edit">
         <div class="input-group">
           <label for="name">이름</label>
-          <input type="text" id="name" v-model="name" />
+          <div>{{ name }}</div>
         </div>
         <div class="input-group">
           <label for="nickname">닉네임</label>
@@ -59,6 +59,7 @@
 import { ref } from 'vue'
 
 export default {
+  name: 'myInfo',
   setup () {
     // 초기값 설정 (실제로는 SQL에서 가져온 값으로 설정해야 함)
     const name = ref('홍길동')

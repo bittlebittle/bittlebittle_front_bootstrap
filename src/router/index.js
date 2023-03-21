@@ -10,10 +10,6 @@ import BottleAll from '@/modules/bottles/views/BottleAll'
 import BottleDetailView from '@/modules/bottles/views/BottleDetailView'
 import NoticeView from '@/modules/notices/views/NoticeView'
 import FaqView from '@/modules/faqs/views/FaqView'
-import AdminBottleView from '@/layouts/admin/AdminBottleView'
-import AdminBottleDetailView from '@/layouts/admin/AdminBottleDetailView'
-import AdminBottle from '@/layouts/admin/AdminBottle'
-import AdminTagView from '@/layouts/admin/AdminTagView'
 
 const routes = [
   {
@@ -40,6 +36,11 @@ const routes = [
             path: '/users/addition',
             name: 'UserRegisterComp',
             component: () => import('@/modules/users/components/UserRegisterComp')
+          },
+          {
+            path: '/users/mypage',
+            name: 'myInfo',
+            component: () => import('@/modules/users/views/myInfo')
           }
         ]
       },
@@ -99,68 +100,11 @@ const routes = [
         component: FaqView
       }
     ]
-  }, {
+  }
+  , {
     path: '/admin',
     name: 'AdminLayout',
-    component: AdminLayout,
-    children: [
-      {
-        path: '/admin/bottles',
-        name: 'AdminBottle',
-        component: AdminBottle,
-        children: [
-          {
-            path: '/admin/bottles',
-            name: 'AdminBottleView',
-            component: AdminBottleView
-          },
-          {
-            path: '/admin/bottles/:bottleNo',
-            name: 'AdminBottleDetailView',
-            component: AdminBottleDetailView,
-            props: true
-          },
-          {
-            path: '/admin/tags',
-            name: 'AdminTagView',
-            component: AdminTagView
-          }
-        ]
-      },
-      {
-        path: '/admin/tags',
-        name: 'AdminTagView',
-        component: AdminTagView
-      },
-      {
-        path: '/admin/notices',
-        name: 'NoticeView',
-        component: NoticeView,
-        children: [
-          {
-            path: '/admin/notices',
-            name: 'NoticeListComp',
-            component: () => import('@/modules/notices/components/NoticeListComp')
-          },
-          {
-            path: '/admin/notices/:boardNo',
-            name: 'NoticeDetailComp',
-            component: () => import('@/modules/notices/components/NoticeDetailComp')
-          },
-          {
-            path: '/admin/notices/addition',
-            name: 'NoticeCreateComp',
-            component: () => import('@/modules/notices/components/NoticeCreateComp')
-          },
-          {
-            path: '/admin/notices/set-data',
-            name: 'NoticeEditComp',
-            component: () => import('@/modules/notices/components/NoticeEditComp')
-          }
-        ]
-      }
-
-    ]
+    component: AdminLayout
   },
   {
     path: '/auth',

@@ -192,7 +192,7 @@ export default {
     const handleImageUpload = function (event) {
       addBottleImage.value = event.target.files[0]
     }
-    
+
     // 검색
 
     const search = function() {
@@ -234,7 +234,7 @@ export default {
       imageUrl,
       search
     }
-
+  }
 }
 
 </script>
