@@ -54,9 +54,9 @@
       </div>
     </div>
   </div>
-  <div class="d-flex justify-content-end">
-    <b-button class="btn btn-primary" @click="editBottle()">저장</b-button>
-    <b-button class="btn btn-secondary" @click="closeEditBottleModal()">취소</b-button>
+  <div class="btn-group">
+    <button class="btn btn-secondary" @click="closeEditBottleModal()">취소</button>
+    <button class="btn btn-primary" @click="editBottle()">저장</button>
   </div>
 </b-modal>
 
@@ -421,10 +421,20 @@ export default {
 }
 
 .form-control {
-  height: 70px;
-  width: 300px;
+  height: 50px;
+  width: 600px;
 }
 
+ input[type="text"],
+  input[type="number"],
+  textarea {
+    border-color: orange;
+    background-color: black;
+    color: white;
+  }
+ .btn-group button {
+    margin-right: 10px;
+  }
 /* modal 테두리 여백 */
 
 </style>

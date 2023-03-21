@@ -1,5 +1,11 @@
 <template>
-  <div>notice</div>
+  <div class="container">
+   <div class="content"> 
+
+    <p class="title">공지사항</p>
+      <router-view />
+    </div>
+  </div>
 </template>
 
 <script>
@@ -8,6 +14,27 @@ export default {
 }
 </script>
 
-<style>
+<style scoped >
+  .container {
+    margin: 0 auto;
+    width: 900px;
+    min-height: 70vh; /* 추가 */
+    display: flex;
+    flex-direction: column; /* 추가 */
+    background-color: #FFFAF6; /* 추가 */
+  }
+
+  .content {
+    flex-grow: 1; /* 추가 */
+    background-color: #FFFAF6; /* 추가 */
+    padding: 20px; /* 추가 */
+    border-radius: 5px; /* 추가 */
+  }
+
+  .title {
+    font-size: 35px;
+    text-align: center;
+    margin-bottom: 30px;
+  }
 
 </style>

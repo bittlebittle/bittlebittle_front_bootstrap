@@ -128,9 +128,9 @@
 <section class="menu section-padding">
   <div class="container">
     <div class="row">
-
+<!-- NEW -->
       <div class="col-12">
-        <h2 class="text-center mb-lg-5 mb-4">NEW/BEST/등등</h2>
+        <h2 class="text-center mb-lg-5 mb-4">NEW</h2>
       </div>
 
       <div class="col-lg-4 col-md-6 col-12">
@@ -224,7 +224,10 @@
           </div>
         </div>
       </div>
-
+      <!-- BEST -->
+      <div class="col-12">
+        <h2 class="text-center mb-lg-5 mb-4">BEST</h2>
+      </div>
       <div class="col-lg-4 col-md-6 col-12">
         <div class="menu-thumb">
           <div class="menu-image-wrap">
