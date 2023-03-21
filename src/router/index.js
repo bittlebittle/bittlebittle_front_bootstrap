@@ -41,6 +41,11 @@ const routes = [
             path: '/users/addition',
             name: 'UserRegisterComp',
             component: () => import('@/modules/users/components/UserRegisterComp')
+          },
+          {
+            path: '/users/mypage',
+            name: 'myInfo',
+            component: () => import('@/modules/users/views/myInfo')
           }
         ]
       },
@@ -100,7 +105,8 @@ const routes = [
         component: FaqView
       }
     ]
-  }, {
+  }
+  , {
     path: '/admin',
     name: 'AdminLayout',
     component: AdminLayout,

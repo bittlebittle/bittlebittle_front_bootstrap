@@ -68,7 +68,6 @@ export default {
         })
     })
 
-    
     const deleteBottle = function (bottleNo) {
       axios.get(`/api/admin/bottles/${bottleNo}/deletion`)
         .then(res => {
@@ -79,23 +78,27 @@ export default {
         })
     }
 
-  
+    // 이미지
+
+    const addBottleImage = ref()
+    const handleImageUpload = function (event) {
+      addBottleImage.value = event.target.files[0]
+    }
+
     // 검색
 
-    const search = function() {
-
-          axios.post('/api/bottles/all', {
-              keyword: keyword.value
-          })
-          .then(res => {
-            console.log('RESULT', res.data)
-            this.bottles = res.data.bottle
-          })
-          .catch(err=>{
-            console.log('error', err)
-          })
-        }
-
+    const search = function () {
+      axios.post('/api/bottles/all', {
+        keyword: keyword.value
+      })
+        .then(res => {
+          console.log('RESULT', res.data)
+          this.bottles = res.data.bottle
+        })
+        .catch(err => {
+          console.log('error', err)
+        })
+    }
 
     return {
       bottles,
@@ -104,7 +107,6 @@ export default {
       deleteBottle,
       search
     }
-
   }
 }
 </script>
