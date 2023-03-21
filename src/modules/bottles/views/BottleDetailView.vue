@@ -1,17 +1,23 @@
 <template>
   <div class="bottle-detail-view" v-if="bottle">
-    <div>보틀 번호: {{ bottle.bottleNo }}</div>
+    <div>
+    <img :src="getImage(bottle.imgUrl, bottle.imgCusUrl)" alt="보틀 이미지">
+    </div>
     <div>보틀 이름: {{ bottle.bottleName }}</div>
     <div>보틀 내용: {{ bottle.bottleContent }}</div>
     <div>보틀 브랜드: {{ bottle.bottleBrand }}</div>
     <div>보틀 도수: {{ bottle.bottleAbv }}</div>
 
+    <a href="#reviewSection">리뷰 바로보기</a>
+
     <!-- 관련 보틀 리스트 -->
     <div class="related-list">
       <div class="section-title">관련 보틀 리스트:</div>
       <ul>
-        <li v-for="relatedBottle in relatedBottleList" :key="relatedBottle.bottleNo" @click=pageUpdate(relatedBottle.bottleNo)>
-
+        <li v-for="relatedBottle in relatedBottleList" :key="relatedBottle.bottleNo" @click=pageUpdate(relatedBottle.bottleNo) style="display: inline-block; margin-right: 20px;">
+          <div>
+          <img :src="getImage(relatedBottle.imgUrl, relatedBottle.imgCusUrl)" alt="관련 보틀 이미지"  width="200" height="200">
+          </div>
               {{ relatedBottle.bottleName }}
         </li>
       </ul>
@@ -28,7 +34,7 @@
     </div>
 
     <!-- 태그 리스트 -->
-    <div class="related-list">
+    <div id="reviewSection" class="related-list">
       <div class="section-title">태그 리스트:</div>
           <div class="tag-box" v-for="tag in tagListByBottle" :key="tag.tagNo">{{ tag.tagName }}</div>
     </div>
@@ -46,6 +52,7 @@
     <b-modal v-model="reviewModal" title="리뷰 상세 내용" v-if="reviewModal">
       <div class="modal-content">
         <div class="modal-header">
+          <img :src="getImage(selectedReview.imgUrl, selectedReivew.imgCusUrl)" alt="리뷰 이미지">
           <h5 class="modal-title">{{ selectedReview.reviewTitle }}</h5>
           <button type="button" class="close" aria-label="Close" @click="closeReviewModal()">
             <span aria-hidden="true">&times;</span>
@@ -133,6 +140,10 @@
   <div class="section-title">리뷰 작성:</div>
   <form @submit.prevent="addReview">
     <div class="form-group">
+          <label for="imgUrl">이미지:</label>
+          <input type="file" class="form-control" id="imgUrl" accept="image/*" @change="handleImageUpload">
+        </div>
+    <div class="form-group">
       <label for="reviewTitle">제목:</label>
       <input type="text" id="reviewTitle" v-model="reviewTitle" class="review-form-control" />
     </div>
@@ -217,7 +228,23 @@ export default {
         })
     }
 
+    // 이미지
+    function getImage (imgUrl, imgCusUrl) {
+      if (imgCusUrl != null) {
+        return `http://localhost:8080/bittlebittle/image?path=bottle&name=${imgCusUrl}`
+      } else {
+        return `http://localhost:8080/bittlebittle/image?path=bottle&name=${imgUrl}`
+      }
+    }
+
+
     // 리뷰 작성
+    
+    const addReviewImage = ref()
+    const handleImageUpload = function (event) {
+      addReviewImage.value = event.target.files[0]
+    }
+
     const addReview = function () {
       const url = `/api/bottles/${bottle.value.bottleNo}/reviews`
 
@@ -227,6 +254,11 @@ export default {
       data.append('reviewContent', reviewContent.value)
       data.append('grade', grade.value)
 
+      if(addReviewImage.value){
+        data.append('imgUrlOrigin', addReviewImage.value)
+      }
+
+
       axios.post(url, data)
         .then(res => {
         // 리뷰 등록 후 새로고침 없이 해당 보틀의 리뷰 리스트 갱신
@@ -234,6 +266,7 @@ export default {
           reviewTitle.value = ''
           reviewContent.value = ''
           grade.value = ''
+          addReviewImage.value=''
         })
         .catch(err => {
           console.log(err)
@@ -425,7 +458,10 @@ export default {
       editReplyContent,
       showEditReplyModal,
       selectedReplyNo,
-      saveReply
+      saveReply,
+      getImage,
+      addReviewImage,
+      handleImageUpload
     }
   }
 }
