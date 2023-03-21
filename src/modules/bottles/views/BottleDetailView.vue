@@ -452,7 +452,7 @@ export default {
 
     // 찜하기
     const clickFavorite = function(){
-    
+
       const url=`/api/bottles/${bottle.value.bottleNo}/favorite`
       const data={
         userNo: user.getLoginUserInfo.userNo,

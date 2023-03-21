@@ -68,7 +68,7 @@ export default {
         })
     })
 
-    const deleteBottle = function (bottleNo) {
+    const deleteBottle = (bottleNo) => {
       axios.get(`/api/admin/bottles/${bottleNo}/deletion`)
         .then(res => {
           bottles.value = res.data
@@ -79,7 +79,6 @@ export default {
     }
 
     // 이미지
-
     const addBottleImage = ref()
     const handleImageUpload = function (event) {
       addBottleImage.value = event.target.files[0]
