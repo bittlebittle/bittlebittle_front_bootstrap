@@ -1,11 +1,11 @@
 <template>
-  
+
   <button class="btn btn-primary" @click="showAddBottleModal()">보틀 추가</button>
-  
+
   <router-link :to="{ name:'AdminTagView' }">
             <button class="btn btn-primary">태그 수정</button>
-            </router-link>
-  
+  </router-link>
+
   <!-- bottle 추가 modal -->
   <b-modal v-model="addBottleModal" title="보틀 추가" v-if="addBottleModal">
     <div class="modal-content" style="padding: 20px;">
@@ -55,7 +55,7 @@
         <b-button class="btn btn-secondary" @click="closeAddBottleModal()">취소</b-button>
       </div>
     </div>
-  </b-modal>
+    </b-modal>
 
   <div>AdminBottleView</div>
   <div>
@@ -64,6 +64,7 @@
         <input type="text" class="form-control" v-model="keyword" placeholder="검색어를 입력하세요">
         <button class="btn btn-primary" @click="search">검색</button>
    </div>
+
     <table>
       <thead>
         <tr>
@@ -92,32 +93,29 @@
 
 <script>
 import { getFormAxiosInstance } from '@/api/index'
-import { onMounted } from '@vue/runtime-core'
-import { ref } from '@vue/reactivity'
+import { onMounted, ref } from 'vue'
 import { useUserStore } from '@/stores/users'
 
 export default {
   name: 'AdminBottleView',
-  
 
   setup () {
+    const user = useUserStore()
+    const axios = getFormAxiosInstance(user.getLoginUserInfo)
 
-    const user = useUserStore();
-    const axios = getFormAxiosInstance(user.getLoginUserInfo);
+    const bottles = ref([])
+    const favorites = ref([])
+    const keyword = ref('') // 검색어 변수 선언
 
-    const bottles = ref([]);
-    const favorites = ref([]);
-    const keyword = ref(''); // 검색어 변수 선언
-
-    onMounted(()=>{
-
+    onMounted(() => {
       axios.get('/api/bottles/all')
         .then(res => {
+          console.log(res.data.bottle)
           bottles.value = res.data.bottle
           favorites.value = res.data.favorites
 		    })
-        .catch(err=>{
-          console.log(err)  
+        .catch(err => {
+          console.log(err)
         })
     })
 
@@ -130,43 +128,40 @@ export default {
     const tagList = ref([])
     const selectedAddTags = ref([])
 
-    const showAddBottleModal = function(){
+    const showAddBottleModal = function () {
       addBottleModal.value = true
 
-      axios.get(`/api/admin/tagtypes`)
-      .then(res => {
-        tagTypeList.value = res.data
-      })
-      .catch(err => {
-        console.log(err)
-      })
+      axios.get('/api/admin/tagtypes')
+        .then(res => {
+          tagTypeList.value = res.data
+        })
+        .catch(err => {
+          console.log(err)
+        })
 
-      axios.get(`/api/admin/tags`)
-      .then(res => {
-        tagList.value = res.data
-      })
-      .catch(err => {
-        console.log(err)
-      })
-
-
+      axios.get('/api/admin/tags')
+        .then(res => {
+          tagList.value = res.data
+        })
+        .catch(err => {
+          console.log(err)
+        })
     }
- 
-    const addBottle = function(){
-        const url = `/api/admin/bottles`
-    
-    const data = new FormData();
-        
-        data.append('bottleName', addBottleName.value);
-        data.append('bottleContent', addBottleContent.value);
-        data.append('bottleBrand', addBottleBrand.value);
-        data.append('bottleAbv', addBottleAbv.value);
-        data.append('tagNoList', selectedAddTags.value.filter(Boolean));
 
-        // imgUrl에 이미지 루트 넣어야됨!
+    const addBottle = function () {
+      const url = '/api/admin/bottles'
+
+      const data = new FormData()
+      data.append('bottleName', addBottleName.value)
+      data.append('bottleContent', addBottleContent.value)
+      data.append('bottleBrand', addBottleBrand.value)
+      data.append('bottleAbv', addBottleAbv.value)
+      data.append('tagNoList', selectedAddTags.value.filter(Boolean));
+      data.append('imgUrlOrigin', addBottleImage.value)
+      // imgUrl에 이미지 루트 넣어야됨!
 
       axios.post(url, data)
-      .then(res => {
+        .then(res => {
           bottles.value = res.data
           addBottleModal.value = false
           addBottleName.value = ''
@@ -174,33 +169,30 @@ export default {
           addBottleBrand.value = ''
           addBottleAbv.value = 0
           selectedAddTags.value = []
-
-      })
+        })
     }
 
-    const closeAddBottleModal = function(){
+    const closeAddBottleModal = function () {
       addBottleModal.value = false
     }
 
-    const deleteBottle = function(bottleNo){
+    const deleteBottle = function (bottleNo) {
       axios.get(`/api/admin/bottles/${bottleNo}/deletion`)
-      .then(res => {
-        
-        bottles.value = res.data
-      })
-      .catch(err => {
-        console.log(err)
-      })
+        .then(res => {
+          bottles.value = res.data
+        })
+        .catch(err => {
+          console.log(err)
+        })
     }
 
     // 이미지
 
     const addBottleImage = ref()
-
-    const handleImageUpload = function(event){
-        addBottleImage.value=event.target.files[0]
+    const handleImageUpload = function (event) {
+      addBottleImage.value = event.target.files[0]
     }
-
+    
     // 검색
 
     const search = function() {
@@ -217,29 +209,34 @@ export default {
           })
         }
 
-   return {
-    bottles,
-    favorites,
-    keyword,
-    addBottleModal,
-    showAddBottleModal,
-    addBottleName,
-    addBottleContent,
-    addBottleBrand,
-    addBottleAbv,
-    tagTypeList,
-    tagList,
-    selectedAddTags,
-    addBottle,
-    closeAddBottleModal,
-    deleteBottle,
-    addBottleImage,
-    handleImageUpload,
-    search
-   }
 
-  }
+    const imageUrl = 'http://localhost:8080/bittlebittle/image?path=bottle&name=스크린샷 2023-03-18 오후 6.12.49.png'
+
+
+    return {
+      bottles,
+      favorites,
+      keyword,
+      addBottleModal,
+      showAddBottleModal,
+      addBottleName,
+      addBottleContent,
+      addBottleBrand,
+      addBottleAbv,
+      tagTypeList,
+      tagList,
+      selectedAddTags,
+      addBottle,
+      closeAddBottleModal,
+      deleteBottle,
+      addBottleImage,
+      handleImageUpload,
+      imageUrl,
+      search
+    }
+
 }
+
 </script>
 
 <style scoped>
@@ -277,7 +274,6 @@ export default {
   .form-group {
       margin-bottom: 10px;
     }
-
 
   .review-form-control {
     width: 100%;
