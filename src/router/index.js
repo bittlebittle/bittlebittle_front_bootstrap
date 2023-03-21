@@ -60,7 +60,6 @@ const routes = [
             component: BottleDetailView,
             props: true
           }
-          
         ]
       },
       {
