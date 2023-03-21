@@ -195,19 +195,29 @@ export default {
       filterBottles()
     }
 
-    return {
-      bottles,
-      favorites,
-      keyword,
-      tags,
-      tagList,
-      tagTypeList,
-      selectedTags,
-      filteredBottles,
-      filteredTagList,
-      search,
-      getImage
+
+    function getImage (imgUrl, imgCusUrl) {
+      if (imgCusUrl != null) {
+        return `http://localhost:8080/bittlebittle/image?path=bottle&name=${imgCusUrl}`
+      } else {
+        return `http://localhost:8080/bittlebittle/image?path=bottle&name=${imgUrl}`
+      }
     }
+
+   return {
+    bottles,
+    favorites,
+    keyword,
+    tags,
+    tagList,
+    tagTypeList,
+    selectedTags,
+    filteredBottles,
+    filteredTagList,
+    search,
+    getImage
+   }
+
   },
 
   methods: {
