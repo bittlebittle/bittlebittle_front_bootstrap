@@ -59,10 +59,11 @@
 
   <div>AdminBottleView</div>
   <div>
-  <div>
-    <input type="text" v-model="keyword" placeholder="검색어를 입력하세요">
-    <button @click="search">검색</button>
-    
+    <div>
+   <div>
+        <input type="text" class="form-control" v-model="keyword" placeholder="검색어를 입력하세요">
+        <button class="btn btn-primary" @click="search">검색</button>
+   </div>
     <table>
       <thead>
         <tr>
@@ -155,11 +156,12 @@ export default {
         const url = `/api/admin/bottles`
     
     const data = new FormData();
+        
         data.append('bottleName', addBottleName.value);
         data.append('bottleContent', addBottleContent.value);
         data.append('bottleBrand', addBottleBrand.value);
         data.append('bottleAbv', addBottleAbv.value);
-        data.append('tagNoList', selectedAddTags.value);
+        data.append('tagNoList', selectedAddTags.value.filter(Boolean));
 
         // imgUrl에 이미지 루트 넣어야됨!
 
@@ -199,6 +201,22 @@ export default {
         addBottleImage.value=event.target.files[0]
     }
 
+    // 검색
+
+    const search = function() {
+
+          axios.post('/api/bottles/all', {
+              keyword: keyword.value
+          })
+          .then(res => {
+            console.log('RESULT', res.data)
+            this.bottles = res.data.bottle
+          })
+          .catch(err=>{
+            console.log('error', err)
+          })
+        }
+
    return {
     bottles,
     favorites,
@@ -216,28 +234,9 @@ export default {
     closeAddBottleModal,
     deleteBottle,
     addBottleImage,
-    handleImageUpload
+    handleImageUpload,
+    search
    }
-
-  },
-
-  methods: {
-
-    search(){
-
-      const axios = createAxiosInstance();
-
-      axios.get('/api/bottles/all', {
-        params: {
-          keyword: this.keyword.value
-        }
-      })
-      .then(res => {
-        this.bottles = res.data.bottle
-        console.log(res.data)
-      }
-      )
-    }
 
   }
 }
@@ -347,8 +346,8 @@ export default {
 }
 
 .form-control {
-  height: 70px;
-  width: 300px;
+  height: 50px;
+  width: 600px;
 }
 
 .delete-button {
