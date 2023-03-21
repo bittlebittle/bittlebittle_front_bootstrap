@@ -1,61 +1,11 @@
 <template>
 
-  <button class="btn btn-primary" @click="showAddBottleModal()">보틀 추가</button>
-
+  <router-link :to="{ name:'AdminAddBottleView' }">
+            <button class="btn btn-primary">보틀 추가</button>
+  </router-link>
   <router-link :to="{ name:'AdminTagView' }">
             <button class="btn btn-primary">태그 수정</button>
   </router-link>
-
-  <!-- bottle 추가 modal -->
-  <b-modal v-model="addBottleModal" title="보틀 추가" v-if="addBottleModal">
-    <div class="modal-content" style="padding: 20px;">
-      <div class="modal-header">
-        <h5 class="modal-title">보틀 추가</h5>
-        <button type="button" class="close" aria-label="Close" @click="closeAddBottleModal()">
-          <span aria-hidden="true">&times;</span>
-        </button>
-      </div>
-      <div class="modal-body">
-        <form>
-          <div class="form-group">
-            <label for="imgUrl">보틀 이미지</label>
-            <input type="file" class="form-control-file" id="imgUrl" accept="image/*" @change="handleImageUpload">
-          </div>
-          <div class="form-group">
-            <label for="bottleName">보틀 이름</label>
-            <input type="text" class="form-control" id="bottleName" v-model="addBottleName">
-          </div>
-          <div class="form-group">
-            <label for="bottleContent">보틀 내용</label>
-            <textarea class="form-control" id="bottleContent" rows="3" v-model="addBottleContent"></textarea>
-          </div>
-          <div class="form-group">
-            <label for="bottleBrand">보틀 브랜드</label>
-            <input type="text" class="form-control" id="bottleBrand" v-model="addBottleBrand">
-          </div>
-          <div class="form-group">
-            <label for="bottleAbv">보틀 도수</label>
-            <input type="number" class="form-control" id="bottleAbv" v-model="addBottleAbv">
-          </div>
-          <div>
-            <div v-for="tagType in tagTypeList" :key="tagType.tagTypeNo">
-              <div>{{ tagType.tagTypeName }}</div>
-              <div>
-                <label v-for="tag in tagList.filter(tag => tag.keyTypeNo === tagType.tagTypeNo)" :key="tag.tagNo" class="tag-box">
-                  <input type="radio" :name="`new-tag-${tagType.tagTypeNo}`" :value="tag.tagNo" v-model="selectedAddTags[tagType.tagTypeNo-1]">
-                  {{ tag.tagName }}
-                </label>
-              </div>
-            </div>
-          </div>
-        </form>
-      </div>
-      <div class="d-flex justify-content-end">
-        <b-button class="btn btn-primary" @click="addBottle()">추가</b-button>
-        <b-button class="btn btn-secondary" @click="closeAddBottleModal()">취소</b-button>
-      </div>
-    </div>
-    </b-modal>
 
   <div>AdminBottleView</div>
   <div>
@@ -110,7 +60,6 @@ export default {
     onMounted(() => {
       axios.get('/api/bottles/all')
         .then(res => {
-          console.log(res.data.bottle)
           bottles.value = res.data.bottle
           favorites.value = res.data.favorites
 		    })
@@ -119,63 +68,7 @@ export default {
         })
     })
 
-    const addBottleModal = ref(false)
-    const addBottleName = ref('')
-    const addBottleContent = ref('')
-    const addBottleBrand = ref('')
-    const addBottleAbv = ref(0)
-    const tagTypeList = ref([])
-    const tagList = ref([])
-    const selectedAddTags = ref([])
-
-    const showAddBottleModal = function () {
-      addBottleModal.value = true
-
-      axios.get('/api/admin/tagtypes')
-        .then(res => {
-          tagTypeList.value = res.data
-        })
-        .catch(err => {
-          console.log(err)
-        })
-
-      axios.get('/api/admin/tags')
-        .then(res => {
-          tagList.value = res.data
-        })
-        .catch(err => {
-          console.log(err)
-        })
-    }
-
-    const addBottle = function () {
-      const url = '/api/admin/bottles'
-
-      const data = new FormData()
-      data.append('bottleName', addBottleName.value)
-      data.append('bottleContent', addBottleContent.value)
-      data.append('bottleBrand', addBottleBrand.value)
-      data.append('bottleAbv', addBottleAbv.value)
-      data.append('tagNoList', selectedAddTags.value.filter(Boolean));
-      data.append('imgUrlOrigin', addBottleImage.value)
-      // imgUrl에 이미지 루트 넣어야됨!
-
-      axios.post(url, data)
-        .then(res => {
-          bottles.value = res.data
-          addBottleModal.value = false
-          addBottleName.value = ''
-          addBottleContent.value = ''
-          addBottleBrand.value = ''
-          addBottleAbv.value = 0
-          selectedAddTags.value = []
-        })
-    }
-
-    const closeAddBottleModal = function () {
-      addBottleModal.value = false
-    }
-
+    
     const deleteBottle = function (bottleNo) {
       axios.get(`/api/admin/bottles/${bottleNo}/deletion`)
         .then(res => {
@@ -186,13 +79,7 @@ export default {
         })
     }
 
-    // 이미지
-
-    const addBottleImage = ref()
-    const handleImageUpload = function (event) {
-      addBottleImage.value = event.target.files[0]
-    }
-    
+  
     // 검색
 
     const search = function() {
@@ -210,33 +97,16 @@ export default {
         }
 
 
-    const imageUrl = 'http://localhost:8080/bittlebittle/image?path=bottle&name=스크린샷 2023-03-18 오후 6.12.49.png'
-
-
     return {
       bottles,
       favorites,
       keyword,
-      addBottleModal,
-      showAddBottleModal,
-      addBottleName,
-      addBottleContent,
-      addBottleBrand,
-      addBottleAbv,
-      tagTypeList,
-      tagList,
-      selectedAddTags,
-      addBottle,
-      closeAddBottleModal,
       deleteBottle,
-      addBottleImage,
-      handleImageUpload,
-      imageUrl,
       search
     }
 
+  }
 }
-
 </script>
 
 <style scoped>

@@ -33,6 +33,36 @@
   </div>
 
   <!-- 보틀목록 -->
+  <template v-for="bottle in bottles" :key="bottle.bottleNo">
+          <div class="col-lg-3 col-md-3 col-6">
+            <div class="menu-thumb">
+              <div class="menu-image-wrap">
+                <img :src="getImage(bottle.imgUrl, bottle.imgCusUrl)" class="img-fluid menu-image" style="max-width: 150px;" alt="">
+                <span class="menu-tag bg-warning">Breakfast</span>
+              </div>
+
+              <div class="menu-info d-flex flex-wrap align-items-center">
+                <h4 class="mb-0">{{ bottle.bottleName }}</h4>
+
+                <!-- <span class="price-tag bg-white shadow-lg ms-4"><small>$</small>12.50</span> -->
+
+                <div class="d-flex flex-wrap align-items-center w-100 mt-2">
+                    <h6 class="reviews-text mb-0 me-3">4.3/5</h6>
+
+                    <div class="reviews-stars">
+                      <i class="bi-star-fill reviews-icon"></i>
+                      <i class="bi-star-fill reviews-icon"></i>
+                      <i class="bi-star-fill reviews-icon"></i>
+                      <i class="bi-star-fill reviews-icon"></i>
+                      <i class="bi-star reviews-icon"></i>
+                    </div>
+
+                    <p class="reviews-text mb-0 ms-4">102 Reviews</p>
+                </div>
+              </div>
+            </div>
+        </div>
+        </template>
     <table>
       <thead>
         <tr>
@@ -157,6 +187,14 @@ export default {
     filterBottles();
     }
 
+    function getImage (imgUrl, imgCusUrl) {
+      if (imgCusUrl != null) {
+        return `http://localhost:8080/bittlebittle/image?path=bottle&name=${imgCusUrl}`
+      } else {
+        return `http://localhost:8080/bittlebittle/image?path=bottle&name=${imgUrl}`
+      }
+    }
+
    return {
     bottles,
     favorites,
@@ -167,7 +205,8 @@ export default {
     selectedTags,
     filteredBottles,
     filteredTagList,
-    search
+    search,
+    getImage
    }
 
   },
