@@ -48,4 +48,6 @@ function $removeBoard (boardNo) {
   return axios.get(`/api/boards/${boardNo}/deletion`)
 }
 
+
+
 export { $getBoardList, getReplyList, $getBoardDetail, $editBoard, $addBoard, addReply, $removeBoard }

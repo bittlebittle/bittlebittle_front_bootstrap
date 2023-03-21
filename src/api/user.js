@@ -78,8 +78,34 @@ async function $checkDuplicate (userId) {
   }
 }
 
+function $updateUser(userNo, updatedInfo) {
+  const user = useUserStore()
+  const axios = getJsonAxiosInstance(user.getLoginUserInfo)
+  return axios.post(`/api/users/set-data`, {
+    userNo,
+    ...updatedInfo
+  }) }
+
+  function $getReviews (userNo) {
+    const user = useUserStore()
+    const axios = getJsonAxiosInstance(user.getLoginUserInfo)
+    return axios.get(`/api/users/${user.getLoginUserInfo.userNo}`)
+  }
+
+  function $getReply (userNo) {
+    const user = useUserStore()
+    const axios = getJsonAxiosInstance(user.getLoginUserInfo)
+    return axios.get(`/api/users/${user.getLoginUserInfo.userNo}`)
+  }
+
+  async function $withdrawUser(userNo) {
+    const user = useUserStore()
+    const axios = getJsonAxiosInstance(user.getLoginUserInfo)
+    return axios.put(`/api/users/withdraw/${userNo}`)
+  }
+
 export {
   $loginUser, $getUser, $editUser, $addUser, $removeUser,
-  $logoutUser, $checkDuplicate,
-  $addUserTags, $deleteUserTags
+  $logoutUser, $checkDuplicate, $updateUser,
+  $addUserTags, $deleteUserTags, $getReviews, $getReply, $withdrawUser
 }
