@@ -9,9 +9,8 @@
         <button class="btn btn-primary" @click="search">검색</button>
       </div>
 
-
       <div v-for="tagType in tagTypeList" :key="tagType.tagTypeNo">
-        <div>{{ tagType.tagTypeName }}</div>
+        <div class="title">{{ tagType.tagTypeName }}</div>
         <div>
           <label>
             <input type="radio" :name="`tag-${tagType.tagTypeNo}`" :value = "null" v-model="selectedTags[tagType.tagTypeNo-1]">
@@ -28,29 +27,19 @@
     <div class="row mt-3">
       <router-view :bottles="filteredBottles" :favorites="favorites" />
     </div>
-
-    
   </div>
 
   <!-- 보틀목록 -->
-    <table>
-      <thead>
-        <tr>
-          <th>번호</th>
-          <th>이름</th>
-        </tr>
-      </thead>
-      <tbody>
-        <tr v-for="bottle in bottles" :key="bottle.bottleNo">
-          <td>{{ bottle.bottleNo }}</td>
-            <td>
-            <router-link :to="{ name:'BottleDetailView', params : { bottleNo : bottle.bottleNo} }">
-              {{ bottle.bottleName }}
-            </router-link>
-          </td>
-        </tr>
-      </tbody>
-    </table>
+<div class="grid-container">
+  <div v-for="bottle in bottles" :key="bottle.bottleNo">
+    <router-link class="title" :to="{ name:'BottleDetailView', params : { bottleNo : bottle.bottleNo} }">
+    <img :src="getBottleImage(bottle.imgUrl, bottle.imgCusUrl)" alt="보틀 이미지" width="200" height="200">
+    <br>
+      {{ bottle.bottleName }}
+    </router-link>
+  </div>
+</div>
+
 </template>
 
 <script>
@@ -64,29 +53,27 @@ export default {
   setup () {
     // axios Instance 를 생성할 때, token 문제 때문에 인자로 데이터하나가 필요해
     const user = useUserStore()
-    const axios = getFormAxiosInstance(user.getLoginUserInfo);
+    const axios = getFormAxiosInstance(user.getLoginUserInfo)
 
-    const bottles = ref([]);
-    const favorites = ref([]);
-    const keyword = ref(''); // 검색어 변수 선언
-    const tags = ref([]);
-    const tagList = ref([]);
-    const tagTypeList = ref([]);
-    const selectedTags = ref([]);
-    const filteredBottles = ref([]);
-    
+    const bottles = ref([])
+    const favorites = ref([])
+    const keyword = ref('') // 검색어 변수 선언
+    const tags = ref([])
+    const tagList = ref([])
+    const tagTypeList = ref([])
+    const selectedTags = ref([])
+    const filteredBottles = ref([])
 
     // 전체조회를 하는 axios 를 하나의 함수로 만들구, onMounted 할 때랑 검색할 때 같이 쓰는게 좋을..?
 
-    onMounted(()=>{
-
+    onMounted(() => {
       axios.get('/api/bottles/all')
         .then(res => {
           console.log('bottles data', res.data)
           bottles.value = res.data.bottle
           favorites.value = res.data.favorites
-          })
-        .catch(err=>{
+        })
+        .catch(err => {
           console.log('error', err)
         }),
 
@@ -123,38 +110,52 @@ export default {
       filteredBottles.value = filtered
     }
 
-    function search() {
+    function search () {
+      console.log('키워드 : ', keyword.value)
+      // console.log('selectedTags', selectedTags.value);
+      console.log('selectedTags', selectedTags.value.filter(tag => tag !== ''))
 
-          console.log('키워드 : ', keyword.value);
-          // console.log('selectedTags', selectedTags.value);
-          console.log('selectedTags', selectedTags.value.filter(tag => tag !==''));
-
-
-          axios.post('/api/bottles/all', {
-              keyword: keyword.value
-              // ,tagNoList: selectedTags.value
-              ,tagNoList: selectedTags.value.filter(tag => tag !=='')
-          })
-          .then(res => {
-            console.log('RESULT', res.data)
-            this.bottles = res.data.bottle
-          })
-          .catch(err=>{
-            console.log('error', err)
-          })
-        }
+      axios.post('/api/bottles/all', {
+        keyword: keyword.value,
+        // ,tagNoList: selectedTags.value
+        tagNoList: selectedTags.value.filter(tag => tag !== '')
+      })
+        .then(res => {
+          console.log('RESULT', res.data)
+          this.bottles = res.data.bottle
+        })
+        .catch(err => {
+          console.log('error', err)
+        })
+    }
 
     const filteredTagList = (tagTypeNo) => {
       return tagList.value.filter(tag => tag.keyTypeNo === tagTypeNo)
     }
 
+    function getImage (imgUrl, imgCusUrl) {
+      if (imgCusUrl != null) {
+        return `http://localhost:8080/bittlebittle/image?path=bottle&name=${imgCusUrl}`
+      } else {
+        return `http://localhost:8080/bittlebittle/image?path=bottle&name=${imgUrl}`
+      }
+    }
 
     const selectAllTags = () => {
-      selectedTags.value = tagList.value.map(tag => tag.tagNo);
+      selectedTags.value = tagList.value.map(tag => tag.tagNo)
       tagList.value.forEach(tag => {
-      selectedTags.value[tag.keyTypeNo - 1] = tag.tagNo;
-    })
-    filterBottles();
+        selectedTags.value[tag.keyTypeNo - 1] = tag.tagNo
+      })
+      filterBottles()
+    }
+
+
+    function getBottleImage (imgUrl, imgCusUrl) {
+      if (imgCusUrl != null) {
+        return `http://localhost:8080/bittlebittle/image?path=bottle&name=${imgCusUrl}`
+      } else {
+        return `http://localhost:8080/bittlebittle/image?path=bottle&name=${imgUrl}`
+      }
     }
 
    return {
@@ -167,7 +168,8 @@ export default {
     selectedTags,
     filteredBottles,
     filteredTagList,
-    search
+    search,
+    getBottleImage
    }
 
   },
@@ -187,4 +189,29 @@ export default {
 * {
   color: var(--white-color);
 }
+
+.grid-container {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+    gap: 1rem;
+  }
+
+.title {
+  color:orange;
+}
+
+  .tag-box {
+  display: inline-block;
+  background-color: #555;
+  color: white;
+  padding: 5px;
+  border-radius: 5px;
+  margin-right: 10px;
+  margin-bottom: 4px;
+}
+
+.btn-primary {
+    background-color: orange;
+    color: black;
+  }
 </style>

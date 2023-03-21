@@ -11,6 +11,7 @@ import BottleDetailView from '@/modules/bottles/views/BottleDetailView'
 import NoticeView from '@/modules/notices/views/NoticeView'
 import FaqView from '@/modules/faqs/views/FaqView'
 import AdminBottleView from '@/layouts/admin/AdminBottleView'
+import AdminAddBottleView from '@/layouts/admin/AdminAddBottleView'
 import AdminBottleDetailView from '@/layouts/admin/AdminBottleDetailView'
 import AdminBottle from '@/layouts/admin/AdminBottle'
 import AdminTagView from '@/layouts/admin/AdminTagView'
@@ -59,7 +60,6 @@ const routes = [
             component: BottleDetailView,
             props: true
           }
-          
         ]
       },
       {
@@ -120,6 +120,11 @@ const routes = [
             name: 'AdminBottleDetailView',
             component: AdminBottleDetailView,
             props: true
+          },
+          {
+            path: '/admin/bottle/addition',
+            name: 'AdminAddBottleView',
+            component: AdminAddBottleView
           },
           {
             path: '/admin/tags',

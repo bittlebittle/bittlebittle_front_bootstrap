@@ -1,17 +1,26 @@
 <template>
   <div class="bottle-detail-view" v-if="bottle">
-    <div>보틀 번호: {{ bottle.bottleNo }}</div>
+    <div class="image-container">
+    <img :src="getBottleImage(bottle.imgUrl, bottle.imgCusUrl)" alt="보틀 이미지">
+    </div>
+    <div class="heart-icon"
+     :class="{'empty-heart': !isFavorite.length, 'full-heart': isFavorite.length}" @click="clickFavorite"></div>
     <div>보틀 이름: {{ bottle.bottleName }}</div>
     <div>보틀 내용: {{ bottle.bottleContent }}</div>
     <div>보틀 브랜드: {{ bottle.bottleBrand }}</div>
     <div>보틀 도수: {{ bottle.bottleAbv }}</div>
+    <div>평점 : {{ bottleGrade }} </div>
+
+    <a href="#reviewSection">리뷰 바로보기</a>
 
     <!-- 관련 보틀 리스트 -->
     <div class="related-list">
       <div class="section-title">관련 보틀 리스트:</div>
       <ul>
-        <li v-for="relatedBottle in relatedBottleList" :key="relatedBottle.bottleNo" @click=pageUpdate(relatedBottle.bottleNo)>
-
+        <li v-for="relatedBottle in relatedBottleList" :key="relatedBottle.bottleNo" @click=pageUpdate(relatedBottle.bottleNo) style="display: inline-block; margin-right: 20px;">
+          <div>
+          <img :src="getBottleImage(relatedBottle.imgUrl, relatedBottle.imgCusUrl)" alt="관련 보틀 이미지"  width="200" height="200">
+          </div>
               {{ relatedBottle.bottleName }}
         </li>
       </ul>
@@ -28,7 +37,7 @@
     </div>
 
     <!-- 태그 리스트 -->
-    <div class="related-list">
+    <div id="reviewSection" class="related-list">
       <div class="section-title">태그 리스트:</div>
           <div class="tag-box" v-for="tag in tagListByBottle" :key="tag.tagNo">{{ tag.tagName }}</div>
     </div>
@@ -38,7 +47,7 @@
       <div class="section-title">리뷰 리스트:</div>
       <ul>
         <li v-for="review in reviewList" :key="review.reviewNo" @click="showReviewModal(review)">
-          {{ review.reviewTitle }}
+          {{ review.userNickname}}&nbsp;&nbsp;&nbsp;&nbsp;{{ review.reviewTitle }}&nbsp;&nbsp;&nbsp;&nbsp;{{review.grade}}
         </li>
       </ul>
     </div>
@@ -50,8 +59,12 @@
           <button type="button" class="close" aria-label="Close" @click="closeReviewModal()">
             <span aria-hidden="true">&times;</span>
           </button>
-        </div>
-        <div class="modal-body">
+          </div>
+          <div class="modal-body">
+            <div>
+          <img :src="getReviewImage(selectedReview.imgUrl, selectedReview.imgCusUrl)" alt="이미지 없음">
+          </div>
+          <p> {{selectedReview.userNickname}}</p>
           <p class="text-muted">{{ selectedReview.createDate }}</p>
           <p>{{ selectedReview.reviewContent }}</p>
           <p>평점: {{ selectedReview.grade }}</p>
@@ -65,7 +78,7 @@
     <!-- replyList 출력 -->
     <ul class="list-unstyled">
       <li v-for="reply in replyList" :key="reply.replyNo">
-        {{ reply.userNo }}&nbsp;&nbsp;&nbsp;&nbsp;{{ reply.createTime }}&nbsp;&nbsp;&nbsp;&nbsp;{{ reply.replyContent }}
+        {{ reply.userNickname }}&nbsp;&nbsp;&nbsp;&nbsp;{{ reply.createTime }}&nbsp;&nbsp;&nbsp;&nbsp;{{ reply.replyContent }}
         <button v-if="selectedReview.userNo === currentUserNo" class="btn btn-edit" @click="showEditReplyModal(reply)">수정</button>
         <button v-if="selectedReview.userNo === currentUserNo" class="btn btn-delete" @click="deleteReply(reply.replyNo)">삭제</button>
       </li>
@@ -99,6 +112,7 @@
   <b-modal v-model="editReviewModalVisible" title="리뷰 수정" v-if="editReviewModalVisible">
       <div class="edit-modal-content">
         <form @submit.prevent="saveReview">
+          
         <div>
           <label for="reviewTitle">제목:</label>
           <input class="review-form-control" type="text" id="reviewTitle" v-model="editReviewTitle"/>
@@ -131,7 +145,11 @@
     <!-- 리뷰 작성 폼 -->
 <div class="related-list">
   <div class="section-title">리뷰 작성:</div>
-  <form @submit.prevent="addReview">
+  <form ref="reviewForm" @submit.prevent="addReview">
+    <div class="form-group">
+          <label for="imgUrl">이미지:</label>
+          <input type="file" class="form-control" id="imgUrl" accept="image/*" @change="handleImageUpload">
+    </div>
     <div class="form-group">
       <label for="reviewTitle">제목:</label>
       <input type="text" id="reviewTitle" v-model="reviewTitle" class="review-form-control" />
@@ -166,7 +184,7 @@
 
 <script>
 import { getFormAxiosInstance } from '@/api/index'
-import { onMounted, ref } from 'vue'
+import { onMounted, ref, reactive } from 'vue'
 import { useRouter } from 'vue-router'
 import { useUserStore } from '@/stores/users.js'
 
@@ -187,13 +205,12 @@ export default {
     const currentUserNo = user.getLoginUserInfo?.userNo
 
     const bottle = ref(null)
+    const bottleGrade = ref(0)
     const relatedBottleList = ref([])
     const foodList = ref([])
     const tagListByBottle = ref([])
     const reviewList = ref([])
-    const reviewTitle = ref('')
-    const reviewContent = ref('')
-    const grade = ref(0)
+    const isFavorite = ref([])
 
     const getBottle = function (hhh) {
       let url = ''
@@ -205,19 +222,41 @@ export default {
       axios.get(url)
         .then(res => {
           bottle.value = res.data.bottle
+          bottleGrade.value = res.data.grade
           relatedBottleList.value = res.data.relatedBottleList
           foodList.value = res.data.foodList
           tagListByBottle.value = res.data.tagListByBottle
           reviewList.value = res.data.reviewList
-
-          console.log(res.data)
+          isFavorite.value = res.data.isFavorite
         })
         .catch(err => {
           console.log(err)
         })
     }
 
+    // 보틀 이미지
+    function getBottleImage (imgUrl, imgCusUrl) {
+        return `http://localhost:8080/bittlebittle/image?path=bottle&name=${imgCusUrl}`
+
+    }
+
+    // 리뷰 이미지 
+    
+    function getReviewImage (imgUrl, imgCusUrl) {
+        return `http://localhost:8080/bittlebittle/image?path=review&name=${imgCusUrl}`
+    }
+
     // 리뷰 작성
+    
+    const reviewTitle = ref('')
+    const reviewContent = ref('')
+    const grade = ref(0)
+
+    const addReviewImage = ref()
+    const handleImageUpload = function (event) {
+      addReviewImage.value = event.target.files[0]
+    }
+
     const addReview = function () {
       const url = `/api/bottles/${bottle.value.bottleNo}/reviews`
 
@@ -227,6 +266,11 @@ export default {
       data.append('reviewContent', reviewContent.value)
       data.append('grade', grade.value)
 
+      if(addReviewImage.value){
+        data.append('imgUrlOrigin', addReviewImage.value)
+      } 
+
+
       axios.post(url, data)
         .then(res => {
         // 리뷰 등록 후 새로고침 없이 해당 보틀의 리뷰 리스트 갱신
@@ -234,6 +278,8 @@ export default {
           reviewTitle.value = ''
           reviewContent.value = ''
           grade.value = ''
+          addReviewImage.value=''
+          document.getElementById('imgUrl').value = ''
         })
         .catch(err => {
           console.log(err)
@@ -261,13 +307,13 @@ export default {
     const showReviewModal = (review) => {
       axios.get(`/api/bottles/${bottle.value.bottleNo}/reviews/${review.reviewNo}`)
         .then(res => {
+          selectedReview.value=res.data.review
           replyList.value = res.data.replyList
         })
         .catch(err => {
           console.log(err)
         })
 
-      selectedReview.value = review
       reviewModal.value = true
       editReviewModalVisible.value = false
       editReplyModalVisible.value=false
@@ -289,6 +335,7 @@ export default {
       editReviewTitle.value = selectedReview.value.reviewTitle
       editReviewContent.value = selectedReview.value.reviewContent
       editGrade.value = selectedReview.value.grade
+
     }
 
     const editReviewNo = ref(0)
@@ -389,8 +436,28 @@ export default {
         })
     }
 
+    // 찜하기
+    const clickFavorite = function(){
+    
+      const url=`/api/bottles/${bottle.value.bottleNo}/favorite`
+      const data={
+        userNo: user.getLoginUserInfo.userNo,
+      }
+
+      axios.post(url, data)
+      .then(res => {
+        isFavorite.value=res.data
+      })
+      .catch(err => {
+        console.log(err)
+      })
+
+
+    }
+
     return {
       bottle,
+      bottleGrade,
       relatedBottleList,
       foodList,
       tagListByBottle,
@@ -425,7 +492,13 @@ export default {
       editReplyContent,
       showEditReplyModal,
       selectedReplyNo,
-      saveReply
+      saveReply,
+      getBottleImage,
+      addReviewImage,
+      handleImageUpload,
+      getReviewImage,
+      isFavorite,
+      clickFavorite
     }
   }
 }
@@ -587,5 +660,27 @@ export default {
 .form-control {
   height: 50px;
   width: 500px;
+}
+
+/* 찜하기 */
+.heart-icon {
+  width: 50px;
+  height: 50px;
+  background-repeat: no-repeat;
+  background-size: contain;
+}
+
+.empty-heart {
+  background-image: url('@/images/emptyheart.png');
+}
+
+.full-heart {
+  background-image: url('@/images/fullheart.png');
+}
+
+.image-container {
+  border: 2px solid orange;
+  padding: 10px;
+  display: inline-block; /* 이미지를 라인 상자로 배치 */
 }
 </style>
