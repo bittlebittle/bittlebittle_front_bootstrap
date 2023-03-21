@@ -248,7 +248,7 @@ export default {
 .form .message a:hover {
   cursor: pointer;
 }
-.form {}
+
 
 .register-form {
   display: flex;
