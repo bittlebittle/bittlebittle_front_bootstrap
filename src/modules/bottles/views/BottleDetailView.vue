@@ -1,8 +1,10 @@
 <template>
   <div class="bottle-detail-view" v-if="bottle">
-    <div>
+    <div class="image-container">
     <img :src="getBottleImage(bottle.imgUrl, bottle.imgCusUrl)" alt="보틀 이미지">
     </div>
+    <div class="heart-icon"
+     :class="{'empty-heart': !isFavorite.length, 'full-heart': isFavorite.length}" @click="clickFavorite"></div>
     <div>보틀 이름: {{ bottle.bottleName }}</div>
     <div>보틀 내용: {{ bottle.bottleContent }}</div>
     <div>보틀 브랜드: {{ bottle.bottleBrand }}</div>
@@ -182,7 +184,7 @@
 
 <script>
 import { getFormAxiosInstance } from '@/api/index'
-import { onMounted, ref } from 'vue'
+import { onMounted, ref, reactive } from 'vue'
 import { useRouter } from 'vue-router'
 import { useUserStore } from '@/stores/users.js'
 
@@ -208,7 +210,7 @@ export default {
     const foodList = ref([])
     const tagListByBottle = ref([])
     const reviewList = ref([])
-    
+    const isFavorite = ref([])
 
     const getBottle = function (hhh) {
       let url = ''
@@ -225,8 +227,7 @@ export default {
           foodList.value = res.data.foodList
           tagListByBottle.value = res.data.tagListByBottle
           reviewList.value = res.data.reviewList
-
-          console.log(res.data)
+          isFavorite.value = res.data.isFavorite
         })
         .catch(err => {
           console.log(err)
@@ -334,6 +335,7 @@ export default {
       editReviewTitle.value = selectedReview.value.reviewTitle
       editReviewContent.value = selectedReview.value.reviewContent
       editGrade.value = selectedReview.value.grade
+
     }
 
     const editReviewNo = ref(0)
@@ -434,6 +436,25 @@ export default {
         })
     }
 
+    // 찜하기
+    const clickFavorite = function(){
+    
+      const url=`/api/bottles/${bottle.value.bottleNo}/favorite`
+      const data={
+        userNo: user.getLoginUserInfo.userNo,
+      }
+
+      axios.post(url, data)
+      .then(res => {
+        isFavorite.value=res.data
+      })
+      .catch(err => {
+        console.log(err)
+      })
+
+
+    }
+
     return {
       bottle,
       bottleGrade,
@@ -475,7 +496,9 @@ export default {
       getBottleImage,
       addReviewImage,
       handleImageUpload,
-      getReviewImage
+      getReviewImage,
+      isFavorite,
+      clickFavorite
     }
   }
 }
@@ -637,5 +660,27 @@ export default {
 .form-control {
   height: 50px;
   width: 500px;
+}
+
+/* 찜하기 */
+.heart-icon {
+  width: 50px;
+  height: 50px;
+  background-repeat: no-repeat;
+  background-size: contain;
+}
+
+.empty-heart {
+  background-image: url('@/images/emptyheart.png');
+}
+
+.full-heart {
+  background-image: url('@/images/fullheart.png');
+}
+
+.image-container {
+  border: 2px solid orange;
+  padding: 10px;
+  display: inline-block; /* 이미지를 라인 상자로 배치 */
 }
 </style>
