@@ -60,7 +60,7 @@
           </div>
           <div class="modal-body">
             <div>
-          <img :src="getReviewImage(selectedReview.imgUrl, selectedReview.imgCusUrl)" alt="이미지 없음">
+              <img style="max-width: 400px;" :src="getReviewImage(selectedReview.imgUrl, selectedReview.imgCusUrl)" alt="이미지 없음">
           </div>
           <p> {{selectedReview.userNickname}}</p>
           <p class="text-muted">{{ selectedReview.createDate }}</p>
@@ -110,7 +110,14 @@
   <b-modal v-model="editReviewModalVisible" title="리뷰 수정" v-if="editReviewModalVisible">
       <div class="edit-modal-content">
         <form @submit.prevent="saveReview">
-          
+        <div>
+          <label for="reviewTitle">기존 첨부 이미지:</label>
+            <img style="max-width: 400px;" :src="getReviewImage(selectedReview.imgUrl, selectedReview.imgCusUrl)" alt="이미지 없음">
+        </div>
+        <div class="form-group">
+          <label for="editImgUrl">이미지:</label>
+          <input type="file" class="review-form-control" id="editImgUrl" accept="image/*" @change="handleImageUpload">
+    </div>
         <div>
           <label for="reviewTitle">제목:</label>
           <input class="review-form-control" type="text" id="reviewTitle" v-model="editReviewTitle"/>
@@ -197,7 +204,6 @@ export default {
   },
 
   setup (props) {
-
     const user = useUserStore()
     const axios = user.getLoginUserInfo ? getFormAxiosInstance(user.getLoginUserInfo) : getFormAxiosInstance('')
     const currentUserNo = user.getLoginUserInfo?.userNo
@@ -208,7 +214,6 @@ export default {
     const foodList = ref([])
     const tagListByBottle = ref([])
     const reviewList = ref([])
-    
 
     const getBottle = function (hhh) {
       let url = ''
@@ -235,18 +240,17 @@ export default {
 
     // 보틀 이미지
     function getBottleImage (imgUrl, imgCusUrl) {
-        return `http://localhost:8080/bittlebittle/image?path=bottle&name=${imgCusUrl}`
-
+      return `http://localhost:8080/bittlebittle/image?path=bottle&name=${imgCusUrl}`
     }
 
-    // 리뷰 이미지 
-    
+    // 리뷰 이미지
+
     function getReviewImage (imgUrl, imgCusUrl) {
-        return `http://localhost:8080/bittlebittle/image?path=review&name=${imgCusUrl}`
+      return `http://localhost:8080/bittlebittle/image?path=review&name=${imgCusUrl}`
     }
 
     // 리뷰 작성
-    
+
     const reviewTitle = ref('')
     const reviewContent = ref('')
     const grade = ref(0)
@@ -265,10 +269,9 @@ export default {
       data.append('reviewContent', reviewContent.value)
       data.append('grade', grade.value)
 
-      if(addReviewImage.value){
+      if (addReviewImage.value) {
         data.append('imgUrlOrigin', addReviewImage.value)
-      } 
-
+      }
 
       axios.post(url, data)
         .then(res => {
@@ -277,7 +280,7 @@ export default {
           reviewTitle.value = ''
           reviewContent.value = ''
           grade.value = ''
-          addReviewImage.value=''
+          addReviewImage.value = ''
           document.getElementById('imgUrl').value = ''
         })
         .catch(err => {
@@ -306,7 +309,7 @@ export default {
     const showReviewModal = (review) => {
       axios.get(`/api/bottles/${bottle.value.bottleNo}/reviews/${review.reviewNo}`)
         .then(res => {
-          selectedReview.value=res.data.review
+          selectedReview.value = res.data.review
           replyList.value = res.data.replyList
         })
         .catch(err => {
@@ -315,7 +318,7 @@ export default {
 
       reviewModal.value = true
       editReviewModalVisible.value = false
-      editReplyModalVisible.value=false
+      editReplyModalVisible.value = false
     }
 
     const closeReviewModal = () => {
@@ -349,6 +352,13 @@ export default {
       data.append('reviewTitle', editReviewTitle.value)
       data.append('reviewContent', editReviewContent.value)
       data.append('grade', editGrade.value)
+      if (selectedReview.value != null) {
+        data.append('imgUrl', selectedReview.value.imgUrl)
+        data.append('imgCusUrl', selectedReview.value.imgCusUrl)
+      }
+      if (addReviewImage.value) {
+        data.append('reupfile', addReviewImage.value)
+      }
 
       axios.post(url, data)
         .then(res => {
@@ -357,10 +367,13 @@ export default {
           reviewList.value = res.data
           reviewModal.value = true
           editReviewModalVisible.value = false
-          selectedReview.value.reviewTitle=editReviewTitle.value
-          selectedReview.value.reviewContent=editReviewContent.value
-          selectedReview.value.grade=editGrade.value
-
+          selectedReview.value.reviewTitle = editReviewTitle.value
+          selectedReview.value.reviewContent = editReviewContent.value
+          selectedReview.value.grade = editGrade.value
+          console.log(res.data)
+          selectedReview.value.imgUrl = res.data.imgUrl
+          selectedReview.value.imgCusUrl = res.data.imgCusUrl
+          closeReviewModal()
         })
         .catch(err => {
           console.log(err)
@@ -401,29 +414,29 @@ export default {
     const editReplyContent = ref('')
     const selectedReplyNo = ref(0)
 
-    const showEditReplyModal = function(selectedReply){
+    const showEditReplyModal = function (selectedReply) {
       editReplyModalVisible.value = true
       editReplyContent.value = selectedReply.replyContent
       selectedReplyNo.value = selectedReply.replyNo
     }
 
-    const saveReply = function(){
+    const saveReply = function () {
       const data = new FormData()
       data.append('replyNo', selectedReplyNo.value)
       data.append('replyContent', editReplyContent.value)
 
       axios.post(`/api/bottles/${bottle.value.bottleNo}/reviews/${selectedReview.value.reviewNo}/replies/set-data`, data)
-      .then(res=> {
-        replyList.value=res.data
-        editReplyModalVisible.value=false
-      })
-      .catch(err => {
-        console.log(err)
-      })
+        .then(res => {
+          replyList.value = res.data
+          editReplyModalVisible.value = false
+        })
+        .catch(err => {
+          console.log(err)
+        })
     }
 
-    const closeEditReplyModal = function(){
-      editReplyModalVisible.value=false
+    const closeEditReplyModal = function () {
+      editReplyModalVisible.value = false
     }
 
     // 리플 삭제
