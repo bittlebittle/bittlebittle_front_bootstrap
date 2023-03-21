@@ -8,10 +8,15 @@ export const useUserStore = defineStore('user', () => {
 
   const getLoginUserInfo = computed(() => userInfo.value)
 
+  const logout = () => {
+    state.loginUserInfo = {}
+    router.push('/')
+  }
+
   function setLoginUserInfo (jwt) {
     userInfo.value = jwt
     console.log(userInfo.value)
   }
 
-  return { getLoginUserInfo, setLoginUserInfo }
+  return { getLoginUserInfo, setLoginUserInfo, logout }
 })
