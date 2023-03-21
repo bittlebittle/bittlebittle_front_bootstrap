@@ -20,7 +20,7 @@
         </div>
         <button @click="updateInfo">수정</button>
       </div>
-  
+
       <!-- 내가 작성한 리뷰 및 댓글 테이블 -->
       <h3>내가 작성한 리뷰 및 댓글</h3>
     <table class="reviews-comments-table">
@@ -51,37 +51,37 @@
         <!-- 실제 데이터를 가져와서 반복문으로 채우십시오 -->
       </tbody>
     </table>
-  
+
     </div>
   </template>
-  
-  <script>
-  import { ref } from 'vue';
-  
-  export default {
-    setup() {
-      // 초기값 설정 (실제로는 SQL에서 가져온 값으로 설정해야 함)
-      const name = ref('홍길동');
-      const nickname = ref('gil-dong');
-      const email = ref('gildong@example.com');
-      const phone = ref('010-1234-5678');
-  
-      const updateInfo = () => {
-        // SQL에 변경된 값 저장하는 코드 작성 필요
-        console.log('변경된 정보:', { name: name.value, nickname: nickname.value, email: email.value, phone: phone.value });
-      };
-  
-      return {
-        name,
-        nickname,
-        email,
-        phone,
-        updateInfo,
-      };
-    },
-  };
-  </script>
-  
+
+<script>
+import { ref } from 'vue'
+
+export default {
+  setup () {
+    // 초기값 설정 (실제로는 SQL에서 가져온 값으로 설정해야 함)
+    const name = ref('홍길동')
+    const nickname = ref('gil-dong')
+    const email = ref('gildong@example.com')
+    const phone = ref('010-1234-5678')
+
+    const updateInfo = () => {
+      // SQL에 변경된 값 저장하는 코드 작성 필요
+      console.log('변경된 정보:', { name: name.value, nickname: nickname.value, email: email.value, phone: phone.value })
+    }
+
+    return {
+      name,
+      nickname,
+      email,
+      phone,
+      updateInfo
+    }
+  }
+}
+</script>
+
   <style scoped>
   .my-info {
     display: flex;
@@ -89,23 +89,23 @@
     align-items: center;
     width: 100%;
   }
-  
+
   .input-group {
     display: flex;
     flex-direction: column;
     margin-bottom: 10px;
   }
-  
+
   label {
     margin-bottom: 5px;
   }
-  
+
   input[type='text'],
   input[type='email'] {
     padding: 5px;
     width: 100%;
   }
-  
+
   button {
     padding: 5px 10px;
   }
