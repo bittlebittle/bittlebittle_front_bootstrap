@@ -33,7 +33,7 @@ const routes = [
         component: UserView,
         children: [
           {
-            path: '/users/:userNo',
+            path: '/users/mypage',
             name: 'UserMyPageComp',
             component: () => import('@/modules/users/components/UserMyPageComp')
           },
@@ -41,11 +41,6 @@ const routes = [
             path: '/users/addition',
             name: 'UserRegisterComp',
             component: () => import('@/modules/users/components/UserRegisterComp')
-          },
-          {
-            path: '/users/mypage',
-            name: 'myInfo',
-            component: () => import('@/modules/users/views/myInfo')
           }
         ]
       },

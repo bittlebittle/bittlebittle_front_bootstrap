@@ -1,4 +1,5 @@
 <template>
+  <p class="title">회원 가입</p>
   <form class="register-form" @submit.prevent="registerUser">
 		  <p style="margin-bottom: 10px; font-size: 15px;" ><br></p>
 	      <p style="margin-bottom: 50px;">
