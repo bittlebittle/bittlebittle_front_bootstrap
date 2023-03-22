@@ -3,10 +3,7 @@
   <router-link :to="{ name:'AdminAddBottleView' }">
             <button class="btn btn-primary">보틀 추가</button>
   </router-link>
-  <router-link :to="{ name:'AdminTagView' }">
-            <button class="btn btn-primary">태그 수정</button>
-  </router-link>
-
+  <br>
   <div>AdminBottleView</div>
   <div>
     <div>

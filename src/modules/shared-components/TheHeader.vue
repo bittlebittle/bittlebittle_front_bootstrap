@@ -83,7 +83,7 @@
 
         <li class="nav-item">
           <template v-if="loginUser != null && loginUser.adminYN == 'Y'">
-            <router-link class="nav-link" to="/admin/bottles/all">전체 검색</router-link>
+            <router-link class="nav-link" to="/admin/tags">태그 수정</router-link>
           </template>
           <template v-else>
           <router-link class="nav-link" to="/bottles/all">전체 검색</router-link>
