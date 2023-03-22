@@ -30,7 +30,10 @@
     <div class="related-list">
       <div class="section-title">관련 음식 리스트:</div>
       <ul>
-        <li v-for="food in foodList" :key="food.foodNo">
+        <li v-for="food in foodList" :key="food.foodNo" style="display: inline-block; margin-right: 20px;">
+          <div>
+          <img :src="getFoodImage(food.imgUrl, food.imgCusUrl)" alt="관련 음식 이미지"  width="200" height="200">
+          </div>
           {{ food.foodName }}
         </li>
       </ul>
@@ -250,6 +253,14 @@ export default {
     function getReviewImage (imgUrl, imgCusUrl) {
       return `http://localhost:8080/bittlebittle/image?path=review&name=${imgCusUrl}`
     }
+
+
+    // 음식 이미지
+
+    function getFoodImage (imgUrl, imgCusUrl) {
+      return `http://localhost:8080/bittlebittle/image?path=food&name=${imgCusUrl}`
+    }
+
 
     // 리뷰 작성
     const reviewTitle = ref('')
@@ -511,7 +522,9 @@ export default {
       handleImageUpload,
       getReviewImage,
       isFavorite,
-      clickFavorite
+      clickFavorite,
+      getFoodImage
+
     }
   }
 }

@@ -1,9 +1,9 @@
 <template>
 <div class="content-board">
   <div style="padding-top: 70px; padding-bottom: 200px; margin: 0 auto;">
-    <form @submit.prevent="registerBoard" style="margin: 0 auto; width: 730px;">
+    <form @submit.prevent="registerBoard" style="margin: 0 auto; width: 730px; text-align: center;">
           <fieldset>
-              <table style=" padding-left: 35px; padding-top: 20px;">
+              <table style=" padding-left: 35px; padding-top: 20px; margin: 0 auto;">
                   <tr>
                       <td><b>제목</b></td>
                       <td>
@@ -27,7 +27,7 @@
                       </td>
                   </tr> -->
                   <tr>
-                      <td><input type="submit" value="작성하기" id="submit"></td>
+                      <td colspan="2"><input type="submit" value="작성하기" id="submit" style="margin: 0 auto;"></td>
                   </tr>
               </table>
               <br>
@@ -81,72 +81,61 @@ export default {
 }
 </script>
 
-<style scroped >
-/*글쓰기 관련 ----------*/
-a{
-    text-decoration: none;
-    color: #3B3B3B;
-}
-select:focus {outline: 1px solid #39A652; box-shadow: 0 0 2px 2px rgba(166, 208, 169, 0.7);}
-input:focus {outline: 1px solid #39A652; box-shadow: 0 0 2px 2px rgba(166, 208, 169, 0.7);}
-textarea:focus {outline: 1px solid #39A652; box-shadow: 0 0 2px 2px rgba(166, 208, 169, 0.7);}
+<style scoped >
 
-/*게시판 작성하기-----------------------------------------------*/
+.content-board {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+}
+
+form {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  background-color: #fff;
+  padding: 20px;
+  border: 1px solid #ccc;
+  border-radius: 5px;
+  box-shadow: 2px 2px 10px orange;
+}
+
 fieldset {
-    background-color: rgb(233, 247, 223);
-    border-radius: 50px;
-    padding: 20px;
-    padding-right: 50px;
-    color:rgb(94, 87, 90);
-    border: none;
+  border: none;
+  padding: 0;
+  margin: 0;
 }
-legend {
-    color: rgb(70, 70, 70);
+
+table {
+  width: 100%;
+  border-collapse: collapse;
+  table-layout: fixed;
 }
-#title {
-    background-color: rgb(253, 253, 253);
-    border-radius: 5px;
-    border: none;
-    box-shadow: #BFE9A5 0px 1px 10px;
-    padding: 10px;
-    width: 550px;
-	margin-top:10px;
-	margin-bottom: 10px;
+
+td:first-child {
+  width: 70px;
 }
-#content-text {
-    background-color: rgb(253, 253, 253);
-    border-radius: 5px;
-    border: none;
-    box-shadow: #BFE9A5 0px 1px 10px;
-    padding: 10px;
-    resize:none;
-    width: 550px;
-    margin-bottom: 10px;
+
+input[type="text"],
+textarea {
+  width: 100%;
+  padding: 5px;
+  border-radius: 5px;
+  border: 1px solid #ccc;
+  margin-bottom: 10px;
 }
-#submit {
-    width: 100px;
-    height: 40px;
-    margin-top: 40%;
-    margin-left: 280%;
-    background-color: white;
-    border-radius: 20px;
-    border: none;
-    box-shadow: #BFE9A5 0px 1px 10px;
+
+input[type="submit"] {
+  background-color: orange;
+  color: #fff;
+  border: none;
+  border-radius: 5px;
+  padding: 10px 20px;
+  font-size: 16px;
+  cursor: pointer;
 }
-#submit:hover {
-    background-color: #1DB306;
-    color: white;
-    cursor: pointer;
-}
-input #fileselect {
-    background-color: white;
-    border: none;
-}
-td>b {
-    font-size: 15px;
-}
-/*클릭 시 테두리*/
-input:focus {outline: 2px solid rgb(151, 197, 145);}
-textarea:focus {outline: 2px solid rgb(151, 197, 145);}
+
+input:focus {outline: 2px solid orange;}
+textarea:focus {outline: 2px solid orange;}
 
 </style>

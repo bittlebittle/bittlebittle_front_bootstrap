@@ -99,14 +99,13 @@
         <!-- 실제 데이터를 가져와서 반복문으로 채우십시오 -->
         <tr v-for="(comment, index) in comments" :key="`comment-${index}`">
           <td><input type="checkbox" v-model="comment.selected" /></td>
-          <td>{{ comment.content }}</td>
+          <td>{{ comment.replyContent }}</td>
       </tr>
       </tbody>
     </table>
     <button @click="deleteSelected2">댓글삭제</button>
 
     <br><br><br><br>
-
     <div class="withdraw-btn-container">
       <button class="btn btn-danger btn-sm" @click="withdraw">회원탈퇴</button>
     </div>
