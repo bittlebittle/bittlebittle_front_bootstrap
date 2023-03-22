@@ -120,99 +120,89 @@ export default {
 
 
 <style scoped>
-  .container {
-    margin: 0 auto;
-    width: 900px;
-    min-height: 70vh; /* 추가 */
-    display: flex;
-    flex-direction: column; /* 추가 */
-    background-color: #FFFAF6; /* 추가 */
-  }
-
-  .content {
-    flex-grow: 1; /* 추가 */
-    background-color: #FFFAF6; /* 추가 */
-    padding: 20px; /* 추가 */
-    border-radius: 5px; /* 추가 */
-  }
-
+  /* 검색창 스타일링 */
   .search-container {
     display: flex;
-    justify-content: center;
     align-items: center;
     margin-bottom: 20px;
   }
 
-  .search-container button {
-    margin-left: 10px;
-    padding: 5px 10px;
-    background-color: #39a652;
-    border: 1px solid #39a652;
+  .search-container select {
+    height: 30px;
+    font-size: 14px;
+    padding: 0 10px;
     border-radius: 5px;
-    color: white;
+    border: 1px solid #ccc;
+    margin-right: 10px;
+  }
+
+  .search-container input[type="text"] {
+    height: 30px;
+    font-size: 14px;
+    padding: 0 10px;
+    border-radius: 5px;
+    border: 1px solid #ccc;
+    flex: 1;
+  }
+
+  .search-container button {
+    height: 30px;
+    font-size: 14px;
+    padding: 0 10px;
+    border-radius: 5px;
+    background-color: #ff6600;
+    border: none;
+    color: #fff;
     cursor: pointer;
   }
 
-  .search-container button:hover {
-    background-color: #2c803c;
-  }
-
+  /* 게시글 목록 스타일링 */
   #boardList {
-    background-color: white;
-    margin-bottom: 20px;
+    width: 100%;
+    border-collapse: collapse;
+    table-layout: fixed;
   }
 
-  table {
-    width: 98%;
-    border-collapse: collapse;
-    line-height: 15px;
-    color: solid rgb(255, 255, 255);
-  }
-
-  table td,
-  th {
-    border-top: 1px solid rgb(217, 233, 207);
-    border-bottom: 1px solid rgb(217, 233, 207);
-    border-collapse: collapse;
-    text-align: center;
+  #boardList th {
     padding: 10px;
+    background-color: #333;
+    color: #fff;
+    text-align: center;
+    font-size: 16px;
   }
 
-  th {
-    background: rgb(217, 233, 207);
+  #boardList td {
+    padding: 10px;
+    border-bottom: 1px solid #ccc;
+    font-size: 14px;
+    text-overflow: ellipsis;
+    overflow: hidden;
+    white-space: nowrap;
   }
 
-  a {
-    text-decoration: none;
-    color: black;
+  #boardList td.bno {
+    width: 50px;
+    text-align: center;
   }
 
-  a:hover {
-    font-weight: bold;
+  #boardList tbody tr:hover {
+    background-color: #f5f5f5;
   }
 
+  /* 글쓰기 버튼 스타일링 */
   .write-button-container {
-    display: flex;
-    justify-content: flex-end;
+    text-align: center;
     margin-top: 20px;
   }
 
   #write-button {
-    padding: 10px;
-    font-size: 13px;
-    background-color: #FAAA74;
-    border: 1px solid rgb(245, 228, 224);
+    height: 40px;
+    font-size: 16px;
+    padding: 0 20px;
     border-radius: 5px;
-  }
-
-  #write-button:hover {
-    background-color: #FD6500;
-    color: white;
-    cursor: pointer;
-  }
-
-  #table-hover:hover {
-    background-color: #FFFAF6;
+    background-color: #ff6600;
+    border: none;
+    color: #fff;
     cursor: pointer;
   }
 </style>
