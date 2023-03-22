@@ -108,7 +108,7 @@
       <template v-else>
         <router-link :to="{name:'UserMyPageComp', params: {userNo: loginUser.userNo }}">
             <button type="button" class="custom-btn btn btn-warning btn-sm" data-bs-toggle="modal" data-bs-target="#BookingModal">
-              {{ loginUser.nickname }}
+              {{ loginUser.nickname }} 22
             </button>
         </router-link>
         <!-- <router-link to="/"> -->

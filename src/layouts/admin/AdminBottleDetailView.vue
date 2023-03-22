@@ -25,7 +25,7 @@
     <div class="modal-body">
       <form>
         <template v-if="bottle.imgUrl != ''">
-          <img :src="getBottleImage()" style="max-width:350px" alt="이미지 파일">
+          <img ref="addBottleImage" :src="getBottleImage()" style="max-width:350px" alt="이미지 파일">
         </template>
         <div class="form-group">
           <label for="bottleName">첨부 이미지</label>
@@ -160,14 +160,13 @@ export default {
     onMounted(() => {
       getBottle()
     })
-
     // 보틀 이미지 불러오기
     function getBottleImage () {
       return `http://localhost:8080/bittlebittle/image?path=bottle&name=${bottle.value.imgCusUrl}`
     }
 
     // 이미지 첨부
-    const addBottleImage = ref()
+    const addBottleImage = ref(null)
     const handleImageUpload = function (event) {
       addBottleImage.value = event.target.files[0]
     }
@@ -208,6 +207,9 @@ export default {
         })
     }
 
+
+
+    // 보틀 수정
     const editBottle = function () {
       const url = '/api/admin/bottles/set-data'
 
@@ -226,6 +228,8 @@ export default {
       }
       if (addBottleImage.value) {
         data.append('reupfile', addBottleImage.value)
+      } else {
+        data.append('reupfile', null)
       }
 
       axios.post(url, data)
@@ -233,6 +237,8 @@ export default {
           bottle.value = res.data.bottle
           tagListByBottle.value = res.data.tagListByBottle
           editBottleModal.value = false
+          // 업로드 한 뒤에는 <input type="file" 의 value 를 null 로 수정
+          addBottleImage.value = null
         })
     }
 
