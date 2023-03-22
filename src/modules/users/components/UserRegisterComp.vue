@@ -41,6 +41,9 @@
           <td><button type="button" @click="nicknameCheck" class="custom-btn btn btn-warning btn-sm" style="padding:8px; float: right;" >확인</button></td>
         </tr><br>
         <tr>
+          <td colspan="3" style="text-align: center;">{{nicknameCheckMsg}}</td>
+        </tr><br>
+        <tr>
           <td>이메일</td>
           <td colspan="2"><input type="email" id="email" v-model="registerData.email" placeholder="email" /></td>
         </tr><br>
@@ -55,24 +58,25 @@
                 <option value="019">019</option>
             </select>
             - <input type="text" v-model="phoneNum.phone_2" style="width: 7rem;"/> - <input style="width: 7rem;" type="text" v-model="phoneNum.phone_3" /></td> -->
-            <input type="text" v-model="registerData.value" style="width: 15rem;" placeholder="000-0000-0000 '-'을 붙여서 작성해주세요 '"/>
+            <input type="text" v-model="registerData.phone" style="width: 15rem;" placeholder="000-0000-0000 '-'을 붙여서 작성해주세요 '"/>
             </td>
           </tr>
         </table><br><br><br>
-	      <button type="submit" class="custom-btn btn btn-warning" style="padding: 14px;">회원가입</button> <br><br>
-	      <p class="message">이미 회원이신가요? <router-link to="/">home</router-link></p>
+      <button type="submit" class="custom-btn btn btn-warning" style="padding: 14px;">회원가입</button> <br><br>
+      <p class="message">이미 회원이신가요? <router-link to="/">home</router-link></p>
     </form>
 
 </template>
 
 <script>
 import { ref, watch } from 'vue'
-import { $checkDuplicate, $addUser } from '@/api/user'
+import { $checkDuplicate, $checkDuplicateNickname, $addUser } from '@/api/user'
 
 export default {
   name: 'UserRegisterComp',
   setup () {
     const idCheckMsg = ref(null)
+    const nicknameCheckMsg = ref(null)
 
     const pwdErrorMsg = ref(null)
     const pwdConfirmErrorMsg = ref(null)
@@ -117,29 +121,43 @@ export default {
     })
 
     function idCheck () {
-  if (registerData.userId === '') {
-    idCheckMsg.value = '아이디를 입력해주세요.';
-    return;
-  }
-  $checkDuplicate(registerData.userId)
-    .then(res => {
-      console.log(res)
-      if (res.data.isDuplicate) {
-        idCheckMsg.value = '이미 존재하는 아이디 입니다.'
-      } else {
-        idCheckMsg.value = '사용 가능한 아이디 입니다.'
+      if (registerData.userId === '') {
+        idCheckMsg.value = '아이디를 입력해주세요.'
+        return
       }
-    })
-    .catch(err => console.log(err))
-}
-
-    function nicknameCheck () {
-
+      $checkDuplicate(registerData.userId)
+        .then(res => {
+          console.log(res)
+          if (res.data.isDuplicate) {
+            idCheckMsg.value = '이미 존재하는 아이디 입니다.'
+          } else {
+            idCheckMsg.value = '사용 가능한 아이디 입니다.'
+          }
+        })
+        .catch(err => console.log(err))
     }
 
-    function checkAllFields() {
-      let fields = Object.values(registerData)
-      let result = fields.every(field => field !== '')
+    function nicknameCheck () {
+      if (registerData.nickname === '') {
+        nicknameCheckMsg.value = '닉네임을 입력해주세요.'
+        return
+      }
+      $checkDuplicateNickname(registerData.nickname)
+        .then(res => {
+          console.log(res)
+          if (!res.data.isDuplicate) {
+            nicknameCheckMsg.value = '이미 존재하는 닉네임 입니다.'
+          } else {
+            nicknameCheckMsg.value = '사용 가능한  입니다.'
+          }
+        })
+        .catch(err => console.log(err))
+    }
+
+    function checkAllFields () {
+      const fields = Object.values(registerData)
+      const result = fields.every(field => field !== '')
+      console.log(registerData)
       if (!result) {
         alert('입력되지 않은 항목이 있습니다.')
         return false
@@ -149,15 +167,12 @@ export default {
         alert('아이디 중복확인을 해주세요.')
         return false
       }
-
       return true
     }
 
-
-    function registerUser () {
+    async function registerUser () {
       if (checkAllFields()) {
-        console.log(registerData)
-        $addUser(registerData).then(
+        await $addUser(registerData).then(
           res => console.log(res.data)
         ).catch(err => console.log(err))
       }
@@ -167,10 +182,9 @@ export default {
       registerData,
       idCheckMsg,
       idCheck,
-
       nicknameCheck,
-
-      registerUser
+      registerUser,
+      nicknameCheckMsg
     }
   }
 }
@@ -249,7 +263,6 @@ export default {
 .form .message a:hover {
   cursor: pointer;
 }
-
 
 .register-form {
   display: flex;

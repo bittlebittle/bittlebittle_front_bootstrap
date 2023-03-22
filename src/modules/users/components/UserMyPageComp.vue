@@ -106,22 +106,7 @@
     <button @click="deleteSelected2">댓글삭제</button>
 
     <br><br><br><br>
-    <h6>내가 작성한 리뷰 상세보기</h6>
-    <table class="review-details-table">
-      <thead>
-        <tr>
-          <th>상품</th>
-          <th>제목</th>
-          <th>평점</th>
-        </tr>
-      </thead>
-      <tbody>
-        <!-- 내가 작성한 리뷰 상세보기 테이블 데이터 -->
-        <!-- 실제 데이터를 가져와서 반복문으로 채우십시오 -->
-      </tbody>
-    </table>
 
-    <br><br><br><br>
     <div class="withdraw-btn-container">
       <button class="btn btn-danger btn-sm" @click="withdraw">회원탈퇴</button>
     </div>
@@ -156,6 +141,7 @@ export default {
       newUserPwd: '',
       newChkPwd: ''
     }
+    const user = ref({})
 
     const editModeToggle = () => {
       editMode.value = !editMode.value
@@ -220,15 +206,16 @@ export default {
       }
     }
 
+
     const fetchUser = async () => {
       try {
         const response = await $getUser(userNo)
-        const user = response.data
+        user.value = response.data
 
-        name.value = user.userName
-        nickname.value = user.nickname
-        email.value = user.email
-        phone.value = user.phone
+        name.value = user.value.userName
+        nickname.value = user.value.nickname
+        email.value = user.value.email
+        phone.value = user.value.phone
       } catch (error) {
         console.error(error)
       }
@@ -236,10 +223,10 @@ export default {
 
     const updateInfo = async () => {
       if (!editMode.value) {
-        name.value = ''
-        nickname.value = ''
-        email.value = ''
-        phone.value = ''
+        name.value = user.value.userName
+        nickname.value = user.value.nickname
+        email.value = user.value.email
+        phone.value = user.value.phone
       } else {
         try {
           const updatedInfo = {
@@ -295,6 +282,12 @@ export default {
       fetchReviews()
       fetchComments()
     })
+
+
+
+
+
+
 
     return {
       name,

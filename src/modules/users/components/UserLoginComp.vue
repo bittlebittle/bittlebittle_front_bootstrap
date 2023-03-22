@@ -10,7 +10,9 @@
       <input type="password" id="password_" v-model="loginData.userPwd"  @keyup.enter="getLoginUser" placeholder="비밀번호" />
       <button type="button" @click="getLoginUser">로그인</button>
       <br>
-      <p class="message">아직 회원이 아니신가요? <a href="#" class="back">회원가입</a></p>
+      <p class="message">아직 회원이 아니신가요?
+        <router-link :to='{name:"UserRegisterComp"}' class="back">회원가입</router-link>
+      </p>
       <p class="message" style="margin-top: 7px;">비밀번호를 잊으셨나요? <a class="find">비밀번호 찾기</a></p>
     </div>
   </div>

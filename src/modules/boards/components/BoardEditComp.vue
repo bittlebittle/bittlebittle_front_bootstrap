@@ -18,7 +18,7 @@
                   </tr>
                   <tr class="buttons">
                       <td colspan="2">
-                        <input type="submit" value="수정하기" id="submit">
+                        <input type="submit" value="수정하기" id="submit2">
                         <input type="button" value="뒤로가기" id="cancel">
                       </td>
                   </tr>
@@ -44,12 +44,13 @@ export default {
     const board = useBoardStore().getBoardInfo
 
     const loginUser = useUserStore().getLoginUserInfo
+    const router = useRouter()
 
     function editBoard () {
       $editBoard(loginUser.userNo, board)
         .then(res => {
           console.log(res.data)
-          useRouter().push(`/boards/${board.value.boardNo}`)
+          router.push(`/boards/${board.boardNo}`)
         }).catch(err => console.log(err))
     }
 
@@ -121,6 +122,9 @@ legend {
 }
 #submit {
   box-shadow: #f4b967 0px 1px 10px;
+}
+#submit2{
+
 }
 #submit:hover {
     background-color: #ffae00;

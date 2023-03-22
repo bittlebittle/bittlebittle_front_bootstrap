@@ -54,12 +54,7 @@
         </li>
 
         <li class="nav-item">
-          <template v-if="loginUser != null && loginUser.adminYN == 'Y'">
-          <router-link class="nav-link" to="/admin/boards">자유게시판</router-link>
-          </template>
-          <template v-else>
           <router-link class="nav-link" to="/boards">자유게시판</router-link>
-        </template>
         </li>
 
         <li class="nav-item">
@@ -108,7 +103,7 @@
       <template v-else>
         <router-link :to="{name:'UserMyPageComp', params: {userNo: loginUser.userNo }}">
             <button type="button" class="custom-btn btn btn-warning btn-sm" data-bs-toggle="modal" data-bs-target="#BookingModal">
-              {{ loginUser.nickname }} 22
+              {{ loginUser.nickname }}
             </button>
         </router-link>
         <!-- <router-link to="/"> -->

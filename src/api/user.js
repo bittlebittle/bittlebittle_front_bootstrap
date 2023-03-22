@@ -52,7 +52,7 @@ async function $addUserTags (tagNoList) {
   try {
     const user = useUserStore()
     const axios = getJsonAxiosInstance(user.getLoginUserInfo)
-    return axios.post(`${user.getLoginUserInfo.userNo}/tags`, tagNoList)
+    return await axios.post(`${user.getLoginUserInfo.userNo}/tags`, tagNoList)
   } catch (error) {
     console.error('Error adding user tags:', error)
   }
@@ -62,7 +62,7 @@ async function $deleteUserTags (tagNoList) {
   try {
     const user = useUserStore()
     const axios = getJsonAxiosInstance(user.getLoginUserInfo)
-    return axios.post(`${user.getLoginUserInfo.userNo}/tags/deletion`, tagNoList)
+    return await axios.post(`${user.getLoginUserInfo.userNo}/tags/deletion`, tagNoList)
   } catch (error) {
     console.error('Error deleting user tags:', error)
   }
@@ -72,7 +72,17 @@ async function $checkDuplicate (userId) {
   try {
     const user = useUserStore()
     const axios = getJsonAxiosInstance(user.getLoginUserInfo)
-    return axios.post('api/users/check-duplicate', { userId: userId })
+    return await axios.post('api/users/check-duplicate', { userId: userId })
+  } catch (error) {
+    console.error('Error deleting user tags:', error)
+  }
+}
+
+async function $checkDuplicateNickname (nickname) {
+  try {
+    const user = useUserStore()
+    const axios = getJsonAxiosInstance(user.getLoginUserInfo)
+    return await axios.post('api/users/check-duplicate-nickname', { nickname: nickname})
   } catch (error) {
     console.error('Error deleting user tags:', error)
   }
@@ -108,4 +118,5 @@ export {
   $loginUser, $getUser, $editUser, $addUser, $removeUser,
   $logoutUser, $checkDuplicate,
   $addUserTags, $deleteUserTags, $getReviews, $getReply
+  , $checkDuplicateNickname
 }

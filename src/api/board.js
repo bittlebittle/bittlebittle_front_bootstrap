@@ -12,12 +12,6 @@ function $getBoardList () {
   return axios.get('/api/boards')
 }
 
-function getReplyList (url) {
-  const user = useUserStore()
-  const axios = getJsonAxiosInstance(user.getLoginUserInfo)
-  return axios.get(url)
-}
-
 function $getBoardDetail (boardNo) {
   const user = useUserStore()
   const axios = getJsonAxiosInstance(user.getLoginUserInfo)
@@ -27,7 +21,7 @@ function $getBoardDetail (boardNo) {
 function $editBoard (boardNo, boardData) {
   const user = useUserStore()
   const axios = getJsonAxiosInstance(user.getLoginUserInfo)
-  return axios.post(`/api/boards/${boardNo}/set-data`, boardData)
+  return axios.post('/api/boards/set-data', boardData)
 }
 
 function $addBoard (boardData) {
@@ -36,18 +30,45 @@ function $addBoard (boardData) {
   return axios.post('/api/boards', boardData)
 }
 
-function addReply (url, replyData) {
-  const user = useUserStore()
-  const axios = getJsonAxiosInstance(user.getLoginUserInfo)
-  return axios.post(url, replyData)
-}
-
 function $removeBoard (boardNo) {
   const user = useUserStore()
   const axios = getJsonAxiosInstance(user.getLoginUserInfo)
   return axios.get(`/api/boards/${boardNo}/deletion`)
 }
 
+function getReplyList (url) {
+  const user = useUserStore()
+  const axios = getJsonAxiosInstance(user.getLoginUserInfo)
+  return axios.get(url)
+}
 
+function $addReply (url, replyData) {
+  const user = useUserStore()
+  const axios = getJsonAxiosInstance(user.getLoginUserInfo)
+  return axios.post(url, replyData)
+}
 
-export { $getBoardList, getReplyList, $getBoardDetail, $editBoard, $addBoard, addReply, $removeBoard }
+async function $editReply (boardNo, replyData) {
+  try {
+    const user = useUserStore()
+    const axios = getJsonAxiosInstance(user.getLoginUserInfo)
+    return axios.post(`/boards/${boardNo}/replies/set-data`, replyData)
+  } catch (error) {
+    console.error('Error deleting user tags:', error)
+  }
+}
+
+async function $removeReply (boardNo, boardReplyNo) {
+  try {
+    const user = useUserStore()
+    const axios = getJsonAxiosInstance(user.getLoginUserInfo)
+    return axios.get(`/boards/${boardNo}/replies/${boardReplyNo}/deletion`)
+  } catch (error) {
+    console.error('Error deleting user tags:', error)
+  }
+}
+
+export {
+  $getBoardList, $getBoardDetail, $editBoard, $removeBoard,
+  getReplyList, $addBoard, $addReply, $editReply, $removeReply
+}

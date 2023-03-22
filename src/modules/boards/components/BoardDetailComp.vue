@@ -21,54 +21,75 @@
           </tr>
         </tbody>
       </table>
+      <template v-if="loginUser != null && loginUser.userNo == board.userNo">
+          <div class="button-container">
+          <button class="button-edit btn-sm" @click="editBoard">수정</button>
+          <button class="button-remove btn-sm" @click="removeBoard()">삭제</button>
+        </div>
+      </template>
     </div>
-    <template v-if="loginUser != null && loginUser.userNo == board.userNo">
-      <div class="button-container">
-        <button class="button-edit" @click="editBoard">수정</button>
-        <button class="button-remove">삭제</button>
-      </div>
-    </template>
     <br><br><br><br><br>
 
     <h6>댓글</h6>
-    <div class="button-container">
-</div>
+    <div class="button-container"></div>
     <div class="bright-section comments">
-      <table>
-        <thead>
-          <tr>
-            <th colspan="2">작성자</th>
-            <th colspan="2">작성날짜</th>
-          </tr>
-        </thead>
-        <tbody>
-          <template v-for="(comment, index) in comments" :key="index">
+        <table>
+          <thead>
             <tr>
-              <td colspan="2">{{ comment.nickname }}</td>
-              <td colspan="2">{{ comment.status }}</td>
+              <th>작성자</th>
+              <th>작성날짜</th>
+              <th></th>
             </tr>
-            <tr>
-              <td colspan="4" class="comment-content">{{ comment.replyContent }}</td>
-            </tr>
+          </thead>
+          <tbody>
+            <template v-for="(comment, index) in comments" :key="index">
 
-          </template>
-        </tbody>
-      </table>
+                <tr>
+                  <td>{{ comment.nickname }}</td>
+                  <td>{{ comment.createDate }}</td>
+                  <td>
+                    <template v-if="loginUser != null && loginUser.userNo == board.userNo">
+                      <!-- 수정 모드가 아니라면 -->
+                      <template v-if="!editMode">
+                        <div class="button-container">
+                        <button class="button-edit btn-sm" @click="editModeToggles(comment)">수정</button>
+                        <button class="button-remove btn-sm" @click="removeReply(comment.replyNo)">삭제</button>
+                      </div>
+                      </template>
+                      <template v-else>
+                        <div class="button-container">
+                        <button class="button-edit btn-sm" @click="editReply()">저장</button>
+                        <button class="button-remove btn-sm" @click="editMoveToggle()">취소</button>
+                      </div>
+                      </template>
+                    </template>
+                  </td>
+                </tr>
+                  <tr>
+                    <!-- 수정 모드라면 -->
+                    <template v-if="editMode && editReplyInfo.editReplyNo == comment.replyNo">
+                      <input type="text" v-model="editReplyInfo.editReplyContent">
+                    </template>
+                    <template v-else>
+                      <td colspan="3" class="comment-content">{{ comment.replyContent }}</td>
+                    </template>
+                  </tr>
+                </template>
+          </tbody>
+        </table>
     </div>
-<!-- Add this code right after the closing </div> tag for the comments table and before the comment-form div -->
-<div class="button-container">
-  <button class="custom-button edit-button">수정</button>
-  <button class="custom-button delete-button">삭제</button>
-</div>
+    <br><br><br>
     <!-- Add this code right after the comments table and before the closing </div> tag -->
-    <div class="comment-form">
-      <textarea v-model="newComment" class="comment-input" placeholder="댓글을 입력하세요..."></textarea>
-      <button @click="addComment" class="comment-submit button-edit">댓글 작성</button>
-    </div>
+    <template v-if="loginUser != null">
+      <div class="comment-form">
+        <textarea v-model="newComment" class="comment-input" placeholder="댓글을 입력하세요..."></textarea>
+        <button @click="addComment" class="comment-submit button-edit">댓글 작성</button>
+      </div>
+    </template>
 </template>
 
 <script>
-import { $getBoardDetail, getReplyList, addReply } from '@/api/board'
+import { $getBoardDetail, getReplyList, $addReply, $removeBoard, $editReply, $removeReply } from '@/api/board'
 import { ref, onMounted } from 'vue'
 import { useRoute, useRouter } from 'vue-router'
 import { useUserStore } from '@/stores/users'
@@ -79,10 +100,11 @@ export default {
   setup () {
     // Add this code inside the `setup()` function
     const comments = ref([])
+    const editMode = ref(false)
     const fetchComments = () => {
       const boardNo = route.params.boardNo
       console.log(boardNo)
-      getReplyList(`/reply?boardNo=${boardNo}`)
+      getReplyList(`/boards/${boardNo}/replies`)
         .then((res) => {
           comments.value = res.data
         })
@@ -105,19 +127,6 @@ export default {
         .catch((err) => {
           console.log(err)
         })
-      // 임시 댓글 데이터 추가
-      board.value.comments = [
-        {
-          nickname: '댓글 작성자1',
-          createDate: '2023-03-16',
-          content: '댓글 내용1'
-        },
-        {
-          nickname: '댓글 작성자2',
-          createDate: '2023-03-17',
-          content: '댓글 내용2'
-        }
-      ]
     }
 
     const router = useRouter()
@@ -127,12 +136,55 @@ export default {
       router.push({ name: 'BoardEditComp' })
     }
 
-    onMounted(() => {
-      setBoardDetail()
-      fetchComments()
+    function removeBoard () {
+      $removeBoard(board.value.boardNo)
+        .then(res => {
+          console.log(res.data)
+          router.push('/boards')
+        })
+        .catch(err => console.log(err))
+    }
+
+    // 현재 수정창의 정보
+    const editReplyInfo = ref({
+      editReplyNo: '',
+      editReplyContent: ''
     })
 
-    // Add this code inside the `setup()` function
+    function editModeToggles (comment) {
+      editMode.value = !editMode.value
+      editReplyInfo.value.editReplyNo = comment.replyNo
+      editReplyInfo.value.editReplyContent = comment.replyContent
+      console.log(editReplyInfo.value)
+    }
+
+    function editModeToggle () {
+      editMode.value = !editMode.value
+    }
+
+    function editReply () {
+      const editReplyData = {
+        replyNo: editReplyInfo.value.editReplyNo,
+        replyContent: editReplyInfo.value.editReplyContent
+      }
+      $editReply(board.value.boardNo, editReplyData)
+        .then(res => {
+          console.log(res.data)
+          editModeToggle()
+          fetchComments()
+        })
+        .catch(err => console.log(err))
+    }
+
+    function removeReply (replyNo) {
+      $removeReply(board.value.boardNo, replyNo)
+        .then(res => {
+          console.log(res.data)
+          fetchComments()
+        })
+        .catch(err => console.log(err))
+    }
+
     const newComment = ref('')
 
     const addComment = () => {
@@ -143,27 +195,28 @@ export default {
 
       // Send the new comment to the API
       const reply = {
+        userNo: loginUser.userNo,
+        boardNo: board.value.boardNo,
         replyContent: newComment.value
       }
-      addReply(`/reply/api/boards/${board.value.boardNo}/addReply`, reply)
-        .then((res) => {
-          if (res.data.status === 'success') {
-            const newCommentData = {
-              nickname: res.data.nickname,
-              createDate: res.data.createDate,
-              content: newComment.value
-            }
-            board.value.comments.push(newCommentData)
+      $addReply(`/boards/${board.value.boardNo}/replies`, reply)
+        .then(res => {
+          if (res.data.request) {
             newComment.value = ''
+            fetchComments()
           } else {
             alert('댓글 작성 중 오류가 발생했습니다.')
           }
         })
         .catch((err) => {
           console.log(err)
-          alert('댓글 작성 중 오류가 발생했습니다.')
         })
     }
+
+    onMounted(() => {
+      setBoardDetail()
+      fetchComments()
+    })
 
     // Add 'newComment' and 'addComment' to the returned object
     return {
@@ -172,13 +225,19 @@ export default {
       newComment,
       addComment,
       loginUser,
-      editBoard
+      editBoard,
+      removeBoard,
+      editReply,
+      removeReply,
+      editMode,
+      editModeToggle,
+      editModeToggles,
+      editReplyInfo
     }
   }
 }
 
 </script>
-
 
 <style scope>
 /*디테일뷰 관련*/
@@ -248,7 +307,6 @@ export default {
 .button-edit {
   background-color: orange;
   color: white;
-  margin-top : 10px;
   margin-left: 10px;
   border: none;
   border-radius: 20px;
@@ -257,12 +315,10 @@ export default {
 .button-remove {
   background-color: red;
   color: white;
-  margin-top : 10px;
   margin-left: 10px;
   border: none;
   border-radius: 20px;
 }
-
 
 .button-container {
   text-align: right;
@@ -302,7 +358,7 @@ export default {
 .button-container {
   display: flex;
   justify-content: flex-end;
-  margin-bottom: 20px;
+  /* margin-bottom: 20px; */
 }
 
 .custom-button {

@@ -191,7 +191,7 @@
 
 <script>
 import { getFormAxiosInstance } from '@/api/index'
-import { onMounted, ref, reactive } from 'vue'
+import { onMounted, ref } from 'vue'
 import { useRouter } from 'vue-router'
 import { useUserStore } from '@/stores/users.js'
 
@@ -252,7 +252,6 @@ export default {
     }
 
     // 리뷰 작성
-
     const reviewTitle = ref('')
     const reviewContent = ref('')
     const grade = ref(0)

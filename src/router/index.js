@@ -15,6 +15,8 @@ import AdminAddBottleView from '@/layouts/admin/AdminAddBottleView'
 import AdminBottleDetailView from '@/layouts/admin/AdminBottleDetailView'
 import AdminBottle from '@/layouts/admin/AdminBottle'
 import AdminTagView from '@/layouts/admin/AdminTagView'
+import NoticeListComp from '@/modules/notices/components/NoticeListComp'
+import NoticeDetailComp from '@/modules/notices/components/NoticeDetailComp'
 
 const routes = [
   {
@@ -92,7 +94,19 @@ const routes = [
       {
         path: '/notices',
         name: 'NoticeView',
-        component: NoticeView
+        component: NoticeView,
+        children: [
+          {
+            path: '/notices',
+            name: 'NoticeListComp',
+            component: NoticeListComp
+          },
+          {
+            path: '/notices/:noticeNo',
+            name: 'NoticeDetailComp',
+            component: NoticeDetailComp
+          }
+        ]
       },
       {
         path: '/faqs',
@@ -138,8 +152,17 @@ const routes = [
         path: '/admin/tags',
         name: 'AdminTagView',
         component: AdminTagView
+      },
+      {
+        path: '/admin/users',
+        name: 'AdminUserManagement',
+        component: () => import('@/modules/users/AdminManaging')
+      },
+      {
+        path: '/admin/notices',
+        name: 'AdminNoticeListComp',
+        component: () => import('@/modules/notices/components/AdminNoticeListComp')
       }
-
     ]
   },
   {
