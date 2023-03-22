@@ -1,89 +1,138 @@
 <template>
   <div class="my-info">
-    <h2>나의 등록정보</h2>
-    <div class="info-edit">
-    <div class="input-group">
-      <label for="name">이름</label>
-      <input type="text" id="name" v-model="name" :disabled="!editMode" />
-    </div>
-    <div class="input-group">
-      <label for="nickname">닉네임</label>
-      <input type="text" id="nickname" v-model="nickname" :disabled="!editMode" />
-    </div>
-    <div class="input-group">
-      <label for="email">이메일</label>
-      <input type="email" id="email" v-model="email" :disabled="!editMode" />
-    </div>
-    <div class="input-group">
-      <label for="phone">전화번호</label>
-      <input type="text" id="phone" v-model="phone" :disabled="!editMode" />
-    </div>
-    <button @click="updateInfo">수정</button>
-  </div>
-
-    <!-- 내가 작성한 리뷰 및 댓글 테이블 -->
-    <h3>내가 작성한 리뷰</h3>
-    <table class="reviews-table">
-<thead>
-  <tr>
-    <th><input type="checkbox" @change="selectAll1" v-model="allSelected1" /></th>
-    <th>리뷰 제목</th>
-  </tr>
-</thead>
-<tbody>
-  <!-- 내가 작성한 리뷰 테이블 데이터 -->
-  <!-- 실제 데이터를 가져와서 반복문으로 채우십시오 -->
-  <tr v-for="(review, index) in reviews" :key="`review-${index}`">
-    <td><input type="checkbox" v-model="review.selected" /></td>
-    <td>{{ review.title }}</td>
-</tr>
-</tbody>
-</table>
-  <button @click="deleteSelected1">리뷰삭제</button>
-
-  <h3>내가 작성한 댓글</h3>
-<table class="comments-table">
-<thead>
-  <tr>
-    <th><input type="checkbox" @change="selectAll2" v-model="allSelected2" /></th>
-    <th>댓글 내용</th>
-  </tr>
-</thead>
-<tbody>
-  <!-- 내가 작성한 댓글 테이블 데이터 -->
-  <!-- 실제 데이터를 가져와서 반복문으로 채우십시오 -->
-  <tr v-for="(comment, index) in comments" :key="`comment-${index}`">
-    <td><input type="checkbox" v-model="comment.selected" /></td>
-    <td>{{ comment.content }}</td>
-</tr>
-</tbody>
-</table>
-<button @click="deleteSelected2">댓글삭제</button>
-
-  <h3>내가 작성한 리뷰 상세보기</h3>
-  <table class="review-details-table">
-    <thead>
+    <h6>나의 등록정보</h6>
+    <table class="info-table">
+  <thead>
+    <tr>
+      <th>항목</th>
+      <th>내용</th>
+    </tr>
+  </thead>
+  <tbody>
+    <tr>
+      <td>이름</td>
+      <td>
+        <input type="text" id="name" v-model="name" :disabled="!editMode" />
+      </td>
+    </tr><br>
+    <template v-if="editMode">
       <tr>
-        <th>상품</th>
-        <th>제목</th>
-        <th>평점</th>
+        <td>현재 비밀번호</td>
+        <td>
+          <input type="password" v-model="myUserInfo.userPwd" placeholder="비밀번호" />
+          <p v-if="pwdErrorMsg" class="error-msg">{{ pwdErrorMsg }}</p>
+        </td>
+      </tr><br>
+      <tr>
+        <td>비밀번호 변경</td>
+        <td>
+          <input type="password" id="password-confirm" v-model="myUserInfo.newUserPwd" placeholder="비밀번호 확인" />
+          <p v-if="pwdConfirmErrorMsg" class="error-msg">{{ pwdConfirmErrorMsg }}</p>
+        </td>
+      </tr><br>
+      <tr>
+        <td>비밀번호 변경 재확인</td>
+        <td>
+          <input type="password" id="password-confirm" v-model="myUserInfo.newChkPwd" placeholder="비밀번호 확인" />
+          <p v-if="pwdConfirmErrorMsg" class="error-msg">{{ pwdConfirmErrorMsg }}</p>
+        </td>
+      </tr><br>
+    </template>
+    <tr>
+      <td>닉네임</td>
+      <td>
+        <input type="text" id="nickname" v-model="nickname" :disabled="!editMode" />
+      </td>
+    </tr><br>
+    <tr>
+      <td>이메일</td>
+      <td>
+        <input type="email" id="email" v-model="email" :disabled="!editMode" />
+      </td>
+    </tr><br>
+    <tr>
+      <td>전화번호</td>
+      <td>
+        <input type="text" id="phone" v-model="phone" :disabled="!editMode" />
+      </td>
+    </tr><br>
+    <tr>
+      <td colspan="2" style="text-align: center;">
+        <button @click="updateInfo" style="margin-right: 10px;">수정</button>
+        <button @click="editModeClose">취소</button>
+      </td>
+    </tr>
+  </tbody>
+</table>
+<br><br><br><br>
+    <!-- 내가 작성한 리뷰 및 댓글 테이블 -->
+    <h6>내가 작성한 리뷰</h6>
+    <table class="reviews-table">
+        <thead>
+          <tr>
+            <th><input type="checkbox" @change="selectAll1" v-model="allSelected1" /></th>
+            <th>리뷰 제목</th>
+          </tr>
+        </thead>
+        <tbody>
+          <!-- 내가 작성한 리뷰 테이블 데이터 -->
+          <!-- 실제 데이터를 가져와서 반복문으로 채우십시오 -->
+          <tr v-for="(review, index) in reviews" :key="`review-${index}`">
+            <td><input type="checkbox" v-model="review.selected" /></td>
+            <td>{{ review.reviewTitle }}</td>
+        </tr>
+        </tbody>
+      </table>
+        <button @click="deleteSelected1">리뷰삭제</button>
+
+        <br><br><br><br>
+    <h6>내가 작성한 댓글</h6>
+    <table class="comments-table">
+      <thead>
+        <tr>
+          <th><input type="checkbox" @change="selectAll2" v-model="allSelected2" /></th>
+          <th>댓글 내용</th>
+        </tr>
+      </thead>
+      <tbody>
+        <!-- 내가 작성한 댓글 테이블 데이터 -->
+        <!-- 실제 데이터를 가져와서 반복문으로 채우십시오 -->
+        <tr v-for="(comment, index) in comments" :key="`comment-${index}`">
+          <td><input type="checkbox" v-model="comment.selected" /></td>
+          <td>{{ comment.content }}</td>
       </tr>
-    </thead>
-    <tbody>
-      <!-- 내가 작성한 리뷰 상세보기 테이블 데이터 -->
-      <!-- 실제 데이터를 가져와서 반복문으로 채우십시오 -->
-    </tbody>
-  </table>
+      </tbody>
+    </table>
+    <button @click="deleteSelected2">댓글삭제</button>
 
-  <button class="withdraw-button" @click="withdraw">회원탈퇴</button>
+    <br><br><br><br>
+    <h6>내가 작성한 리뷰 상세보기</h6>
+    <table class="review-details-table">
+      <thead>
+        <tr>
+          <th>상품</th>
+          <th>제목</th>
+          <th>평점</th>
+        </tr>
+      </thead>
+      <tbody>
+        <!-- 내가 작성한 리뷰 상세보기 테이블 데이터 -->
+        <!-- 실제 데이터를 가져와서 반복문으로 채우십시오 -->
+      </tbody>
+    </table>
 
+    <br><br><br><br>
+    <div class="withdraw-btn-container">
+      <button class="btn btn-danger btn-sm" @click="withdraw">회원탈퇴</button>
+    </div>
+    <br><br><br><br>
   </div>
 </template>
 
 <script>
 import { ref, onMounted } from 'vue'
 import { useUserStore } from '@/stores/users'
-import { $getUser, $editUser, $removeUser } from '@/api/user'
+import { $getUser, $editUser, $removeUser, $getReviews, $getReply } from '@/api/user'
 
 export default {
   name: 'UserMyPageComp',
@@ -98,11 +147,19 @@ export default {
     const email = ref('')
     const phone = ref('')
     const editMode = ref(false)
-    const reviews = ref([])
-    const comments = ref([])
+    const reviews = ref({})
+    const comments = ref({})
     const allSelected1 = ref(false)
     const allSelected2 = ref(false)
+    const myUserInfo = {
+      userPwd: '',
+      newUserPwd: '',
+      newChkPwd: ''
+    }
 
+    const editModeToggle = () => {
+      editMode.value = !editMode.value
+    }
 
     // 회원 탈퇴 메소드 구현
     const withdraw = async () => {
@@ -204,19 +261,13 @@ export default {
           console.error('정보 업데이트 중 에러가 발생했습니다:', error)
         }
       }
-      editMode.value = !editMode.value
+      editModeToggle()
     }
-
-    onMounted(() => {
-      fetchUser()
-      fetchReviews()
-      fetchComments()
-    })
 
     const fetchReviews = async () => {
       // API를 호출하여 리뷰 데이터를 가져옵니다.
       try {
-        const response = await $getReviews(userInfo.value.userNo)
+        const response = await $getReviews()
         reviews.value = response.data
       } catch (error) {
         console.error(error)
@@ -226,12 +277,24 @@ export default {
     const fetchComments = async () => {
       // API를 호출하여 댓글 데이터를 가져옵니다.
       try {
-        const response = await $getReply(userInfo.value.userNo)
+        const response = await $getReply()
         comments.value = response.data
       } catch (error) {
         console.error(error)
       }
     }
+
+    function editModeClose () {
+      if (editMode.value) {
+        editModeToggle()
+      }
+    }
+
+    onMounted(() => {
+      fetchUser()
+      fetchReviews()
+      fetchComments()
+    })
 
     return {
       name,
@@ -250,9 +313,12 @@ export default {
       allSelected2,
       selectAll1,
       selectAll2,
-      withdraw
+      withdraw,
+      myUserInfo,
+      editModeToggle,
+      editModeClose
     }
-}
+  }
 }
 </script>
 
@@ -298,5 +364,79 @@ input[type='email'] {
 
 button {
   padding: 5px 10px;
+}
+
+.my-info {
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  align-items: center;
+}
+
+.info-table,
+.reviews-table,
+.comments-table,
+.review-details-table {
+  width: 100%;
+  margin-bottom: 20px;
+  border-collapse: collapse;
+  text-align: center;
+}
+
+.info-table th,
+.info-table td,
+.reviews-table th,
+.reviews-table td,
+.comments-table th,
+.comments-table td,
+.review-details-table th,
+.review-details-table td {
+  padding: 10px;
+  border: 1px solid #ccc;
+}
+
+.info-table th,
+.reviews-table th,
+.comments-table th,
+.review-details-table th {
+  background-color: #f2f2f2;
+  font-weight: bold;
+}
+
+.info-table td:first-child,
+.reviews-table td:first-child,
+.comments-table td:first-child {
+  width: 30%;
+}
+
+.reviews-table td:last-child,
+.comments-table td:last-child,
+.review-details-table td:last-child {
+  width: 70%;
+}
+
+.btn-danger {
+  color: #fff;
+  background-color: #dc3545;
+  border-color: #dc3545;
+}
+
+.btn-danger:hover {
+  color: #fff;
+  background-color: #c82333;
+  border-color: #bd2130;
+}
+
+.btn-sm {
+  padding: 0.25rem 0.5rem;
+  font-size: 0.875rem;
+  line-height: 1.5;
+  border-radius: 0.2rem;
+}
+
+.withdraw-btn-container {
+  display: flex;
+  justify-content: flex-end;
+  align-items: center;
 }
 </style>
