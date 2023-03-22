@@ -78,34 +78,34 @@ async function $checkDuplicate (userId) {
   }
 }
 
-function $updateUser(userNo, updatedInfo) {
+// function $updateUser(userNo, updatedInfo) {
+//   const user = useUserStore()
+//   const axios = getJsonAxiosInstance(user.getLoginUserInfo)
+//   return axios.post(`/api/users/set-data`, {
+//     userNo,
+//     ...updatedInfo
+//   }) }
+
+function $getReviews () {
   const user = useUserStore()
   const axios = getJsonAxiosInstance(user.getLoginUserInfo)
-  return axios.post(`/api/users/set-data`, {
-    userNo,
-    ...updatedInfo
-  }) }
+  return axios.get(`/api/users/${user.getLoginUserInfo.userNo}/reviews`)
+}
 
-  function $getReviews (userNo) {
-    const user = useUserStore()
-    const axios = getJsonAxiosInstance(user.getLoginUserInfo)
-    return axios.get(`/api/users/${user.getLoginUserInfo.userNo}`)
-  }
+function $getReply () {
+  const user = useUserStore()
+  const axios = getJsonAxiosInstance(user.getLoginUserInfo)
+  return axios.get(`/api/users/${user.getLoginUserInfo.userNo}/comments`)
+}
 
-  function $getReply (userNo) {
-    const user = useUserStore()
-    const axios = getJsonAxiosInstance(user.getLoginUserInfo)
-    return axios.get(`/api/users/${user.getLoginUserInfo.userNo}`)
-  }
-
-  async function $withdrawUser(userNo) {
-    const user = useUserStore()
-    const axios = getJsonAxiosInstance(user.getLoginUserInfo)
-    return axios.put(`/api/users/withdraw/${userNo}`)
-  }
+// async function $withdrawUser(userNo) {
+//   const user = useUserStore()
+//   const axios = getJsonAxiosInstance(user.getLoginUserInfo)
+//   return axios.put(`/api/users/withdraw/${userNo}`)
+// }
 
 export {
   $loginUser, $getUser, $editUser, $addUser, $removeUser,
-  $logoutUser, $checkDuplicate, $updateUser,
-  $addUserTags, $deleteUserTags, $getReviews, $getReply, $withdrawUser
+  $logoutUser, $checkDuplicate,
+  $addUserTags, $deleteUserTags, $getReviews, $getReply
 }

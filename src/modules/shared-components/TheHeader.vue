@@ -139,33 +139,45 @@ export default {
 
     const router = useRouter()
 
-    const getLoginUser = () => {
+    // const getLoginUser = () => {
+    //   const userInfo = user.getLoginUserInfo
+    //   if (userInfo != null && loginUser.value == null) {
+    //     $getUser(userInfo.userNo
+    //     ).then(res => {
+    //       console.log(res.data)
+    //       loginUser.value = res.data
+    //       loginUser.value.adminYN = userInfo.adminYN
+    //     }).catch(err => console.log(err))
+    //   }
+    // }
+    const getLoginUser = async () => {
       const userInfo = user.getLoginUserInfo
       if (userInfo != null && loginUser.value == null) {
-        $getUser(userInfo.userNo
-        ).then(res => {
+        try {
+          const res = await $getUser(userInfo.userNo)
           console.log(res.data)
           loginUser.value = res.data
           loginUser.value.adminYN = userInfo.adminYN
-        }).catch(err => console.log(err))
+        } catch (error) {
+          console.log(error)
+        }
       }
     }
 
     // 로그아웃
-    function logout () {
-      // 전역에 있는 userInfo 초기화
-      // 서버에 있는 토큰 제거
-      $logoutUser().then(res => {
-        console.log(res.data)
+    async function logout () {
+      try {
+        const res = await $logoutUser()
         if (res.data.success === true) {
           user.setLoginUserInfo({})
           loginUser.value = null
-          console.log(loginUser.value)
           router.push('/')
         } else {
           console.log('로그아웃 실패')
         }
-      }).catch(err => console.log(err))
+      } catch (error) {
+        console.log(error)
+      }
     }
 
     onMounted(() => {
