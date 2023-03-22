@@ -37,6 +37,10 @@
     <br>
       {{ bottle.bottleName }}
     </router-link>
+    <div>{{bottle.reviewCount}}</div>
+    <div>
+      <img src="@/images/star.png" alt="별 이미지" width="20" height="20">
+      {{bottle.grade}}</div>
   </div>
 </div>
 
@@ -214,4 +218,6 @@ export default {
     background-color: orange;
     color: black;
   }
+
+
 </style>
