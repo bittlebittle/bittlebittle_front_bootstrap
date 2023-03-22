@@ -35,14 +35,14 @@
 
     <div class="collapse navbar-collapse" id="navbarNav">
       <ul class="navbar-nav mx-auto">
-        <li class="nav-item">
+        <!-- <li class="nav-item">
           <template v-if="loginUser != null && loginUser.adminYN == 'Y'">
             <router-link class="nav-link active" to="/admin">Home</router-link>
           </template>
           <template v-else>
             <router-link class="nav-link active" to="/">Home</router-link>
           </template>
-        </li>
+        </li> -->
 
         <li class="nav-item">
           <template v-if="loginUser != null && loginUser.adminYN == 'Y'">
@@ -71,7 +71,7 @@
           </template>
         </li>
 
-        <li class="nav-item">
+        <!-- <li class="nav-item">
           <template v-if="loginUser != null && loginUser.adminYN == 'Y'">
 
           <router-link class="nav-link" to="/admin/faqs">FAQ</router-link>
@@ -79,7 +79,7 @@
           <template v-else>
           <router-link class="nav-link" to="/faqs">FAQ</router-link>
         </template>
-        </li>
+        </li> -->
 
         <li class="nav-item">
           <template v-if="loginUser != null && loginUser.adminYN == 'Y'">

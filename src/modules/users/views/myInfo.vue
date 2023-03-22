@@ -109,68 +109,64 @@ export default {
     const allSelected2 = ref(false)
 
     // 회원 탈퇴 메소드 구현
-const withdraw = async () => {
-  try {
-    const response = await $withdrawUser(userInfo.value.userNo)
-    if (response.status === 200) {
-      console.log('회원 탈퇴가 완료되었습니다.')
-      // 로그아웃 처리 및 홈으로 이동 등 필요한 작업을 수행합니다.
-      userStore.logout() // 회원 탈퇴 후 로그아웃 처리
-    } else {
-      console.log('회원 탈퇴에 실패했습니다.')
+    const withdraw = async () => {
+      try {
+        const response = await $withdrawUser(userInfo.value.userNo)
+        if (response.status === 200) {
+          console.log('회원 탈퇴가 완료되었습니다.')
+          // 로그아웃 처리 및 홈으로 이동 등 필요한 작업을 수행합니다.
+          userStore.logout() // 회원 탈퇴 후 로그아웃 처리
+        } else {
+          console.log('회원 탈퇴에 실패했습니다.')
+        }
+      } catch (error) {
+        console.error('회원 탈퇴 중 에러가 발생했습니다:', error)
+      }
     }
-  } catch (error) {
-    console.error('회원 탈퇴 중 에러가 발생했습니다:', error)
-  }
-}
-
-
 
     // 여기부터 deleteSelected 구현
 
     const deleteSelected1 = async () => {
-    const selectedReviews = reviews.value.filter(review => review.selected)
+      const selectedReviews = reviews.value.filter(review => review.selected)
 
-  try {
-    for (const review of selectedReviews) {
-      await $deleteReview(review.id)
+      try {
+        for (const review of selectedReviews) {
+          await $deleteReview(review.id)
+        }
+
+        // 삭제가 완료되면 리뷰 목록을 다시 가져옵니다.
+        fetchReviews()
+      } catch (error) {
+        console.error(error)
+      }
     }
 
-    // 삭제가 완료되면 리뷰 목록을 다시 가져옵니다.
-    fetchReviews()
-  } catch (error) {
-    console.error(error)
-  }
-}
+    const deleteSelected2 = async () => {
+      const selectedComments = comments.value.filter(comment => comment.selected)
 
-const deleteSelected2 = async () => {
-  const selectedComments = comments.value.filter(comment => comment.selected)
+      try {
+        for (const comment of selectedComments) {
+          await $deleteComment(comment.id)
+        }
 
-  try {
-    for (const comment of selectedComments) {
-      await $deleteComment(comment.id)
+        // 삭제가 완료되면 댓글 목록을 다시 가져옵니다.
+        fetchComments()
+      } catch (error) {
+        console.error(error)
+      }
     }
 
-    // 삭제가 완료되면 댓글 목록을 다시 가져옵니다.
-    fetchComments()
-  } catch (error) {
-    console.error(error)
-  }
-}
+    const selectAll1 = () => {
+      for (const review of reviews.value) {
+        review.selected = allSelected1.value
+      }
+    }
 
-
-
-const selectAll1 = () => {
-  for (const review of reviews.value) {
-    review.selected = allSelected1.value
-  }
-}
-
-const selectAll2 = () => {
-  for (const comment of comments.value) {
-    comment.selected = allSelected2.value
-  }
-}
+    const selectAll2 = () => {
+      for (const comment of comments.value) {
+        comment.selected = allSelected2.value
+      }
+    }
 
     const fetchUser = async () => {
       try {
@@ -192,60 +188,60 @@ const selectAll2 = () => {
     // }
 
     const updateInfo = async () => {
-  if (!editMode.value) {
-    name.value = ''
-    nickname.value = ''
-    email.value = ''
-    phone.value = ''
-  } else {
-    try {
-      const updatedInfo = {
-        name: name.value,
-        nickname: nickname.value,
-        email: email.value,
-        phone: phone.value,
-      }
-      // $updateUser 함수를 호출하여 서버에 변경된 정보를 전송
-      const response = await $updateUser(userInfo.value.userNo, updatedInfo)
-
-      if (response.status === 200) {
-        console.log('정보가 성공적으로 업데이트되었습니다.')
-        fetchUser()
+      if (!editMode.value) {
+        name.value = ''
+        nickname.value = ''
+        email.value = ''
+        phone.value = ''
       } else {
-        console.log('정보 업데이트에 실패했습니다.')
+        try {
+          const updatedInfo = {
+            name: name.value,
+            nickname: nickname.value,
+            email: email.value,
+            phone: phone.value
+          }
+          // $updateUser 함수를 호출하여 서버에 변경된 정보를 전송
+          const response = await $updateUser(userInfo.value.userNo, updatedInfo)
+
+          if (response.status === 200) {
+            console.log('정보가 성공적으로 업데이트되었습니다.')
+            fetchUser()
+          } else {
+            console.log('정보 업데이트에 실패했습니다.')
+          }
+        } catch (error) {
+          console.error('정보 업데이트 중 에러가 발생했습니다:', error)
+        }
       }
-    } catch (error) {
-      console.error('정보 업데이트 중 에러가 발생했습니다:', error)
+      editMode.value = !editMode.value
     }
-  }
-  editMode.value = !editMode.value
-}
 
-onMounted(() => {
-  fetchUser()
-  fetchReviews()
-  fetchComments()
-})
+    onMounted(() => {
+      fetchUser()
+      fetchReviews()
+      fetchComments()
+    })
 
-const fetchReviews = async () => {
-  // API를 호출하여 리뷰 데이터를 가져옵니다.
-  try {
-    const response = await $getReviews(userInfo.value.userNo)
-    reviews.value = response.data
-  } catch (error) {
-    console.error(error)
-  }
-}
+    const fetchReviews = async () => {
+      // API를 호출하여 리뷰 데이터를 가져옵니다.
+      try {
+        const response = await $getReviews(userInfo.value.userNo)
+        reviews.value = response.data
+      } catch (error) {
+        console.error(error)
+      }
+    }
 
-const fetchComments = async () => {
-  // API를 호출하여 댓글 데이터를 가져옵니다.
-  try {
-    const response = await $getReply(userInfo.value.userNo)
-    comments.value = response.data
-  } catch (error) {
-    console.error(error)
-  }
-}
+    const fetchComments = async () => {
+      // API를 호출하여 댓글 데이터를 가져옵니다.
+      try {
+        const response = await $getReply(userInfo.value.userNo)
+        comments.value = response.data
+      } catch (error) {
+        console.error(error)
+      }
+    }
 
     return {
       name,
@@ -258,14 +254,14 @@ const fetchComments = async () => {
       comments,
       fetchReviews,
       fetchComments,
-      deleteSelected1, 
+      deleteSelected1,
       deleteSelected2,
       allSelected1,
       allSelected2,
       selectAll1,
       selectAll2,
-      withdraw, 
-      }
+      withdraw
+    }
   }
 }
 </script>
