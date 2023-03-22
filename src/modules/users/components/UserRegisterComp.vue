@@ -71,6 +71,8 @@
 <script>
 import { ref, watch } from 'vue'
 import { $checkDuplicate, $checkDuplicateNickname, $addUser } from '@/api/user'
+import { useRouter } from 'vue-router'
+import { useUserStore } from '@/stores/users'
 
 export default {
   name: 'UserRegisterComp',
@@ -170,10 +172,25 @@ export default {
       return true
     }
 
+    const router = useRouter()
+
+    const user = useUserStore()
+
     async function registerUser () {
       if (checkAllFields()) {
         await $addUser(registerData).then(
-          res => console.log(res.data)
+          res => {
+            if (res.data.request) {
+              const userInfo = {
+                Authorization: res.headers.authorization,
+                RefreshTokenIdx: res.headers.refreshtokenidx,
+                userNo: res.data.userNo,
+                adminYN: res.data.adminYn
+              }
+              user.setLoginUserInfo(userInfo)
+              router.push({ name: 'TagRegisterComp' })
+            }
+          }
         ).catch(err => console.log(err))
       }
     }

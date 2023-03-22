@@ -43,6 +43,10 @@ const routes = [
             path: '/users/addition',
             name: 'UserRegisterComp',
             component: () => import('@/modules/users/components/UserRegisterComp')
+          }, {
+            path: '/users/tags/addition',
+            name: 'TagRegisterComp',
+            component: () => import('@/modules/users/components/TagRegisterComp')
           }
         ]
       },

@@ -28,4 +28,4 @@ function getFormAxiosInstance (userInfo) {
   return instance
 }
 
-export { getJsonAxiosInstance, getFormAxiosInstance }
+export { createAxiosInstance, getJsonAxiosInstance, getFormAxiosInstance }
