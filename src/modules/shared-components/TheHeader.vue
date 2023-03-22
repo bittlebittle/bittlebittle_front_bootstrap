@@ -54,12 +54,7 @@
         </li>
 
         <li class="nav-item">
-          <template v-if="loginUser != null && loginUser.adminYN == 'Y'">
-          <router-link class="nav-link" to="/admin/boards">자유게시판</router-link>
-          </template>
-          <template v-else>
           <router-link class="nav-link" to="/boards">자유게시판</router-link>
-        </template>
         </li>
 
         <li class="nav-item">

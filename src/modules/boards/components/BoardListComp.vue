@@ -150,7 +150,7 @@ export default {
     font-size: 14px;
     padding: 0 10px;
     border-radius: 5px;
-    background-color: #ff6600;
+    background-color: orange;
     border: none;
     color: #fff;
     cursor: pointer;
@@ -200,7 +200,7 @@ export default {
     font-size: 16px;
     padding: 0 20px;
     border-radius: 5px;
-    background-color: #ff6600;
+    background-color: orange;
     border: none;
     color: #fff;
     cursor: pointer;

@@ -1,9 +1,9 @@
 <template>
 <div class="content-board">
   <div style="padding-top: 70px; padding-bottom: 200px; margin: 0 auto;">
-    <form @submit.prevent="registerBoard" style="margin: 0 auto; width: 730px;">
+    <form @submit.prevent="registerBoard" style="margin: 0 auto; width: 730px; text-align: center;">
           <fieldset>
-              <table style=" padding-left: 35px; padding-top: 20px;">
+              <table style=" padding-left: 35px; padding-top: 20px; margin: 0 auto;">
                   <tr>
                       <td><b>제목</b></td>
                       <td>
@@ -27,7 +27,7 @@
                       </td>
                   </tr> -->
                   <tr>
-                      <td><input type="submit" value="작성하기" id="submit"></td>
+                      <td colspan="2"><input type="submit" value="작성하기" id="submit" style="margin: 0 auto;"></td>
                   </tr>
               </table>
               <br>
@@ -81,7 +81,7 @@ export default {
 }
 </script>
 
-<style scroped >
+<style scoped >
 
 .content-board {
   display: flex;
@@ -97,7 +97,7 @@ form {
   padding: 20px;
   border: 1px solid #ccc;
   border-radius: 5px;
-  box-shadow: 2px 2px 10px rgba(0, 0, 0, 0.2);
+  box-shadow: 2px 2px 10px orange;
 }
 
 fieldset {
@@ -126,7 +126,7 @@ textarea {
 }
 
 input[type="submit"] {
-  background-color: #ff6600;
+  background-color: orange;
   color: #fff;
   border: none;
   border-radius: 5px;
@@ -134,5 +134,8 @@ input[type="submit"] {
   font-size: 16px;
   cursor: pointer;
 }
+
+input:focus {outline: 2px solid orange;}
+textarea:focus {outline: 2px solid orange;}
 
 </style>
