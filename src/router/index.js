@@ -8,7 +8,7 @@ import BoardView from '@/modules/boards/views/BoardView'
 import Bottle from '@/modules/bottles/views/Bottle'
 import BottleAll from '@/modules/bottles/views/BottleAll'
 import BottleDetailView from '@/modules/bottles/views/BottleDetailView'
-import NoticeView from '@/modules/notices/views/NoticeView'
+// import NoticeView from '@/modules/notices/views/NoticeView'
 import FaqView from '@/modules/faqs/views/FaqView'
 import AdminBottleView from '@/layouts/admin/AdminBottleView'
 import AdminAddBottleView from '@/layouts/admin/AdminAddBottleView'
@@ -32,9 +32,10 @@ const routes = [
         path: '/',
         name: 'MainView',
         component: MainView,
-        children : [
+        props: true,
+        children: [
           {
-            path: '/bottles/:bottleNo',
+            path: 'n/bottles/:bottleNo',
             name: 'BottleDetailView22',
             component: BottleDetailView,
             props: true
@@ -68,11 +69,13 @@ const routes = [
         path: '/bottles',
         name: 'Bottle',
         component: Bottle,
+        props: true,
         children: [
           {
             path: '/bottles',
             name: 'BottleAll',
-            component: BottleAll
+            component: BottleAll,
+            props: true
           },
           {
             path: '/bottles/:bottleNo',
@@ -95,7 +98,8 @@ const routes = [
           {
             path: '/boards/:boardNo',
             name: 'BoardDetailComp',
-            component: () => import('@/modules/boards/components/BoardDetailComp')
+            component: () => import('@/modules/boards/components/BoardDetailComp'),
+            props: true
           },
           {
             path: '/boards/addition',

@@ -153,7 +153,6 @@ export default {
       filterBottles()
     }
 
-
     function getBottleImage (imgUrl, imgCusUrl) {
       if (imgCusUrl != null) {
         return `http://localhost:8080/bittlebittle/image?path=bottle&name=${imgCusUrl}`
@@ -162,20 +161,19 @@ export default {
       }
     }
 
-   return {
-    bottles,
-    favorites,
-    keyword,
-    tags,
-    tagList,
-    tagTypeList,
-    selectedTags,
-    filteredBottles,
-    filteredTagList,
-    search,
-    getBottleImage
-   }
-
+    return {
+      bottles,
+      favorites,
+      keyword,
+      tags,
+      tagList,
+      tagTypeList,
+      selectedTags,
+      filteredBottles,
+      filteredTagList,
+      search,
+      getBottleImage
+    }
   },
 
   methods: {
@@ -218,6 +216,5 @@ export default {
     background-color: orange;
     color: black;
   }
-
 
 </style>
