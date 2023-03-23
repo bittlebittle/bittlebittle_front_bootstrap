@@ -71,7 +71,7 @@
 <script>
 import { ref, watch } from 'vue'
 import { $checkDuplicate, $checkDuplicateNickname, $addUser } from '@/api/user'
-import { useRouter } from 'vue-router'
+import { useRoute, useRouter } from 'vue-router'
 import { useUserStore } from '@/stores/users'
 
 export default {
@@ -173,7 +173,6 @@ export default {
     }
 
     const router = useRouter()
-
     const user = useUserStore()
 
     async function registerUser () {

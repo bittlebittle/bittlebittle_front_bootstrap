@@ -43,6 +43,11 @@
             <router-link class="nav-link active" to="/">Home</router-link>
           </template>
         </li> -->
+        <li class="nav-item">
+          <template v-if="loginUser != null && loginUser.adminYN == 'Y'">
+            <router-link class="nav-link" to="/admin/users">회원관리</router-link>
+          </template>
+        </li>
 
         <li class="nav-item">
           <template v-if="loginUser != null && loginUser.adminYN == 'Y'">

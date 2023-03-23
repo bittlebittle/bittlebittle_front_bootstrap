@@ -146,5 +146,6 @@ async function $updateUsermodal(user) {
 export {
   $loginUser, $getUser, $editUser, $addUser, $removeUser,
   $logoutUser, $checkDuplicate,
-  $addUserTags, $deleteUserTags, $getReviews, $getReply, $searchUsers, $deleteUsers, $updateUsermodal
+  $addUserTags, $deleteUserTags, $getReviews, $getReply
+  , $searchUsers, $deleteUsers, $updateUsermodal  , $checkDuplicateNickname
 }
