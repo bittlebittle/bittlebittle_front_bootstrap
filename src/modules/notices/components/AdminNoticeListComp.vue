@@ -14,8 +14,6 @@
      <table id="noticeList">
       <thead>
          <tr>
-          <th><input type="checkbox" v-model="selectAll" @change="toggleAllCheckboxes" /></th> <!-- 추가 -->
-
            <th>No</th>
            <th style="width: 380px;">제목</th>
            <th>작성자</th>
@@ -31,7 +29,6 @@
     @click="noticeDetail(item.noticeNo)"
     id="table-hover"
   >
-    <td><input type="checkbox" v-model="item.checked" /></td> <!-- 체크박스 추가 -->
     <td class="bno">{{ item.noticeNo }}</td>
     <td>{{ item.noticeTitle }}</td>
     <td>{{ item.nickname }}</td>
@@ -46,14 +43,10 @@
          </template>
        </tbody>
      </table>
-     <div class="write-button-container">
-       <button id="write-button" onclick="location.href='enrollForm.bo'">작성하기</button>
-     </div>
 
      <!-- Add the 'Delete Selected' button next to the 'Write' button -->
 <div class="write-button-container">
-  <button @click="deleteSelected" class="custom-button">선택 삭제</button> <!-- 추가 -->
-  <button id="write-button" onclick="location.href='enrollForm.bo'">작성하기</button>
+  <button id="write-button" @click="moveCreateBoard">작성하기</button>
 </div>
 
    </div> <!-- 수정 -->
@@ -61,105 +54,88 @@
 </template>
 
 <style scoped>
-  .container {
-    margin: 0 auto;
-    width: 900px;
-    min-height: 70vh; /* 추가 */
+    .search-container {
     display: flex;
-    flex-direction: column; /* 추가 */
-    background-color: #FFFAF6; /* 추가 */
-  }
-
-  .title {
-    font-size: 35px;
-    text-align: center;
-    margin-bottom: 30px;
-  }
-
-  .content {
-    flex-grow: 1; /* 추가 */
-    background-color: #FFFAF6; /* 추가 */
-    padding: 20px; /* 추가 */
-    border-radius: 5px; /* 추가 */
-  }
-
-  .search-container {
-    display: flex;
-    justify-content: center;
     align-items: center;
     margin-bottom: 20px;
   }
 
-  .search-container button {
-    margin-left: 10px;
-    padding: 5px 10px;
-    background-color: #39a652;
-    border: 1px solid #39a652;
+  .search-container select {
+    height: 30px;
+    font-size: 14px;
+    padding: 0 10px;
     border-radius: 5px;
-    color: white;
+    border: 1px solid #ccc;
+    margin-right: 10px;
+  }
+
+  .search-container input[type="text"] {
+    height: 30px;
+    font-size: 14px;
+    padding: 0 10px;
+    border-radius: 5px;
+    border: 1px solid #ccc;
+    flex: 1;
+  }
+
+  .search-container button {
+    height: 30px;
+    font-size: 14px;
+    padding: 0 10px;
+    border-radius: 5px;
+    background-color: orange;
+    border: none;
+    color: #fff;
     cursor: pointer;
   }
 
-  .search-container button:hover {
-    background-color: #2c803c;
-  }
-
-  #boardList {
-    background-color: white;
-    margin-bottom: 20px;
-  }
-
-  table {
-    width: 98%;
+  /* 게시글 목록 스타일링 */
+  #noticeList {
+    width: 100%;
     border-collapse: collapse;
-    line-height: 15px;
-    color: solid rgb(255, 255, 255);
+    table-layout: fixed;
   }
 
-  table td,
-  th {
-    border-top: 1px solid rgb(217, 233, 207);
-    border-bottom: 1px solid rgb(217, 233, 207);
-    border-collapse: collapse;
-    text-align: center;
+  #noticeList th {
     padding: 10px;
+    background-color: #333;
+    color: #fff;
+    text-align: center;
+    font-size: 16px;
   }
 
-  th {
-    background: rgb(217, 233, 207);
+  #noticeList td {
+    padding: 10px;
+    border-bottom: 1px solid #ccc;
+    font-size: 14px;
+    text-overflow: ellipsis;
+    overflow: hidden;
+    white-space: nowrap;
   }
 
-  a {
-    text-decoration: none;
-    color: black;
+  #noticeList td.bno {
+    width: 50px;
+    text-align: center;
   }
 
-  a:hover {
-    font-weight: bold;
+  #noticeList tbody tr:hover {
+    background-color: #f5f5f5;
   }
 
+  /* 글쓰기 버튼 스타일링 */
   .write-button-container {
-    display: flex;
-    justify-content: flex-end;
+    text-align: center;
     margin-top: 20px;
   }
 
   #write-button {
-    padding: 10px;
-    font-size: 13px;
-    background-color: #FAAA74;
-    border: 1px solid rgb(245, 228, 224);
+    height: 40px;
+    font-size: 16px;
+    padding: 0 20px;
     border-radius: 5px;
-  }
-
-  #write-button:hover {
-    background-color: #FD6500;
-    color: white;
-    cursor: pointer;
-  }
-
-  #table-hover:hover {
-    background-color: #FFFAF6;
+    background-color: orange;
+    border: none;
+    color: #fff;
     cursor: pointer;
   }
 </style>
@@ -167,7 +143,8 @@
 <script>
 import { ref, onMounted } from 'vue'
 import { $getNoticeList } from '@/api/notice'
-import router from '@/router'
+// import router from '@/router'
+import { useRouter } from 'vue-router'
 
 export default {
   name: 'AdminNoticeListComp',
@@ -202,7 +179,7 @@ export default {
     }
 
     const noticeDetail = (noticeNo) => {
-      router.push(`/notices/${noticeNo}`)
+      router.push(`/admin/notices/${noticeNo}`)
     }
 
     const searchOption = ref('noticeTitle')
@@ -219,6 +196,12 @@ export default {
       }
     }
 
+    const router = useRouter()
+    function moveCreateBoard () {
+      router.push('/admin/notices/addition')
+    }
+
+
     onMounted(() => {
       setNoticeList()
     })
@@ -232,7 +215,8 @@ export default {
       filterNoticeList,
       selectAll, // 추가
       toggleAllCheckboxes, // 추가
-      deleteSelected // 추가
+      deleteSelected, // 추가,
+      moveCreateBoard
     }
   }
 }

@@ -1,6 +1,6 @@
 <template>
   <div class="bright-section detail-view">
-    <table>
+    <table id="list">
       <thead>
         <tr>
           <th colspan="2">제목</th>
@@ -24,12 +24,6 @@
       </tbody>
     </table>
   </div>
-  <template v-if="loginUser != null && loginUser.userNo == notice.userNo">
-    <div class="button-container">
-      <button class="button-edit" @click="editNotice">수정</button>
-      <button class="button-remove">삭제</button>
-    </div>
-  </template>
 </template>
 
 <script>
@@ -86,14 +80,6 @@ export default {
 
 <style scoped>
 /*디테일뷰 관련*/
-.container {
-  width: 100%;
-  max-width: 900px;
-  margin: 0 auto;
-  padding: 20px;
-  background-color: transparent;
-}
-
 .bright-section table {
   width: 100%;
   border-collapse: collapse;
@@ -106,7 +92,7 @@ export default {
   border: 1px solid #cccccc;
 }
 
-.notice-content {
+.board-content {
   white-space: pre-wrap;
   min-height: 300px;
 }
@@ -114,6 +100,11 @@ export default {
 .bright-section {
   background-color: #ffffff;
 }
+
+/* .detail-view {
+  padding-bottom: 20px;
+  border-bottom: 1px solid #cccccc;
+} */
 
 .author-info {
   display: flex;
@@ -147,7 +138,6 @@ export default {
 .button-edit {
   background-color: orange;
   color: white;
-  margin-top: 10px;
   margin-left: 10px;
   border: none;
   border-radius: 20px;
@@ -156,7 +146,6 @@ export default {
 .button-remove {
   background-color: red;
   color: white;
-  margin-top: 10px;
   margin-left: 10px;
   border: none;
   border-radius: 20px;
@@ -182,7 +171,7 @@ export default {
 }
 
 .comment-submit {
-  background-color: #42b983;
+  background-color: orange;
   color: #ffffff;
   border: none;
   border-radius: 4px;
@@ -194,17 +183,17 @@ export default {
 }
 
 .comment-submit:hover {
-  background-color: #2a8c63;
+  background-color: orange;
 }
 
 .button-container {
   display: flex;
   justify-content: flex-end;
-  margin-bottom: 20px;
+  /* margin-bottom: 20px; */
 }
 
 .custom-button {
-  background-color: #42b983;
+  background-color: orange;
   color: #ffffff;
   border: none;
   border-radius: 4px;
@@ -217,6 +206,38 @@ export default {
 }
 
 .custom-button:hover {
-  background-color: #2a8c63;
+  background-color: orange;
 }
+
+  #list {
+    width: 100%;
+    border-collapse: collapse;
+    table-layout: fixed;
+  }
+
+  #list th {
+    padding: 10px;
+    background-color: #333;
+    color: #fff;
+    text-align: center;
+    font-size: 16px;
+  }
+
+  #list td {
+    padding: 10px;
+    border-bottom: 1px solid #ccc;
+    font-size: 14px;
+    text-overflow: ellipsis;
+    overflow: hidden;
+    white-space: nowrap;
+  }
+
+  #list td.bno {
+    width: 50px;
+    text-align: center;
+  }
+
+  #list tbody tr:hover {
+    background-color: #f5f5f5;
+  }
 </style>

@@ -34,7 +34,7 @@
     <h6>댓글</h6>
     <div class="button-container"></div>
     <div class="bright-section comments">
-        <table>
+        <table id="list">
           <thead>
             <tr>
               <th>작성자</th>
