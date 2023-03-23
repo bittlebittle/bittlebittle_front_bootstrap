@@ -296,6 +296,7 @@ export default {
     const tagList = ref({})
     const tagTypeList = ref({})
 
+
     // 회원태그 조회
     function getUserTags () {
       $getUserTags(userNo)

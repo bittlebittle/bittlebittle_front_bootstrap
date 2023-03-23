@@ -244,13 +244,14 @@ export default {
   <style scoped>
   .admin-container {
     font-family: 'Arial', sans-serif;
+    background-color: white;
     padding: 20px;
   }
 
   h1 {
     font-size: 32px;
     font-weight: bold;
-    color: #333333;
+    color: orange;
     margin-bottom: 20px;
   }
 
@@ -265,22 +266,26 @@ export default {
     margin-bottom: 20px;
   }
 
-  th,
   td {
     text-align: left;
     padding: 10px;
     border: 1px solid #cccccc;
+    color: black;
   }
 
   th {
+    text-align: left;
+    padding: 10px;
+    border: 1px solid #cccccc;
+    color: white;
     font-weight: bold;
-    background-color: #f2f2f2;
+    background-color: #333;
   }
-
+/*
   tbody tr:nth-child(even) {
     background-color: #f8f8f8;
   }
-
+*/
   .search-container {
     display: flex;
     justify-content: space-between;
@@ -300,7 +305,7 @@ export default {
     padding: 10px 20px;
     font-size: 14px;
     color: #ffffff;
-    background-color: #007bff;
+    background-color: orange;
     border: none;
     cursor: pointer;
     border-radius: 5px;

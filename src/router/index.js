@@ -37,12 +37,14 @@ const routes = [
           {
             path: '/users/mypage',
             name: 'UserMyPageComp',
-            component: () => import('@/modules/users/components/UserMyPageComp')
+            component: () => import('@/modules/users/components/UserMyPageComp'),
+            meta: { title: 'UserMyPageComp' }
           },
           {
             path: '/users/addition',
             name: 'UserRegisterComp',
-            component: () => import('@/modules/users/components/UserRegisterComp')
+            component: () => import('@/modules/users/components/UserRegisterComp'),
+            meta: { title: 'UserRegisterComp' }
           }, {
             path: '/users/tags/addition',
             name: 'TagRegisterComp',
