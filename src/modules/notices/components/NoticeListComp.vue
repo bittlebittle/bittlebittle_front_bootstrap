@@ -38,11 +38,6 @@
          </template>
        </tbody>
      </table>
-     <template v-if="loginUser != null">
-      <div class="write-button-container">
-        <button id="write-button" @click="moveCreateNotice">작성하기</button>
-      </div>
-    </template>
 </template>
 
 <script>
