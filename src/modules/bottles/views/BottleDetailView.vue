@@ -1,11 +1,13 @@
 <template>
   <div class="bottle-detail-view" v-if="bottle">
     <div class="image-container">
-    <img :src="getBottleImage(bottle.imgUrl, bottle.imgCusUrl)" alt="보틀 이미지">
+      <img :src="getBottleImage(bottle.imgUrl, bottle.imgCusUrl)" alt="보틀 이미지">
     </div>
+    <div class="heart-icon-container">
     <div class="heart-icon"
      :class="{'empty-heart': !isFavorite.length, 'full-heart': isFavorite.length}" @click="clickFavorite"></div>
-    <div>보틀 이름: {{ bottle.bottleName }}</div>
+    </div>
+     <div>보틀 이름: {{ bottle.bottleName }}</div>
     <div>보틀 내용: {{ bottle.bottleContent }}</div>
     <div>보틀 브랜드: {{ bottle.bottleBrand }}</div>
     <div>보틀 도수: {{ bottle.bottleAbv }}</div>
@@ -687,11 +689,13 @@ export default {
   height: 50px;
   width: 500px;
 }
-
+.heart-icon-container {
+  text-align: right;
+}
 /* 찜하기 */
 .heart-icon {
-  width: 50px;
-  height: 50px;
+  width: 30px;
+  height: 30px;
   background-repeat: no-repeat;
   background-size: contain;
 }
@@ -707,6 +711,11 @@ export default {
 .image-container {
   border: 2px solid orange;
   padding: 10px;
-  display: inline-block; /* 이미지를 라인 상자로 배치 */
+  text-align: center;
+}
+
+.image-container img {
+  max-width:500px;
+  max-height: 500px;
 }
 </style>
