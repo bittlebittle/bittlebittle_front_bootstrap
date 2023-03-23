@@ -96,12 +96,14 @@ export default {
     const tagList = user.getUserTagsInfo
 
     function logTagList () {
-      tagList.value.forEach(element => {
-        console.log(element.tagNo)
-        selectedTags.value.push(Math.round(element.tagNo))
-      })
-      console.log(tagList.value)
-      console.log(selectedTags.value)
+      if (tagList != null) {
+        tagList.value.forEach(element => {
+          console.log(element.tagNo)
+          selectedTags.value.push(Math.round(element.tagNo))
+        })
+        console.log(tagList.value)
+        console.log(selectedTags.value)
+      }
     }
 
     onMounted(() => {

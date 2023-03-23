@@ -224,17 +224,10 @@ export default {
     const reviewList = ref([])
     const isFavorite = ref([])
 
-    const bottleInfo = useBoardStore()
-
-    const getBottle = function () {
-      let url = ''
-      if (props != null) {
-        url = `/api/bottles/${props.bottleNo}`
-      } else {
-        url = `/api/bottles/${bottleInfo.getBottleInfo}`
-        console.log(url);
-      }
-      axios.get(url)
+    const getBottle = async function () {
+      const url = `/api/bottles/${props.bottleNo}`
+      console.log(url)
+      await axios.get(url)
         .then(res => {
           bottle.value = res.data.bottle
           bottleGrade.value = res.data.grade
@@ -723,7 +716,7 @@ export default {
   max-width: 500px; /* 이미지의 최대 너비를 300px로 설정합니다. */
   max-height: 500px; /* 이미지의 최대 높이를 300px로 설정합니다. */
   /* max-width: 100%; /* 부모 요소의 크기에 맞게 이미지 크기를 조정합니다. */
-  /* max-height: 100%; */ 
+  /* max-height: 100%; */
   display: block; /* 이미지를 블록 요소로 설정하여 위/아래 여백을 추가합니다. */
   margin: 0 auto; /* 이미지를 수평 중앙 정렬합니다. */
 }

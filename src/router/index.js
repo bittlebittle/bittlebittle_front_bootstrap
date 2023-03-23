@@ -32,15 +32,7 @@ const routes = [
         path: '/',
         name: 'MainView',
         component: MainView,
-        props: true,
-        children: [
-          {
-            path: 'n/bottles/:bottleNo',
-            name: 'BottleDetailView22',
-            component: BottleDetailView,
-            props: true
-          }
-        ]
+        props: true
       },
       {
         path: '/users',

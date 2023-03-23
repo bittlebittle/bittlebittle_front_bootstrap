@@ -1,4 +1,5 @@
 <template>
+  <div class="container">
     <div class="admin-container">
       <h1>관리자 회원관리</h1>
       <div class="table-container">
@@ -86,6 +87,8 @@
   </div>
 </div>
     </div>
+
+  </div>
   </template>
 
 <script>
@@ -313,4 +316,3 @@ export default {
     margin-left: 10px;
   }
   </style>
-  

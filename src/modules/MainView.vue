@@ -32,7 +32,7 @@
             <div class="carousel-item active">
               <div class="carousel-image-wrap">
                 <!-- 전체 평점 기반 술 중에서 1등을 뽑아서 이미지 -->
-                <img :src="getBottleImage(mainBottle.imgUrl, mainBottle.imgCusUrl)" class="img-fluid carousel-image" alt="">
+                <img style="max-width: 600px; max-height: 500px;" :src="getBottleImage(mainBottle.imgUrl, mainBottle.imgCusUrl)" class="img-fluid carousel-image" alt="">
               </div>
 
               <div class="carousel-caption">
@@ -116,17 +116,20 @@
 <!-- -----------------NEW----------------- -->
     <div class="row">
       <div class="col-12">
-        <h2 class="text-center mb-lg-5 mb-4">NEW</h2>
+        <h3 class="text-center" style="color:lightgrey">이 주의 신상 랭킹 ></h3>
+        <h6 class="text-center title-de" style="color:gold" >매주 업데이트! 화려한 신상 라인업</h6>
+
+        <h4></h4>
       </div>
         <swiper :options="swiperOption" ref="swiperRef">
 
           <swiper-slide v-for="newbottle in newBottles" :key="newbottle">
             <template v-if="newbottle.length != 0">
-                <div v-for="newb in newbottle" :key="newb" class="slide-container" style="display : flex">
+                <div style="margin-left: 10px; display : flex" v-for="newb in newbottle" :key="newb" class="slide-container">
                   <div class="slide-image">
                     <div class="title" @click="movePage(newb.bottleNo)">
                       <img :value="newb.bottleNo" :src="getBottleImage(newb.imgUrl, newb.imgCusUrl)" alt="보틀 이미지" width="300" height="300">
-                      <h4 class="mb-0">{{ newb.bottleName }}</h4>
+                      <h5 style="min-height: 80px;" class="mb-0">{{ newb.bottleName }}</h5>
                     </div>
                   </div>
                 </div>
@@ -139,17 +142,19 @@
 <!-- -----------------BEST----------------- -->
     <div class="row">
       <div class="col-12">
-        <h2 class="text-center mb-lg-5 mb-4">BEST</h2>
+        <h3 class="text-center" style="color:lightgrey">인기 BEST 상품 ></h3>
+        <h6 class="text-center title-de" style="color:gold" >리뷰 4점대 돌파 상품입니다 !</h6>
+
       </div>
         <swiper :options="swiperOption" ref="swiperRef">
 
           <swiper-slide v-for="bestBottle in bestBottles" :key="bestBottle">
             <template v-if="bestBottle.length != 0 ">
-                <div v-for="bestb in bestBottle" :key="bestb" class="slide-container" style="display : flex">
+                <div v-for="bestb in bestBottle" :key="bestb" class="slide-container" style="margin-left: 10px; display : flex">
                   <div class="slide-image">
                     <div class="title" @click="movePage(bestb.bottleNo)">
                       <img :value="bestb.bottleNo" :src="getBottleImage(bestb.imgUrl, bestb.imgCusUrl)" alt="보틀 이미지" width="300" height="300">
-                      <h4 class="mb-0">{{ bestb.bottleName }}</h4>
+                      <h5 style="min-height: 80px;" class="mb-0">{{ bestb.bottleName }}</h5>
                     </div>
                   </div>
                 </div>
@@ -162,17 +167,20 @@
   <!-- -----------------찜한 상품 관련----------------- -->
     <div class="row" v-if="isLoggedIn">
       <div class="col-12">
-        <h2 class="text-center mb-lg-5 mb-4">{{userInformation.nickname}} 님이 좋아할만한 !</h2>
+        <template v-if="userInformation != null">
+          <h3 class="text-center"  style="color:lightgrey">{{userInformation.nickname}} 님이 좋아할만한 ></h3>
+          <h6 class="text-center title-de" style="color:gold" >찜한 목록에 담은 상품과 비슷한 상품을 추천드립니다. </h6>
+        </template>
       </div>
         <swiper :options="swiperOption" ref="swiperRef">
 
           <swiper-slide v-for="relatedFavorite in relatedFavorites" :key="relatedFavorite">
             <template v-if="relatedFavorite.length != 0 ">
-                <div v-for="relb in relatedFavorite" :key="relb" class="slide-container" style="display : flex">
+                <div v-for="relb in relatedFavorite" :key="relb" class="slide-container" style="margin-left: 10px; display : flex">
                   <div class="slide-image">
                     <div class="title" @click="movePage(relb.bottleNo)">
                       <img :value="relb.bottleNo" :src="getBottleImage(relb.imgUrl, relb.imgCusUrl)" alt="보틀 이미지" width="300" height="300">
-                      <h4 class="mb-0">{{ relb.bottleName }}</h4>
+                      <h5 style="min-height: 80px;" class="mb-0">{{ relb.bottleName }}</h5>
                     </div>
                   </div>
                 </div>
@@ -197,7 +205,6 @@ import { useBoardStore } from '@/stores/boards'
 import { useRouter } from 'vue-router'
 import { $getUser } from '@/api/user'
 
-
 export default {
   name: 'MainView',
   components: {
@@ -217,10 +224,11 @@ export default {
     const router = useRouter()
 
     const userInformation = ref(null)
-    function getUserInformation() {
+    function getUserInformation () {
       $getUser().then(
         res => {
           userInformation.value = res.data
+          console.log(userInformation.value)
         }
       ).catch(err => {
         console.log(err)
@@ -251,14 +259,13 @@ export default {
 
     }
 
-
     // 3개씩 슬라이드에 담는 함수
     function setThreeBottle (setBottleList, bottleData) {
       for (let i = 0; i < bottleData.length; i += 3) {
         const bThreeBottle = []
         bThreeBottle.push(bottleData[i])
-        if (i + 1 < bottleData.length) bThreeBottle.push(bottleData[i + 1]);
-        if (i + 2 < bottleData.length) bThreeBottle.push(bottleData[i + 2]);
+        if (i + 1 < bottleData.length) bThreeBottle.push(bottleData[i + 1])
+        if (i + 2 < bottleData.length) bThreeBottle.push(bottleData[i + 2])
         setBottleList.value.push(bThreeBottle)
       }
     }
