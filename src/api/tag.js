@@ -10,6 +10,15 @@ async function $getTags (boardNo, replyData) {
   }
 }
 
+async function $getUserTags (userNo) {
+  try {
+    const user = useUserStore()
+    const axios = getJsonAxiosInstance(user.getLoginUserInfo)
+    return axios.get(`/api/users/${userNo}/tags`)
+  } catch (error) {
+    console.error('Error deleting user tags:', error)
+  }
+}
 
 async function $addUserTags (userNo, tagNoList) {
   try {
@@ -32,5 +41,5 @@ async function $removeUserTags (userNo, tagNoList) {
 }
 
 export {
-  $getTags, $addUserTags, $removeUserTags
+  $getTags, $getUserTags, $addUserTags, $removeUserTags
 }

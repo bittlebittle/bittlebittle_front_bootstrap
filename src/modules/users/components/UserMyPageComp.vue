@@ -66,6 +66,23 @@
 </table>
 <br><br><br><br>
     <!-- 내가 작성한 리뷰 및 댓글 테이블 -->
+    <h6>내가 설정한 태그</h6>
+      <template v-for="tagType, index in tagTypeList" :key="index">
+        <div class="tag-group"></div>
+          <strong>{{ tagType.tagTypeName }} : </strong>
+        <div>
+          <template v-for="tag, index in tagList" :key="index">
+              <button class="selected" v-if="tag.keyTypeNo == tagType.tagTypeNo">
+                {{ tag.tagName }}
+              </button>
+          </template>
+        </div>
+      </template>
+    <br><br><br>
+    <router-link :to="{ name: 'TagRegisterComp' }">태그 설정하러 가기</router-link>
+
+<br><br><br><br>
+    <!-- 내가 작성한 리뷰 및 댓글 테이블 -->
     <h6>내가 작성한 리뷰</h6>
     <table class="reviews-table">
         <thead>
@@ -117,6 +134,7 @@
 import { ref, onMounted } from 'vue'
 import { useUserStore } from '@/stores/users'
 import { $getUser, $editUser, $removeUser, $getReviews, $getReply } from '@/api/user'
+import { $getUserTags } from '@/api/tag'
 
 export default {
   name: 'UserMyPageComp',
@@ -205,7 +223,6 @@ export default {
       }
     }
 
-
     const fetchUser = async () => {
       try {
         const response = await $getUser(userNo)
@@ -276,17 +293,27 @@ export default {
       }
     }
 
+    const tagList = ref({})
+    const tagTypeList = ref({})
+
+    // 회원태그 조회
+    function getUserTags () {
+      $getUserTags(userNo)
+        .then(res => {
+          console.log(res.data)
+          tagList.value = res.data.tagList
+          tagTypeList.value = res.data.tagTypeList
+          userStore.setUserTagsInfo(tagList)
+        })
+        .catch(err => console.log(err))
+      }
+
     onMounted(() => {
       fetchUser()
       fetchReviews()
       fetchComments()
+      getUserTags()
     })
-
-
-
-
-
-
 
     return {
       name,
@@ -308,7 +335,9 @@ export default {
       withdraw,
       myUserInfo,
       editModeToggle,
-      editModeClose
+      editModeClose,
+      tagList,
+      tagTypeList
     }
   }
 }
@@ -431,4 +460,10 @@ button {
   justify-content: flex-end;
   align-items: center;
 }
+.selected {
+  background-color: rgb(250, 150, 0);
+  color: white;
+  border: 0px;
+}
+
 </style>

@@ -21,12 +21,15 @@
 import { onMounted, ref } from 'vue'
 import { useUserStore } from '@/stores/users'
 import { $getTags, $addUserTags } from '@/api/tag'
-import router from '@/router'
+import { useRoute, useRouter } from 'vue-router'
+
 
 export default {
   name: 'TagRegisterComp',
   setup () {
     const tags = ref({})
+
+    const router = useRouter()
 
     function getTags () {
       $getTags()
@@ -42,6 +45,7 @@ export default {
     const user = useUserStore()
 
     const selectedTags = ref([])
+
     const toggleSelection = (item) => {
       if (selectedTags.value.includes(item)) {
         // 이미 내부에 존재하는 경우, 값을 삭제합니다.
@@ -55,6 +59,8 @@ export default {
     }
 
     const saveSelections = () => {
+      console.log("저장 하기 전 테스트")
+      console.log(selectedTags.value)
       let isValid = true
       if (selectedTags.value.length === 0) {
         isValid = false
@@ -67,14 +73,26 @@ export default {
           .then(res => {
             console.log(res.data)
             alert('태그 저장이 완료되었습니다.')
+            user.setLoginUserInfo('')
             router.push('/')
           })
       } else {
         alert('각 항목별로 최소 1개 이상 선택해 주세요.')
       }
     }
+    const tagList = user.getUserTagsInfo
+
+    function logTagList() {
+      tagList.value.forEach(element => {
+        console.log(element.tagNo)
+        selectedTags.value.push(Math.round(element.tagNo))
+      })
+      console.log(tagList.value)
+      console.log(selectedTags.value)
+    }
 
     onMounted(() => {
+      logTagList()
       getTags()
     })
 
