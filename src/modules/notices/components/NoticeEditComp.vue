@@ -65,7 +65,7 @@ export default {
 }
 </script>
 
-<style scroped >
+<style scoped >
 /*글쓰기 관련 ----------*/
 a{
     text-decoration: none;

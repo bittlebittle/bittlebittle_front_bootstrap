@@ -84,7 +84,7 @@ export default {
 }
 </script>
 
-<style scope>
+<style scoped>
 /*디테일뷰 관련*/
 .container {
   width: 100%;
