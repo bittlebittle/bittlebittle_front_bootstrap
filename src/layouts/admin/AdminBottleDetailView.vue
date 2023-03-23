@@ -1,6 +1,10 @@
 <template>
   <div class="bottle-detail-view" v-if="bottle">
     <button class="btn btn-primary" @click="showEditBottleModal()">보틀 정보 수정</button>
+    <br><br>
+    <div class="image-container">
+      <img :src="getBottleImage(bottle.imgUrl, bottle.imgCusUrl)" style="max-width:350px" alt="보틀 이미지">
+    </div>
     <div>보틀 번호: {{ bottle.bottleNo }}</div>
     <div>보틀 이름: {{ bottle.bottleName }}</div>
     <div>보틀 내용: {{ bottle.bottleContent }}</div>
@@ -24,6 +28,13 @@
     </div>
     <div class="modal-body">
       <form>
+        <template v-if="bottle.imgUrl != ''">
+          <img ref="addBottleImage" :src="getBottleImage()" style="max-width:350px" alt="이미지 파일">
+        </template>
+        <div class="form-group">
+          <label for="bottleName">첨부 이미지</label>
+          <input type="file" class="form-control" id="bottleName" @change="handleImageUpload">
+        </div>
         <div class="form-group">
           <label for="bottleName">보틀 이름</label>
           <input type="text" class="form-control" id="bottleName" v-model="editBottleName">
@@ -60,8 +71,6 @@
   </div>
 </b-modal>
 
-
-
     <!-- 리뷰 리스트 -->
     <div class="related-list">
       <div class="section-title">리뷰 리스트:</div>
@@ -71,7 +80,7 @@
         </li>
       </ul>
     </div>
-    
+
     <!-- modal -->
     <b-modal v-model="reviewModal" title="리뷰 상세 내용" v-if="reviewModal">
       <div class="modal-content">
@@ -103,29 +112,28 @@
 
   </div>
 
-
 </template>
 
 <script>
 import { getFormAxiosInstance } from '@/api/index'
-import { onMounted, ref, computed } from '@vue/runtime-core'
+import { onMounted, ref } from 'vue'
 import { useRouter } from 'vue-router'
 import { useUserStore } from '@/stores/users.js'
 
 export default {
   name: 'BottleDetailView',
- 
+
   props: {
     bottleNo: {
       type: String,
       required: true
     }
   },
-  
+
   setup (props) {
     const user = useUserStore()
     const axios = user.getLoginUserInfo ? getFormAxiosInstance(user.getLoginUserInfo) : getFormAxiosInstance('')
-   
+
     const bottle = ref(null)
     const tagListByBottle = ref([])
     const reviewList = ref([])
@@ -133,99 +141,114 @@ export default {
     const reviewContent = ref('')
     const grade = ref(0)
 
- 
-    const getBottle = function(hhh){
-      let url = '';
-      if(!hhh) {
+    const getBottle = function (hhh) {
+      let url = ''
+      if (!hhh) {
         url = `/api/admin/bottles/${props.bottleNo}`
       } else {
         url = '/api/admin/bottles/' + hhh
       }
-
       axios.get(url)
-      .then(res => {
-        bottle.value = res.data.bottle
-        tagListByBottle.value = res.data.tagListByBottle
-        reviewList.value = res.data.reviewList
-      })
-      .catch(err => {
-        console.log(err)
-      })
+        .then(res => {
+          bottle.value = res.data.bottle
+          tagListByBottle.value = res.data.tagListByBottle
+          reviewList.value = res.data.reviewList
+        })
+        .catch(err => {
+          console.log(err)
+        })
     }
 
-
-  const router = useRouter()
+    const router = useRouter()
 
     onMounted(() => {
       getBottle()
     })
-
-
-  // bottle 수정
-
-  const editBottleName = ref('')
-  const editBottleContent = ref('')
-  const editBottleBrand = ref('')
-  const editBottleAbv = ref(0)
-  const editBottleModal = ref(false)
-  const tagTypeList = ref([])
-  const tagList = ref([])
-  const selectedTags = ref([])
-
-
-  const showEditBottleModal = function(){
-    editBottleModal.value = true
-
-    editBottleName.value = bottle.value.bottleName
-    editBottleContent.value =bottle.value.bottleContent 
-    editBottleBrand.value=bottle.value.bottleBrand 
-    editBottleAbv.value=bottle.value.bottleAbv
-    selectedTags.value = tagListByBottle.value.map(tag => tag.tagNo);
-
-
-    axios.get(`/api/admin/tagtypes`)
-    .then(res => {
-      tagTypeList.value = res.data
-    })
-    .catch(err => {
-      console.log(err)
-    })
-
-    axios.get(`/api/admin/tags`)
-    .then(res => {
-      tagList.value = res.data
-    })
-    .catch(err => {
-      console.log(err)
-    })
-  }
-
-  const editBottle = function(){
-
-    const url = `/api/admin/bottles/set-data`
-    
-    const data = new FormData();
-        data.append('bottleNo', bottle.value.bottleNo);
-        data.append('bottleName', editBottleName.value);
-        data.append('bottleContent', editBottleContent.value);
-        data.append('bottleBrand', editBottleBrand.value);
-        data.append('bottleAbv', editBottleAbv.value);
-        data.append('tagNoList', selectedTags.value);
-
-    axios.post(url, data)
-    .then(res => {
-      bottle.value = res.data.bottle
-      tagListByBottle.value = res.data.tagListByBottle
-      editBottleModal.value = false
-
-    })
-
-  }
-    
-    const closeEditBottleModal = function(){
-        editBottleModal.value = false
+    // 보틀 이미지 불러오기
+    function getBottleImage () {
+      return `http://localhost:8080/bittlebittle/image?path=bottle&name=${bottle.value.imgCusUrl}`
     }
 
+    // 이미지 첨부
+    const addBottleImage = ref(null)
+    const handleImageUpload = function (event) {
+      addBottleImage.value = event.target.files[0]
+    }
+
+    // bottle 수정
+    const editBottleName = ref('')
+    const editBottleContent = ref('')
+    const editBottleBrand = ref('')
+    const editBottleAbv = ref(0)
+    const editBottleModal = ref(false)
+    const tagTypeList = ref([])
+    const tagList = ref([])
+    const selectedTags = ref([])
+
+    const showEditBottleModal = function () {
+      editBottleModal.value = true
+
+      editBottleName.value = bottle.value.bottleName
+      editBottleContent.value = bottle.value.bottleContent
+      editBottleBrand.value = bottle.value.bottleBrand
+      editBottleAbv.value = bottle.value.bottleAbv
+      selectedTags.value = tagListByBottle.value.map(tag => tag.tagNo)
+
+      axios.get('/api/admin/tagtypes')
+        .then(res => {
+          tagTypeList.value = res.data
+        })
+        .catch(err => {
+          console.log(err)
+        })
+
+      axios.get('/api/admin/tags')
+        .then(res => {
+          tagList.value = res.data
+        })
+        .catch(err => {
+          console.log(err)
+        })
+    }
+
+
+
+    // 보틀 수정
+    const editBottle = function () {
+      const url = '/api/admin/bottles/set-data'
+
+      const data = new FormData()
+      data.append('bottleNo', bottle.value.bottleNo)
+      data.append('bottleName', editBottleName.value)
+      data.append('bottleContent', editBottleContent.value)
+      data.append('bottleBrand', editBottleBrand.value)
+      data.append('bottleAbv', editBottleAbv.value)
+      data.append('tagNoList', selectedTags.value)
+      if (bottle.value.imgUrl != null && bottle.value.imgUr !== '') {
+        data.append('imgUrl', bottle.value.imgUrl)
+      }
+      if (bottle.value.imgCusUrl != null && bottle.value.imgCusUrl !== '') {
+        data.append('imgCusUrl', bottle.value.imgCusUrl)
+      }
+      if (addBottleImage.value) {
+        data.append('reupfile', addBottleImage.value)
+      } else {
+        data.append('reupfile', null)
+      }
+
+      axios.post(url, data)
+        .then(res => {
+          bottle.value = res.data.bottle
+          tagListByBottle.value = res.data.tagListByBottle
+          editBottleModal.value = false
+          // 업로드 한 뒤에는 <input type="file" 의 value 를 null 로 수정
+          addBottleImage.value = null
+        })
+    }
+
+    const closeEditBottleModal = function () {
+      editBottleModal.value = false
+    }
 
     // Function to show the modal with review details
     const selectedReview = ref(null)
@@ -233,74 +256,70 @@ export default {
     const replyList = ref([])
 
     const showReviewModal = (review) => {
-
       axios.get(`/api/admin/bottles/${bottle.value.bottleNo}/reviews/${review.reviewNo}`)
-      .then(res => {
-        replyList.value = res.data.replyList
-      })
-      .catch(err => {
-        console.log(err)
-      })
+        .then(res => {
+          replyList.value = res.data.replyList
+        })
+        .catch(err => {
+          console.log(err)
+        })
 
       selectedReview.value = review
       reviewModal.value = true
-    };
+    }
 
     const closeReviewModal = () => {
       selectedReview.value = null
       reviewModal.value = false
-    };
-
+    }
 
     // 리뷰 삭제
-    const deleteReview = function(){
-
+    const deleteReview = function () {
       axios.get(`/api/admin/bottles/${bottle.value.bottleNo}/reviews/${selectedReview.value.reviewNo}/deletion`)
-      .then(res => {
-          reviewList.value=res.data
+        .then(res => {
+          reviewList.value = res.data
           reviewModal.value = false
-      })
-      
+        })
     }
 
     // 리플 삭제
-    const deleteReply = function(replyNo){
+    const deleteReply = function (replyNo) {
       axios.get(`/api/admin/bottles/${bottle.value.bottleNo}/reviews/${selectedReview.value.reviewNo}/replies/${replyNo}/deletion`)
-      .then(res => {
-          replyList.value=res.data
-      })
+        .then(res => {
+          replyList.value = res.data
+        })
     }
 
-
-  return {
-    bottle,
-    tagListByBottle,
-    reviewList,
-    reviewTitle,
-    reviewContent,
-    grade,
-    getBottle,
-    selectedReview,
-    reviewModal,
-    showReviewModal,
-    replyList,
-    closeEditBottleModal,
-    deleteReview,
-    deleteReply,
-    editBottleName,
-    editBottleContent,
-    editBottleBrand,
-    editBottleAbv,
-    editBottleModal,
-    showEditBottleModal,
-    editBottle,
-    tagTypeList,
-    tagList,
-    selectedTags,
-    closeReviewModal,
-    user
-  }
-
+    return {
+      bottle,
+      tagListByBottle,
+      reviewList,
+      reviewTitle,
+      reviewContent,
+      grade,
+      getBottle,
+      selectedReview,
+      reviewModal,
+      showReviewModal,
+      replyList,
+      closeEditBottleModal,
+      deleteReview,
+      deleteReply,
+      editBottleName,
+      editBottleContent,
+      editBottleBrand,
+      editBottleAbv,
+      editBottleModal,
+      showEditBottleModal,
+      editBottle,
+      tagTypeList,
+      tagList,
+      selectedTags,
+      closeReviewModal,
+      user,
+      handleImageUpload,
+      getBottleImage
+    }
   }
 }
 </script>
@@ -347,7 +366,6 @@ export default {
   .form-group {
       margin-bottom: 10px;
     }
-
 
   .review-form-control {
     width: 100%;

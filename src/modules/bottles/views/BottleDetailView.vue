@@ -1,11 +1,13 @@
 <template>
   <div class="bottle-detail-view" v-if="bottle">
     <div class="image-container">
-    <img :src="getBottleImage(bottle.imgUrl, bottle.imgCusUrl)" alt="보틀 이미지">
+      <img :src="getBottleImage(bottle.imgUrl, bottle.imgCusUrl)" alt="보틀 이미지">
     </div>
+    <div class="heart-icon-container">
     <div class="heart-icon"
      :class="{'empty-heart': !isFavorite.length, 'full-heart': isFavorite.length}" @click="clickFavorite"></div>
-    <div>보틀 이름: {{ bottle.bottleName }}</div>
+    </div>
+     <div>보틀 이름: {{ bottle.bottleName }}</div>
     <div>보틀 내용: {{ bottle.bottleContent }}</div>
     <div>보틀 브랜드: {{ bottle.bottleBrand }}</div>
     <div>보틀 도수: {{ bottle.bottleAbv }}</div>
@@ -30,7 +32,10 @@
     <div class="related-list">
       <div class="section-title">관련 음식 리스트:</div>
       <ul>
-        <li v-for="food in foodList" :key="food.foodNo">
+        <li v-for="food in foodList" :key="food.foodNo" style="display: inline-block; margin-right: 20px;">
+          <div>
+          <img :src="getFoodImage(food.imgUrl, food.imgCusUrl)" alt="관련 음식 이미지"  width="200" height="200">
+          </div>
           {{ food.foodName }}
         </li>
       </ul>
@@ -191,7 +196,7 @@
 
 <script>
 import { getFormAxiosInstance } from '@/api/index'
-import { onMounted, ref, reactive } from 'vue'
+import { onMounted, ref } from 'vue'
 import { useRouter } from 'vue-router'
 import { useUserStore } from '@/stores/users.js'
 import { useBoardStore } from '@/stores/boards'
@@ -255,8 +260,15 @@ export default {
       return `http://localhost:8080/bittlebittle/image?path=review&name=${imgCusUrl}`
     }
 
-    // 리뷰 작성
 
+    // 음식 이미지
+
+    function getFoodImage (imgUrl, imgCusUrl) {
+      return `http://localhost:8080/bittlebittle/image?path=food&name=${imgCusUrl}`
+    }
+
+
+    // 리뷰 작성
     const reviewTitle = ref('')
     const reviewContent = ref('')
     const grade = ref(0)
@@ -456,7 +468,7 @@ export default {
 
     // 찜하기
     const clickFavorite = function(){
-    
+
       const url=`/api/bottles/${bottle.value.bottleNo}/favorite`
       const data={
         userNo: user.getLoginUserInfo.userNo,
@@ -516,7 +528,9 @@ export default {
       handleImageUpload,
       getReviewImage,
       isFavorite,
-      clickFavorite
+      clickFavorite,
+      getFoodImage
+
     }
   }
 }
@@ -679,11 +693,13 @@ export default {
   height: 50px;
   width: 500px;
 }
-
+.heart-icon-container {
+  text-align: right;
+}
 /* 찜하기 */
 .heart-icon {
-  width: 50px;
-  height: 50px;
+  width: 30px;
+  height: 30px;
   background-repeat: no-repeat;
   background-size: contain;
 }
@@ -697,8 +713,18 @@ export default {
 }
 
 .image-container {
+  display: inline-block; /* 이미지 크기에 맞게 테두리가 둘러지도록 인라인 블록 요소로 설정합니다. */
   border: 2px solid orange;
   padding: 10px;
-  display: inline-block; /* 이미지를 라인 상자로 배치 */
+  box-sizing: border-box; /* border와 padding 값을 포함한 전체 요소 크기를 계산합니다. */
+}
+
+.image-container img {
+  max-width: 500px; /* 이미지의 최대 너비를 300px로 설정합니다. */
+  max-height: 500px; /* 이미지의 최대 높이를 300px로 설정합니다. */
+  /* max-width: 100%; /* 부모 요소의 크기에 맞게 이미지 크기를 조정합니다. */
+  /* max-height: 100%; */ 
+  display: block; /* 이미지를 블록 요소로 설정하여 위/아래 여백을 추가합니다. */
+  margin: 0 auto; /* 이미지를 수평 중앙 정렬합니다. */
 }
 </style>

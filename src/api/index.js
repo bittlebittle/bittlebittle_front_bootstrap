@@ -11,7 +11,7 @@ function createAxiosInstance () {
 function getJsonAxiosInstance (userInfo) {
   const instance = createAxiosInstance()
   instance.defaults.headers.post['Content-Type'] = 'application/json; charset-8'
-  if (userInfo != null) {
+  if (userInfo != null && userInfo.Authorization !== '') {
     instance.defaults.headers.common['Authorization'] = userInfo.Authorization
     instance.defaults.headers.common['RefreshTokenIdx'] = userInfo.RefreshTokenIdx
   }
@@ -21,11 +21,11 @@ function getJsonAxiosInstance (userInfo) {
 function getFormAxiosInstance (userInfo) {
   const instance = createAxiosInstance()
   instance.defaults.headers.post['Content-Type'] = 'multipart/form-data'
-  if (userInfo != null) {
+  if (userInfo != null && userInfo.Authorization !== '') {
     instance.defaults.headers.common['Authorization'] = userInfo.Authorization
     instance.defaults.headers.common['RefreshTokenIdx'] = userInfo.RefreshTokenIdx
   }
   return instance
 }
 
-export { getJsonAxiosInstance, getFormAxiosInstance }
+export { createAxiosInstance, getJsonAxiosInstance, getFormAxiosInstance }

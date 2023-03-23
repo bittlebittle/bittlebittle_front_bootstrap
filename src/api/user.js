@@ -52,7 +52,7 @@ async function $addUserTags (tagNoList) {
   try {
     const user = useUserStore()
     const axios = getJsonAxiosInstance(user.getLoginUserInfo)
-    return axios.post(`${user.getLoginUserInfo.userNo}/tags`, tagNoList)
+    return await axios.post(`${user.getLoginUserInfo.userNo}/tags`, tagNoList)
   } catch (error) {
     console.error('Error adding user tags:', error)
   }
@@ -62,7 +62,7 @@ async function $deleteUserTags (tagNoList) {
   try {
     const user = useUserStore()
     const axios = getJsonAxiosInstance(user.getLoginUserInfo)
-    return axios.post(`${user.getLoginUserInfo.userNo}/tags/deletion`, tagNoList)
+    return await axios.post(`${user.getLoginUserInfo.userNo}/tags/deletion`, tagNoList)
   } catch (error) {
     console.error('Error deleting user tags:', error)
   }
@@ -72,40 +72,80 @@ async function $checkDuplicate (userId) {
   try {
     const user = useUserStore()
     const axios = getJsonAxiosInstance(user.getLoginUserInfo)
-    return axios.post('api/users/check-duplicate', { userId: userId })
+    return await axios.post('api/users/check-duplicate', { userId: userId })
   } catch (error) {
     console.error('Error deleting user tags:', error)
   }
 }
 
-function $updateUser(userNo, updatedInfo) {
+async function $checkDuplicateNickname (nickname) {
+  try {
+    const user = useUserStore()
+    const axios = getJsonAxiosInstance(user.getLoginUserInfo)
+    return await axios.post('api/users/check-duplicate-nickname', { nickname: nickname})
+  } catch (error) {
+    console.error('Error deleting user tags:', error)
+  }
+}
+
+// function $updateUser(userNo, updatedInfo) {
+//   const user = useUserStore()
+//   const axios = getJsonAxiosInstance(user.getLoginUserInfo)
+//   return axios.post(`/api/users/set-data`, {
+//     userNo,
+//     ...updatedInfo
+//   }) }
+
+function $getReviews () {
   const user = useUserStore()
   const axios = getJsonAxiosInstance(user.getLoginUserInfo)
-  return axios.post(`/api/users/set-data`, {
-    userNo,
-    ...updatedInfo
-  }) }
+  return axios.get(`/api/users/${user.getLoginUserInfo.userNo}/reviews`)
+}
 
-  function $getReviews (userNo) {
-    const user = useUserStore()
-    const axios = getJsonAxiosInstance(user.getLoginUserInfo)
-    return axios.get(`/api/users/${user.getLoginUserInfo.userNo}`)
-  }
+function $getReply () {
+  const user = useUserStore()
+  const axios = getJsonAxiosInstance(user.getLoginUserInfo)
+  return axios.get(`/api/users/${user.getLoginUserInfo.userNo}/comments`)
+}
 
-  function $getReply (userNo) {
-    const user = useUserStore()
-    const axios = getJsonAxiosInstance(user.getLoginUserInfo)
-    return axios.get(`/api/users/${user.getLoginUserInfo.userNo}`)
-  }
+// async function $withdrawUser(userNo) {
+//   const user = useUserStore()
+//   const axios = getJsonAxiosInstance(user.getLoginUserInfo)
+//   return axios.put(`/api/users/withdraw/${userNo}`)
+// }
 
-  async function $withdrawUser(userNo) {
-    const user = useUserStore()
-    const axios = getJsonAxiosInstance(user.getLoginUserInfo)
-    return axios.put(`/api/users/withdraw/${userNo}`)
-  }
+
+// function $getUserList() {
+//   const user = useUserStore();
+//   const axios = getJsonAxiosInstance(user.getLoginUserInfo);
+//   return axios.get('/api/users');
+// }
+
+function $searchUsers(searchCriteria, searchKeyword) {
+  const user = useUserStore();
+  const axios = getJsonAxiosInstance(user.getLoginUserInfo);
+  return axios.get('/api/users/search', {
+    params: { searchCriteria, searchKeyword },
+  });
+}
+
+function $deleteUsers(userNos) {
+  const user = useUserStore();
+  const axios = getJsonAxiosInstance(user.getLoginUserInfo);
+  return axios.patch('/api/users/delete', { userNos });
+}
+
+async function $updateUsermodal(user) {
+  const userStore = useUserStore();
+  const axios = getJsonAxiosInstance(userStore.getLoginUserInfo);
+  return axios.put(`/api/users/${userStore.getLoginUserInfo.userNo}`, user);
+}
+
+
 
 export {
   $loginUser, $getUser, $editUser, $addUser, $removeUser,
-  $logoutUser, $checkDuplicate, $updateUser,
-  $addUserTags, $deleteUserTags, $getReviews, $getReply, $withdrawUser
+  $logoutUser, $checkDuplicate,
+  $addUserTags, $deleteUserTags, $getReviews, $getReply
+  , $searchUsers, $deleteUsers, $updateUsermodal  , $checkDuplicateNickname
 }

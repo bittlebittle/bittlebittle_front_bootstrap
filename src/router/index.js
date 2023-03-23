@@ -15,6 +15,12 @@ import AdminAddBottleView from '@/layouts/admin/AdminAddBottleView'
 import AdminBottleDetailView from '@/layouts/admin/AdminBottleDetailView'
 import AdminBottle from '@/layouts/admin/AdminBottle'
 import AdminTagView from '@/layouts/admin/AdminTagView'
+import AdminNoticeCreateComp from '@/modules/notices/components/AdminNoticeCreateComp'
+import AdminNoticeDetailComp from '@/modules/notices/components/AdminNoticeDetailComp'
+import AdminNoticeEditComp from '@/modules/notices/components/AdminNoticeEditComp'
+import AdminNoticeListComp from '@/modules/notices/components/AdminNoticeListComp'
+import NoticeListComp from '@/modules/notices/components/NoticeListComp'
+import NoticeDetailComp from '@/modules/notices/components/NoticeDetailComp'
 
 const routes = [
   {
@@ -41,19 +47,20 @@ const routes = [
         component: UserView,
         children: [
           {
-            path: '/users/:userNo',
+            path: '/users/mypage',
             name: 'UserMyPageComp',
-            component: () => import('@/modules/users/components/UserMyPageComp')
+            component: () => import('@/modules/users/components/UserMyPageComp'),
+            meta: { title: 'UserMyPageComp' }
           },
           {
             path: '/users/addition',
             name: 'UserRegisterComp',
-            component: () => import('@/modules/users/components/UserRegisterComp')
-          },
-          {
-            path: '/users/mypage',
-            name: 'myInfo',
-            component: () => import('@/modules/users/views/myInfo')
+            component: () => import('@/modules/users/components/UserRegisterComp'),
+            meta: { title: 'UserRegisterComp' }
+          }, {
+            path: '/users/tags/addition',
+            name: 'TagRegisterComp',
+            component: () => import('@/modules/users/components/TagRegisterComp')
           }
         ]
       },
@@ -105,7 +112,19 @@ const routes = [
       {
         path: '/notices',
         name: 'NoticeView',
-        component: NoticeView
+        component: () => import('@/modules/notices/views/NoticeView'),
+        children: [
+          {
+            path: '/notices',
+            name: 'NoticeListComp',
+            component: NoticeListComp
+          },
+          {
+            path: '/notices/:noticeNo',
+            name: 'NoticeDetailComp',
+            component: NoticeDetailComp
+          }
+        ]
       },
       {
         path: '/faqs',
@@ -151,8 +170,39 @@ const routes = [
         path: '/admin/tags',
         name: 'AdminTagView',
         component: AdminTagView
+      },
+      {
+        path: '/admin/users',
+        name: 'AdminUserManagement',
+        component: () => import('@/modules/users/components/AdminManaging')
+      },
+      {
+        path: '/admin/notices',
+        name: 'AdminNoticeView',
+        component: () => import('@/modules/notices/views/AdminNoticeView'),
+        children: [
+          {
+            path: '/admin/notices',
+            name: 'AdminNoticeListComp',
+            component: AdminNoticeListComp
+          },
+          {
+            path: '/admin/notices/:noticeNo',
+            name: 'AdminNoticeDetailComp',
+            component: AdminNoticeDetailComp
+          },
+          {
+            path: '/admin/notices/addition',
+            name: 'AdminNoticeCreateComp',
+            component: AdminNoticeCreateComp
+          },
+          {
+            path: '/admin/notices/set-data',
+            name: 'AdminNoticeEditComp',
+            component: AdminNoticeEditComp
+          }
+        ]
       }
-
     ]
   },
   {

@@ -1,7 +1,6 @@
 <template>
     <div class="container">
       <div class="content"> <!-- 수정 -->
-        <p class="title">회원 가입</p>
           <router-view></router-view>
         </div>
     </div>

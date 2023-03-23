@@ -1,8 +1,8 @@
 <template>
   <div class="container">
-   <div class="content"> 
+   <div class="content">
 
-    <p class="title">공지사항</p>
+    <p class="title">Notice</p>
       <router-view />
     </div>
   </div>
@@ -12,23 +12,24 @@
 export default {
   name: 'NoticeView'
 }
+
 </script>
 
 <style scoped >
   .container {
     margin: 0 auto;
     width: 900px;
-    min-height: 70vh; /* 추가 */
+    min-height: 70vh;
     display: flex;
-    flex-direction: column; /* 추가 */
-    background-color: #FFFAF6; /* 추가 */
+    flex-direction: column;
+    background-color: #FFFAF6;
   }
 
   .content {
-    flex-grow: 1; /* 추가 */
-    background-color: #FFFAF6; /* 추가 */
-    padding: 20px; /* 추가 */
-    border-radius: 5px; /* 추가 */
+    flex-grow: 1;
+    background-color: #FFFAF6;
+    padding: 20px;
+    border-radius: 5px;
   }
 
   .title {

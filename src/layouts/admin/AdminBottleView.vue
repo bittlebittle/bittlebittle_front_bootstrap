@@ -3,14 +3,11 @@
   <router-link :to="{ name:'AdminAddBottleView' }">
             <button class="btn btn-primary">보틀 추가</button>
   </router-link>
-  <router-link :to="{ name:'AdminTagView' }">
-            <button class="btn btn-primary">태그 수정</button>
-  </router-link>
-
+  <br>
   <div>AdminBottleView</div>
   <div>
     <div>
-   <div>
+   <div class="parent">
         <input type="text" class="form-control" v-model="keyword" placeholder="검색어를 입력하세요">
         <button class="btn btn-primary" @click="search">검색</button>
    </div>
@@ -68,7 +65,7 @@ export default {
         })
     })
 
-    const deleteBottle = function (bottleNo) {
+    const deleteBottle = (bottleNo) => {
       axios.get(`/api/admin/bottles/${bottleNo}/deletion`)
         .then(res => {
           bottles.value = res.data
@@ -79,7 +76,6 @@ export default {
     }
 
     // 이미지
-
     const addBottleImage = ref()
     const handleImageUpload = function (event) {
       addBottleImage.value = event.target.files[0]
@@ -227,6 +223,17 @@ export default {
   }
 
 button {
+  margin-right: 10px;
+}
+
+/* 수평정렬 */
+.parent {
+  display: flex;
+  align-items: center;
+}
+
+.input-box {
+  flex: 1;
   margin-right: 10px;
 }
 </style>
