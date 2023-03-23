@@ -1,5 +1,4 @@
 <template>
-  <div class="container">
    <div class="content"> <!-- 수정 -->
      <p class="title">커뮤니티</p>
      <div class="search-container">
@@ -49,8 +48,7 @@
   <button id="write-button" @click="moveCreateBoard">작성하기</button>
 </div>
 
-   </div> <!-- 수정 -->
- </div>
+</div> <!-- 수정 -->
 </template>
 
 <style scoped>
