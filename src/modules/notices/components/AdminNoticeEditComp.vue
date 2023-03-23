@@ -48,7 +48,7 @@ export default {
     const router = useRouter()
 
     function editNotice () {
-      $editNotice(loginUser.userNo, notice)
+      $editNotice(notice.noticeNo, notice)
         .then(res => {
           console.log(res.data)
           console.log(notice.noticeNo)
