@@ -10,34 +10,49 @@
               <th>이름</th>
               <th>이메일</th>
               <th>전화번호</th>
-              <th>가입날짜</th>
+              <th>닉네임</th>
+              <th>아이디</th>
               <th>탈퇴여부</th>
               <th>관리자여부</th>
             </tr>
           </thead>
           <tbody>
-            <tr
-        v-for="item in paginatedItems"
-        :key="item.memberNo"
-      >
+            <tr v-for="item in paginatedItems" :key="item.userNo">
+
         <td><input type="checkbox" v-model="item.checked" /></td>
-        <td>{{ item.memberNo }}</td>
-        <td>{{ item.name }}</td>
+        <td>{{ item.userNo }}</td>
+        <td>{{ item.userName }}</td>
         <td>{{ item.email }}</td>
-        <td>{{ item.phoneNumber }}</td>
-        <td>{{ item.joinDate }}</td>
-        <td>{{ item.withdrawalStatus }}</td>
-        <td>{{ item.adminStatus }}</td>
+        <td>{{ item.phone }}</td>
+        <td>{{ item.nickname }}</td>
+        <td>{{ item.userId }}</td>
+        <td>{{ item.status }}</td>
+        <td>{{ item.adminYn }}</td>
       </tr>
           </tbody>
         </table>
       </div>
+
+      <div v-if="memberList.length === 0 && searchExecuted" class="no-results">
+  검색 결과가 없습니다.
+</div>
+
+
+
       <div class="search-container">
-        <label>이름: <input type="text" /></label>
-        <label>이메일: <input type="text" /></label>
-        <label>전화번호: <input type="text" /></label>
-        <button>검색</button>
-      </div>
+  <label>
+    검색 기준:
+    <select v-model="searchCriteria">
+      <option value="userName">이름</option>
+      <option value="email">이메일</option>
+      <option value="phone">전화번호</option>
+    </select>
+  </label>
+  <label>
+    검색어: <input type="text" v-model="searchKeyword" />
+  </label>
+  <button @click="searchSelected">검색</button>
+</div>
 
       <div class="pagination">
     <button
@@ -51,22 +66,142 @@
 </div>
 
       <div class="button-container">
-        <button>선택 삭제</button>
-        <button>수정</button>
+        <button @click="deleteSelected">선택 삭제</button>
+        <button @click="openModal">수정</button>
       </div>
+
+<!-- Modal -->
+<div class="modal" :class="{ 'is-active': isModalOpen }">
+  <div class="modal-background"></div>
+  <div class="modal-card">
+    <header class="modal-card-head">
+      <p class="modal-card-title">회원 정보 수정</p>
+      <button class="delete" aria-label="close" @click="closeModal"></button>
+    </header>
+    <section class="modal-card-body">
+  <!-- User form inputs -->
+</section>
+    <footer class="modal-card-foot">
+      <button class="button is-success" @click="updateUsermodal">저장</button>
+      <button class="button" @click="closeModal">취소</button>
+    </footer>
+  </div>
+</div>
     </div>
   </template>
   
   <script>
-import { ref, computed } from 'vue';
+import { ref, computed, onMounted } from 'vue';
+// user.js 파일에서 $getUser 함수를 가져옵니다.
+import { $getUser, $searchUsers, $deleteUsers, $updateUsermodal } from '@/api/user.js';
+
 
 export default {
-  name: 'AdminUserManagement',
+  name: 'AdminManaging',
+  async created() {
+  try {
+    const response = await $getUser();
+    if (response.status === 200) {
+      memberList.value = response.data;
+      totalItems.value = response.data.length;
+    }
+  } catch (error) {
+    console.error('Error fetching member list:', error);
+  }
+},
   setup() {
     const currentPage = ref(1);
     const itemsPerPage = ref(10);
     const totalItems = ref(100); // 전체 회원 수를 설정하십시오. 실제 데이터에 따라 변경됩니다.
     const memberList = ref([]); // 회원 목록 데이터입니다. 실제 데이터에 따라 변경됩니다.
+    const searchExecuted = ref(false);
+    // 검색 기준 및 검색어를 저장하는 ref
+    const searchCriteria = ref('');
+    const searchKeyword = ref('');
+
+    const isModalOpen = ref(false);
+    const selectedUser = ref(null);
+
+    const openModal = () => {
+  const checkedItems = memberList.value.filter(item => item.checked);
+  if (checkedItems.length !== 1) {
+    alert("수정할 회원을 하나만 선택해주세요.");
+    return;
+  }
+  selectedUser.value = { ...checkedItems[0] };
+  isModalOpen.value = true;
+};
+
+const closeModal = () => {
+  isModalOpen.value = false;
+};
+
+const updateUsermodal = async () => {
+  try {
+    await $updateUsermodal(selectedUser.value);
+    alert("회원 정보가 수정되었습니다.");
+    closeModal();
+    await fetchUserList();
+  } catch (error) {
+    console.error("Error updating user:", error);
+  }
+};
+    
+    const searchSelected = async () => {
+  try {
+    const response = await $searchUsers({
+      searchCriteria: searchCriteria.value,
+      searchKeyword: searchKeyword.value
+    });
+
+    if (response.status === 200) {
+      memberList.value = response.data;
+      totalItems.value = response.data.length;
+      setCurrentPage(1);
+       }else {
+  memberList.value = [];
+  totalItems.value = 0;
+}
+searchExecuted.value = true;
+  } catch (error) {
+    console.error('Error searching users:', error);
+  }
+};
+
+// 선택 삭제 기능
+const deleteSelected = async () => {
+  const checkedItems = memberList.value.filter(item => item.checked);
+
+  if (checkedItems.length === 0) {
+    alert('삭제할 회원을 선택해주세요.');
+    return;
+  }
+
+  try {
+    await $deleteUsers(checkedItems.map(item => item.userNo));
+    alert('선택된 회원이 삭제되었습니다.');
+    await fetchUserList();
+  } catch (error) {
+    console.error('Error deleting users:', error);
+  }
+};
+
+  
+
+  const fetchUserList = async () => {
+      try {
+        const response = await $getUser();
+        if (response.status === 200) {
+          memberList.value = response.data;
+          totalItems.value = response.data.length;
+        }
+      } catch (error) {
+        console.error('Error fetching user list:', error);
+      }
+
+};
+    
+
 
     const totalPages = computed(() => Math.ceil(totalItems.value / itemsPerPage.value));
 
@@ -80,6 +215,8 @@ export default {
       currentPage.value = page;
     };
 
+    onMounted(fetchUserList);
+
     return {
       currentPage,
       itemsPerPage,
@@ -88,6 +225,16 @@ export default {
       totalPages,
       paginatedItems,
       setCurrentPage,
+      searchCriteria,
+      searchKeyword,
+      searchSelected,
+      searchExecuted,
+      deleteSelected,
+      updateUsermodal,
+      openModal,      
+      closeModal,     
+      selectedUser,   
+      isModalOpen,    
     };
   },
 };

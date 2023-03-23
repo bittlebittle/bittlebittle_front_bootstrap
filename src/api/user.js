@@ -114,9 +114,38 @@ function $getReply () {
 //   return axios.put(`/api/users/withdraw/${userNo}`)
 // }
 
+
+// function $getUserList() {
+//   const user = useUserStore();
+//   const axios = getJsonAxiosInstance(user.getLoginUserInfo);
+//   return axios.get('/api/users');
+// }
+
+function $searchUsers(searchCriteria, searchKeyword) {
+  const user = useUserStore();
+  const axios = getJsonAxiosInstance(user.getLoginUserInfo);
+  return axios.get('/api/users/search', {
+    params: { searchCriteria, searchKeyword },
+  });
+}
+
+function $deleteUsers(userNos) {
+  const user = useUserStore();
+  const axios = getJsonAxiosInstance(user.getLoginUserInfo);
+  return axios.patch('/api/users/delete', { userNos });
+}
+
+async function $updateUsermodal(user) {
+  const userStore = useUserStore();
+  const axios = getJsonAxiosInstance(userStore.getLoginUserInfo);
+  return axios.put(`/api/users/${userStore.getLoginUserInfo.userNo}`, user);
+}
+
+
+
 export {
   $loginUser, $getUser, $editUser, $addUser, $removeUser,
   $logoutUser, $checkDuplicate,
   $addUserTags, $deleteUserTags, $getReviews, $getReply
-  , $checkDuplicateNickname
+  , $searchUsers, $deleteUsers, $updateUsermodal  , $checkDuplicateNickname
 }
