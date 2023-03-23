@@ -1,6 +1,10 @@
 <template>
   <div class="bottle-detail-view" v-if="bottle">
     <button class="btn btn-primary" @click="showEditBottleModal()">보틀 정보 수정</button>
+    <br><br>
+    <div class="image-container">
+      <img :src="getBottleImage(bottle.imgUrl, bottle.imgCusUrl)" style="max-width:350px" alt="보틀 이미지">
+    </div>
     <div>보틀 번호: {{ bottle.bottleNo }}</div>
     <div>보틀 이름: {{ bottle.bottleName }}</div>
     <div>보틀 내용: {{ bottle.bottleContent }}</div>

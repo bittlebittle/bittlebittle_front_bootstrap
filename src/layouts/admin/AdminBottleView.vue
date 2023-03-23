@@ -7,7 +7,7 @@
   <div>AdminBottleView</div>
   <div>
     <div>
-   <div>
+   <div class="parent">
         <input type="text" class="form-control" v-model="keyword" placeholder="검색어를 입력하세요">
         <button class="btn btn-primary" @click="search">검색</button>
    </div>
@@ -223,6 +223,17 @@ export default {
   }
 
 button {
+  margin-right: 10px;
+}
+
+/* 수평정렬 */
+.parent {
+  display: flex;
+  align-items: center;
+}
+
+.input-box {
+  flex: 1;
   margin-right: 10px;
 }
 </style>
