@@ -25,7 +25,15 @@ const routes = [
       {
         path: '/',
         name: 'MainView',
-        component: MainView
+        component: MainView,
+        children : [
+          {
+            path: '/bottles/:bottleNo',
+            name: 'BottleDetailView22',
+            component: BottleDetailView,
+            props: true
+          }
+        ]
       },
       {
         path: '/users',

@@ -133,13 +133,11 @@
           <swiper-slide v-for="newbottle in newBottles" :key="newbottle.bottleNo">
             <div class="slide-container" style="display : flex">
               <div class="slide-image">
-                <router-link class="title" :to="{ name:'BottleDetailView22', params : { bottleNo : newbottle.bottle1.bottleNo} }">
-                 <!-- <div class="title" @click="movePage(newbottle.bottle1.bottleNo)"> -->
-                  <img :value="newbottle.bottle1.bottleNo" :src="getBottleImage(newbottle.bottle1.imgUrl, newbottle.bottle1.imgCusUrl)" alt="보틀 이미지" width="300" height="300">
-                  <h4 class="mb-0">{{ newbottle.bottle1.bottleName }}</h4>
+                <router-link class="title" :to="{ name:'BottleDetailView', params : { bottleNo : newbottle.bottle1.bottleNo} }">
+                <img :src="getBottleImage(newbottle.bottle1.imgUrl, newbottle.bottle1.imgCusUrl)" alt="보틀 이미지" width="300" height="300">
+                <h4 class="mb-0">{{ newbottle.bottle1.bottleName }}</h4>
                 </router-link>
               </div>
-              
   
               <!-- <div class="slide-image">
                 <router-link class="title" :to="{ name:'BottleDetailView', params : { bottleNo : newbottle.bottle2.bottleNo} }">
@@ -150,7 +148,7 @@
 
               
               <div class="slide-image">
-                <router-link class="title" :to="'/bottles/'+newbottle.bottle3.bottleNo">
+                <router-link class="title" :to="{ name:'BottleDetailView', params : { bottleNo : newbottle.bottle3.bottleNo} }">
                 <img :src="getBottleImage(newbottle.bottle3.imgUrl, newbottle.bottle3.imgCusUrl)" alt="보틀 이미지" width="300" height="300">
                 <h4 class="mb-0">{{ newbottle.bottle3.bottleName }}</h4>
                 </router-link>
@@ -174,7 +172,7 @@
             <div class="slide-container" style="display : flex">
               <div class="slide-image">
                 <router-link class="title" :to="{ name:'BottleDetailView', params : { bottleNo : bestBottle.bottle1.bottleNo} }">
-                <img ss="bestBottle.bottle1.bottleNo"  :src="getBottleImage(bestBottle.bottle1.imgUrl, bestBottle.bottle1.imgCusUrl)" alt="보틀 이미지" width="300" height="300">
+                <img :src="getBottleImage(bestBottle.bottle1.imgUrl, bestBottle.bottle1.imgCusUrl)" alt="보틀 이미지" width="300" height="300">
                 <h4 class="mb-0">{{ bestBottle.bottle1.bottleName }}</h4>
                 </router-link>
               </div>
@@ -200,13 +198,13 @@
   </div>
 
   <!-- -----------------찜한 상품 관련----------------- -->
-  <div class="container" v-if="isLoggedIn">
+  <div class="container">
     <div class="row">
       <div class="col-12">
         <h2 class="text-center mb-lg-5 mb-4">~~님이 좋아할만한 !</h2>
       </div>
         <swiper :options="swiperOption" ref="swiperRef">
-          <swiper-slide v-for="relatedFavorite in relatedFavorites" :key="relatedFavorite.bottleNo">
+          <swiper-slide v-for="relatedFavorite in relatedFavorite" :key="relatedFavorite.bottleNo">
             <div class="slide-container" style="display : flex">
               <div class="slide-image">
                 <router-link class="title" :to="{ name:'BottleDetailView', params : { bottleNo : relatedFavorite.bottle1.bottleNo} }">
@@ -252,7 +250,6 @@
 <script>
 import { getFormAxiosInstance } from '@/api/index'
 import { onMounted, ref } from 'vue'
-
 import { useUserStore } from '@/stores/users'
 import { Swiper, SwiperSlide } from 'swiper/vue'
 // import SwiperCore, { Navigation } from 'swiper/core';
@@ -260,16 +257,12 @@ import { Swiper, SwiperSlide } from 'swiper/vue'
 // swiper 스타일 추가
 import 'swiper/swiper-bundle.css'
 import '../../node_modules/swiper/swiper.scss'
-import { useBoardStore } from '@/stores/boards'
-import { useRouter } from 'vue-router'
-
-
 
 // Swiper 컴포넌트에서 사용할 navigation 추가
 // SwiperCore.use([Navigation]);
 
 export default {
-  name: 'MainView',
+  name: '_MainView',
   components: {
     Swiper,
     SwiperSlide
@@ -280,16 +273,11 @@ export default {
     const axios = getFormAxiosInstance(user.getLoginUserInfo)
     const newBottles = ref([])
     const bestBottles = ref([]);
-    const relatedFavorites = ref([]);
+    const relatedFavorite = ref([]);
     const swiperRef = ref(null)
-    const isLoggedIn = ref(false)
-
-
-    const router = useRouter()
 
     // 보틀 이미지
     function getBottleImage(imgUrl, imgCusUrl) {
-      console.log(imgCusUrl)
       return `http://localhost:8080/bittlebittle/image?path=bottle&name=${imgCusUrl}`
     }
 
@@ -323,7 +311,6 @@ export default {
           console.log('bottles data', res.data.bottle)
         // NEW
          let Nbottles = res.data.newBottle;
-         console.log(Nbottles);
          let bottlesArr = [];
          let count = 0;
           for (let i = 0; i< Nbottles.length; i++) {
@@ -339,8 +326,7 @@ export default {
           }
 
           newBottles.value = bottlesArr;
-          console.log('new data', newBottles.value[0].bottle1.bottleNo);
-          
+          console.log('new data', newBottles);
 
         // BEST
          let Bbottles = res.data.bestBottle;
@@ -363,63 +349,45 @@ export default {
 
 
           // 찜하기 관련
-          if(res.data.relatedFavorite != null) {
-            let Rbottles = res.data.relatedFavorite;
+        //  let Rbottles = res.data.relatedFavorite;
+        //  let RbottlesArr = [];
+        //  let Rcount = 0;
+        //   for (let i = 0; i< Rbottles.length; i++) {
+        //     let rThreeBottle = {}
+        //     rThreeBottle.bottle1 = Rbottles[i];
+        //     rThreeBottle.bottle2 = Rbottles[i+1];
+        //     rThreeBottle.bottle3 = Rbottles[i+2];
 
-            console.log('relatedFavorite data', Rbottles);
-            let RbottlesArr = [];
-            let Rcount = 0;
-              for (let i = 0; i< Rbottles.length; i++) {
-                let rThreeBottle = {}
-                rThreeBottle.bottle1 = Rbottles[i];
-                rThreeBottle.bottle2 = Rbottles[i+1];
-                rThreeBottle.bottle3 = Rbottles[i+2];
+        //     RbottlesArr[Rcount] = rThreeBottle;
+        //     i++;
+        //     i++;
+        //     Rcount++;
+        //   }
 
-                RbottlesArr[Rcount] = rThreeBottle;
-                i++;
-                i++;
-                Rcount++;
-              }
+          relatedFavorite.value = RbottlesArr;
+          console.log('relatedFavorite data', relatedFavorite);
 
-              relatedFavorites.value = RbottlesArr;
-              console.log('relatedFavorite data', relatedFavorites);
-          }
+
+
+
         })
 
     }
 
-    function loginCheck() {
-      if ( user.getLoginUserInfo != null && user.getLoginUserInfo.userNo != 0) {
-        isLoggedIn.value = true
-      } else {
-        isLoggedIn.value = false
-      }
-    }
-
     onMounted(() => {
       getMainBottles()
-      loginCheck()
     })
-
-  const bottle = useBoardStore()
-
-  function movePage(bottleNo) {
-    bottle.setBottleInfo(bottleNo);
-    console.log(`/bottles/${bottleNo}`)
-    // router.push(`/bottles/${bottleNo}`)
-  }
 
     return {
       newBottles,
       bestBottles,
-      relatedFavorites,
+      relatedFavorite,
       getBottleImage,
       swiperOption,
-      swiperRef,
-      isLoggedIn,
-      movePage
+      swiperRef
+
     }
-  }
+  },
 }
 </script>
 <style scoped>

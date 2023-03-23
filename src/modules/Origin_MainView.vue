@@ -347,7 +347,7 @@ import { onMounted, ref } from 'vue'
 import { useUserStore } from '@/stores/users'
 
 export default {
-  name: 'MainView',
+  name: '__MainView',
 
   setup () {
     // axios Instance 를 생성할 때, token 문제 때문에 인자로 데이터하나가 필요해

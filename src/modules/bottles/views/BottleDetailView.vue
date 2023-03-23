@@ -194,6 +194,7 @@ import { getFormAxiosInstance } from '@/api/index'
 import { onMounted, ref, reactive } from 'vue'
 import { useRouter } from 'vue-router'
 import { useUserStore } from '@/stores/users.js'
+import { useBoardStore } from '@/stores/boards'
 
 export default {
   name: 'BottleDetailView',
@@ -218,12 +219,15 @@ export default {
     const reviewList = ref([])
     const isFavorite = ref([])
 
-    const getBottle = function (hhh) {
+    const bottleInfo = useBoardStore()
+
+    const getBottle = function () {
       let url = ''
-      if (!hhh) {
+      if (props != null) {
         url = `/api/bottles/${props.bottleNo}`
       } else {
-        url = '/api/bottles/' + hhh
+        url = `/api/bottles/${bottleInfo.getBottleInfo}`
+        console.log(url);
       }
       axios.get(url)
         .then(res => {
