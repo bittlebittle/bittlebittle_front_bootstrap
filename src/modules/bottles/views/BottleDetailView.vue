@@ -709,13 +709,18 @@ export default {
 }
 
 .image-container {
+  display: inline-block; /* 이미지 크기에 맞게 테두리가 둘러지도록 인라인 블록 요소로 설정합니다. */
   border: 2px solid orange;
   padding: 10px;
-  text-align: center;
+  box-sizing: border-box; /* border와 padding 값을 포함한 전체 요소 크기를 계산합니다. */
 }
 
 .image-container img {
-  max-width:500px;
-  max-height: 500px;
+  max-width: 500px; /* 이미지의 최대 너비를 300px로 설정합니다. */
+  max-height: 500px; /* 이미지의 최대 높이를 300px로 설정합니다. */
+  /* max-width: 100%; /* 부모 요소의 크기에 맞게 이미지 크기를 조정합니다. */
+  /* max-height: 100%; */ 
+  display: block; /* 이미지를 블록 요소로 설정하여 위/아래 여백을 추가합니다. */
+  margin: 0 auto; /* 이미지를 수평 중앙 정렬합니다. */
 }
 </style>

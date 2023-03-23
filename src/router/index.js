@@ -15,6 +15,10 @@ import AdminAddBottleView from '@/layouts/admin/AdminAddBottleView'
 import AdminBottleDetailView from '@/layouts/admin/AdminBottleDetailView'
 import AdminBottle from '@/layouts/admin/AdminBottle'
 import AdminTagView from '@/layouts/admin/AdminTagView'
+import AdminNoticeCreateComp from '@/modules/notices/components/AdminNoticeCreateComp'
+import AdminNoticeDetailComp from '@/modules/notices/components/AdminNoticeDetailComp'
+import AdminNoticeEditComp from '@/modules/notices/components/AdminNoticeEditComp'
+import AdminNoticeListComp from '@/modules/notices/components/AdminNoticeListComp'
 import NoticeListComp from '@/modules/notices/components/NoticeListComp'
 import NoticeDetailComp from '@/modules/notices/components/NoticeDetailComp'
 
@@ -100,7 +104,7 @@ const routes = [
       {
         path: '/notices',
         name: 'NoticeView',
-        component: NoticeView,
+        component: () => import('@/modules/notices/views/NoticeView'),
         children: [
           {
             path: '/notices',
@@ -166,8 +170,30 @@ const routes = [
       },
       {
         path: '/admin/notices',
-        name: 'AdminNoticeListComp',
-        component: () => import('@/modules/notices/components/AdminNoticeListComp')
+        name: 'AdminNoticeView',
+        component: () => import('@/modules/notices/views/AdminNoticeView'),
+        children: [
+          {
+            path: '/admin/notices',
+            name: 'AdminNoticeListComp',
+            component: AdminNoticeListComp
+          },
+          {
+            path: '/admin/notices/:noticeNo',
+            name: 'AdminNoticeDetailComp',
+            component: AdminNoticeDetailComp
+          },
+          {
+            path: '/admin/notices/addition',
+            name: 'AdminNoticeCreateComp',
+            component: AdminNoticeCreateComp
+          },
+          {
+            path: '/admin/notices/set-data',
+            name: 'AdminNoticeEditComp',
+            component: AdminNoticeEditComp
+          }
+        ]
       }
     ]
   },
