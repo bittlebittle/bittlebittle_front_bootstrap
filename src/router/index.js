@@ -160,7 +160,7 @@ const routes = [
       {
         path: '/admin/users',
         name: 'AdminUserManagement',
-        component: () => import('@/modules/users/AdminManaging')
+        component: () => import('@/modules/users/components/AdminManaging')
       },
       {
         path: '/admin/notices',

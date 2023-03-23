@@ -73,8 +73,7 @@ export default {
           .then(res => {
             console.log(res.data)
             alert('태그 저장이 완료되었습니다.')
-            user.setLoginUserInfo('')
-            router.push('/')
+
           })
       } else {
         alert('각 항목별로 최소 1개 이상 선택해 주세요.')
